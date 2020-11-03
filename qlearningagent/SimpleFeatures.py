@@ -7,6 +7,7 @@ class SimpleFeatures(Features):
     def __init__(self):
         Features.__init__(self)
         self.append(AttackersFeature())
+        self.append(CheckFeature())
 
 class AttackersFeature(Feature):
     def __init__(self):

@@ -7,6 +7,16 @@ import numpy as np
 from Features import Feature, Features
 from State import State
 
+import SimpleFeatures
+
+def loadAgentFromFile(file, features: Features = SimpleFeatures.SimpleFeatures()):
+    f = open(file)
+    saveData = json.load(f)
+    f.close()
+
+    features.fromDict(saveData['weights'])
+
+    return QAgent(file, saveData['epsilon'], saveData['discount'], saveData['learningRate'], features)
 
 class QAgent:
     def __init__(self, file, epsilon, discount, learningRate, features: Features):
@@ -15,7 +25,6 @@ class QAgent:
         self.discount = discount
         self.learningRate = learningRate
         self.features = features
-        pass
 
     def computeAction(self, state: State ):
         actions = state.getLegalActions()
