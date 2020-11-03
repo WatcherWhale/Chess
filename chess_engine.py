@@ -33,6 +33,9 @@ def main():
     board = chess.Board()
     player = SearchAgent(time_limit=5)
 
+    for move in board.legal_moves:
+        print(move.uci())
+
     running = True
     
 

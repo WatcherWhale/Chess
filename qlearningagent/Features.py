@@ -8,6 +8,9 @@ class Features(list):
         for f in self:
             f.updateWeight(state, action, learningDifference)
 
+    def saveWeights(self, file):
+        pass
+
 class Feature:
     def __init__(self, default = False, weight = 0):
         if not default:
