@@ -10,7 +10,8 @@ class SimpleFeatures(Features):
 
 
 class AttackersFeature(Feature):
-    def calculateValue(self, nextState: State):
+    def calculateValue(self, state: State, action):
+        nextState = state.newStateFromAction(action)
 
         opponentSquareSet = chess.SquareSet()
         for piece_type in range(1, 7):

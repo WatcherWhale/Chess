@@ -22,3 +22,8 @@ class State:
 
     def copy(self):
         return State(self.board.copy(), self.white)
+
+    def newStateFromAction(self, action):
+        newState = self.copy()
+        newState.addMove(action)
+        return newState
