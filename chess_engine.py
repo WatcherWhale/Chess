@@ -46,8 +46,9 @@ def main():
                 for move in input_val[3::]:
                     board.push_uci(move)
 
-            elif input_val[0] == "go" and \
-                    input_val[1] == "movetime":
+            elif input_val[0] == "go":
+                #btime = input_val[2]
+                #wtime = input_val[4]
                 print("bestmove {}".format(player.random_with_first_level_search(board).uci()))
 
             else:
@@ -79,9 +80,6 @@ def main():
 
             else:
                 print("error command: {}".format(input_val))
-        
-        print(board)
-
 
 if __name__ == "__main__":
     main()
