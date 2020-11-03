@@ -9,15 +9,23 @@ class Features(list):
         for f in self:
             f.updateWeight(state, action, learningDifference)
 
-    def saveWeights(self, file):
-        pass
+    def toDict(self):
+        dict = {}
+
+        for f in self:
+            dict[f.getName()] = f.getWeight()
+
+        return dict
+
+    def fromDict(self, dict):
+        for f in self:
+            f.setWeight(dict[f.getName()])
+
 
 class Feature:
-    def __init__(self, default = True, weight = 0):
-        if not default:
-            self.weight = weight
-        else:
-            self.weight = 0
+    def __init__(self):
+        self.name = "feature"
+        self.weight = 0
 
     def calculateFeature(self, state: State, action):
         return self.weight * self.calculateValue(state, action)
@@ -33,3 +41,6 @@ class Feature:
 
     def setWeight(self, weight):
         self.weight = weight
+
+    def getName(self):
+        return self.name

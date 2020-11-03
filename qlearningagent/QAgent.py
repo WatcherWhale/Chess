@@ -1,4 +1,5 @@
 import random
+import json
 
 import chess
 import numpy as np
@@ -56,7 +57,15 @@ class QAgent:
 
         return max(vals)
 
-    def getNextState(self, state: State, action):
-        nextState = state.copy()
-        nextState.addMove(action)
-        return nextState
+    def save(self):
+        saveData = {
+            'epsilon': self.epsilon,
+            'discount': self.discount,
+            'learningRate': self.learningRate,
+            'weights': self.features.toDict()
+        }
+
+        jsonData = json.dumps(saveData)
+        f = open(self.file, 'w')
+        f.write(jsonData)
+        f.close()

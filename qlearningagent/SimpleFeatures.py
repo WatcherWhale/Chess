@@ -5,11 +5,14 @@ import chess
 
 class SimpleFeatures(Features):
     def __init__(self):
-        Features.__init__()
+        Features.__init__(self)
         self.append(AttackersFeature())
 
-
 class AttackersFeature(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "attackers"
+
     def calculateValue(self, state: State, action):
         nextState = state.newStateFromAction(action)
 
@@ -24,3 +27,11 @@ class AttackersFeature(Feature):
             sum += len(nextState.getBoard().attackers(nextState.isWhite(), square))
 
         return sum
+
+class CheckFeature(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "check"
+
+    def calculateValue(self, state: State, action):
+        return float(state.getBoard().gives_check(chess.Move.from_uci(action)))
