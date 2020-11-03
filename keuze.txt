@@ -1,0 +1,18 @@
+Search
+- elke interatie elke state afgaan voor de volgende stap te bepalen
+- in elke state zeggen
+
+Adversal search (Minimax)
++ makkelijkst te trainen (snelheid)
+- nog nooit gezien/gedacht
+
+Reinforcement learning
++ kennen we goed
++ makkelijk te begrijpen wat er gebeurt
+- veel tijd om te leren
++ eens geleerd, zal zeer goed acten
+
+Neural netword/ Deeplearning
+- geen data labels
+- nog nooit gedaan
+- weet niet welke in/output zijn
