@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import chess
 from searchagent.search_agent import SearchAgent
+from qlearningagent.QAgent import QAgent
+from qlearningagent.State import State
 
 # https://ucichessengine.wordpress.com/2011/03/16/description-of-uci-protocol/
 
@@ -31,13 +33,9 @@ def uci(name, author):
 
 def main():
     board = chess.Board()
-    player = SearchAgent(time_limit=5)
-
-    for move in board.legal_moves:
-        print(move.uci())
+    player = QAgent('test.sav', 0.5, 0.7, 0.6)
 
     running = True
-    
 
     while running:
         input_val = input().split(' ')
@@ -53,7 +51,8 @@ def main():
             elif input_val[0] == "go":
                 #btime = input_val[2]
                 #wtime = input_val[4]
-                print("bestmove {}".format(player.random_with_first_level_search(board).uci()))
+                action = player.computeAction(State(board, board.turn))
+                print("bestmove {}".format(action))
 
             else:
                 print("error command: {}".format(input_val))
@@ -71,7 +70,7 @@ def main():
         elif len(input_val) > 0:
 
             if input_val[0] == "uci":
-                uci(name=player.name, author=player.author)
+                uci(name="GrandQ", author="Mathias Maes, Willem van der Elst, Tijs Van Alphen")
 
             elif input_val[0] == "quit":
                 running = False

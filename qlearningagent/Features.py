@@ -1,9 +1,14 @@
 import chess
-from State import State
+from .State import State
 
 class Features(list):
     def calculateFeatures(self, state: chess.Board, action):
-        return [lambda x: x.calculateFeature(state, action) for x in self]
+        vals = []
+
+        for f in self:
+            vals.append(f.calculateFeature(state, action))
+
+        return vals
 
     def updateWeights(self, state: State, action, learningDifference):
         for f in self:

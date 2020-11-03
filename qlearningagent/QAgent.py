@@ -4,12 +4,11 @@ import json
 import chess
 import numpy as np
 
-from Features import Feature, Features
-from State import State
+from .Features import Feature, Features
+from .State import State
+from .SimpleFeatures import SimpleFeatures
 
-import SimpleFeatures
-
-def loadAgentFromFile(file, features: Features = SimpleFeatures.SimpleFeatures()):
+def loadAgentFromFile(file, features: Features = SimpleFeatures()):
     f = open(file)
     saveData = json.load(f)
     f.close()
@@ -19,7 +18,7 @@ def loadAgentFromFile(file, features: Features = SimpleFeatures.SimpleFeatures()
     return QAgent(file, saveData['epsilon'], saveData['discount'], saveData['learningRate'], features)
 
 class QAgent:
-    def __init__(self, file, epsilon, discount, learningRate, features: Features):
+    def __init__(self, file, epsilon, discount, learningRate, features: Features = SimpleFeatures()):
         self.file = file
         self.epsilon = epsilon
         self.discount = discount
@@ -31,12 +30,15 @@ class QAgent:
         posActions = []
         maxValue = self.maxQValue(state)
 
-        if len(actions) == 0:
+        if len(actions) == 0 or state.isTerminalState():
             return None
 
         for action in actions:
             if maxValue == self.getQValue(state, action):
                 posActions.append(action)
+
+        if len(posActions) == 0:
+            return None
 
         return random.choice(posActions)
 
@@ -48,16 +50,15 @@ class QAgent:
 
 
     def getQValue(self, state: State, action):
-        return np.sum(self.features.calculateFeatures(state, action))
+        return sum(self.features.calculateFeatures(state, action))
 
     def update(self, state: State, action, reward, nextState: State):
-
         diff = (reward + self.discount * self.maxQValue(nextState)) - self.getQValue(state, action)
         self.features.updateWeights(state, action, self.learningRate * diff)
 
 
     def maxQValue(self, state: State):
-        if len(state.getLegalActions() == 0):
+        if len(state.getLegalActions()) == 0:
             return 0.0
 
         vals = []

@@ -1,5 +1,5 @@
-from Features import Features, Feature
-from State import State
+from .Features import Features, Feature
+from .State import State
 
 import chess
 
@@ -23,11 +23,11 @@ class AttackersFeature(Feature):
             for square in squares:
                 opponentSquareSet.add(square)
 
-        sum = 0
+        s = 0
         for square in opponentSquareSet:
-            sum += len(nextState.getBoard().attackers(nextState.isWhite(), square))
+            s += len(nextState.getBoard().attackers(nextState.isWhite(), square))
 
-        return sum
+        return s
 
 class CheckFeature(Feature):
     def __init__(self):
@@ -35,4 +35,8 @@ class CheckFeature(Feature):
         self.name = "check"
 
     def calculateValue(self, state: State, action):
-        return float(state.getBoard().gives_check(chess.Move.from_uci(action)))
+
+        nextState = state.newStateFromAction(action)
+
+        return float(nextState.getBoard().is_check() and not state.getBoard().is_check())
+

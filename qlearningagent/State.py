@@ -6,7 +6,10 @@ class State:
         self.white = isWhite
 
     def getLegalActions(self):
-        return [lambda x: x.uci() for x in self.board.legal_moves]
+        actions = []
+        for a in self.board.legal_moves:
+            actions.append(a.uci())
+        return actions
 
     def addMove(self, move):
         self.board.push_uci(move)
@@ -18,7 +21,7 @@ class State:
         return self.board
 
     def isWhite(self):
-        return self.isWhite
+        return self.white
 
     def copy(self):
         return State(self.board.copy(), self.white)
