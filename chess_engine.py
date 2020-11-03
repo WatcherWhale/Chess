@@ -34,6 +34,7 @@ def main():
     player = SearchAgent(time_limit=5)
 
     running = True
+    
 
     while running:
         input_val = input().split(' ')
@@ -80,6 +81,7 @@ def main():
 
             else:
                 print("error command: {}".format(input_val))
+
 
 if __name__ == "__main__":
     main()
