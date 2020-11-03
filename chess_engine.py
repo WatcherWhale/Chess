@@ -79,6 +79,8 @@ def main():
 
             else:
                 print("error command: {}".format(input_val))
+        
+        print(board)
 
 
 if __name__ == "__main__":
