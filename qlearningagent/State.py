@@ -6,7 +6,13 @@ class State:
         self.white = isWhite
 
     def getLegalActions(self):
-        return self.board.legal_moves
+        return [lambda x: x.uci() for x in self.board.legal_moves]
+
+    def addMove(self, move):
+        self.board.push_uci(move)
+
+    def isTerminalState(self):
+        return self.board.is_checkmate or self.board.is_stalemate
 
     def getBoard(self):
         return self.board

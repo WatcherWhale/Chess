@@ -1,7 +1,11 @@
-import chess
-from Features import Feature, Features
-import numpy as np
 import random
+
+import chess
+import numpy as np
+
+from Features import Feature, Features
+from State import State
+
 
 class QAgent:
     def __init__(self, file, epsilon, discount, learningRate, features: Features):
@@ -12,8 +16,8 @@ class QAgent:
         self.features = features
         pass
 
-    def computeAction(self, state):
-        actions = state.legal_moves
+    def computeAction(self, state: State ):
+        actions = state.getLegalActions()
         posActions = []
         maxValue = self.maxQValue(state)
 
@@ -26,33 +30,33 @@ class QAgent:
 
         return random.choice(posActions)
 
-    def makeMove(self, state: chess.Board):
+    def makeMove(self, state: State):
         if random.random() < self.epsilon:
-            return random.choice(state.legal_moves)
+            return random.choice(state.getLegalActions())
         else:
             return self.computeAction(state)
 
 
-    def getQValue(self, state, action):
+    def getQValue(self, state: State, action):
         return np.sum(self.features.calculateFeatures(state, action))
 
-    def update(self, state, action, reward, nextState):
+    def update(self, state: State, action, reward, nextState: State):
 
         diff = (reward + self.discount * self.maxQValue(nextState)) - self.getQValue(state, action)
         self.features.updateWeights(state, action, self.learningRate * diff)
 
 
-    def maxQValue(self, state: chess.Board):
-        if len(state.legal_moves == 0):
+    def maxQValue(self, state: State):
+        if len(state.getLegalActions() == 0):
             return 0.0
 
         vals = []
-        for action in state.legal_moves:
+        for action in state.getLegalActions():
             vals.append(self.getQValue(state, action))
 
         return max(vals)
 
-    def getNextState(self, state: chess.Board, action):
+    def getNextState(self, state: State, action):
         nextState = state.copy()
-        nextState.push_uci(action)
+        nextState.addMove(action)
         return nextState
