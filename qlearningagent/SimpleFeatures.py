@@ -74,8 +74,9 @@ class NextCheckFeature(Feature):
         nextState = state.newStateFromAction(action)
 
         checkMoves = 0
-        for move in nextState.getBoard().legal_moves:
-            if nextState.getBoard().gives_check(move):
+        for action in nextState.getLegalActions():
+            nextNextState = nextState.newStateFromAction(action)
+            if nextNextState.getBoard().is_check():
                 checkMoves += 1
 
         return checkMoves / 16.0
