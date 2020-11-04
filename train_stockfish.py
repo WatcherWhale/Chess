@@ -12,6 +12,7 @@ def main():
     for _ in range(2):
         board = chess.Board()
         runEpisode(board, player)
+        player.save()
 
 def runEpisode(board : chess.Board, player: QAgent):
     black_player = chess.engine.SimpleEngine.popen_uci("/usr/bin/stockfish")
