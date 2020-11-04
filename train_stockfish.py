@@ -6,6 +6,7 @@ from qlearningagent.State import State
 from qlearningagent.Reward import calculateReward
 import os.path
 
+STOCKFISH_BIN = '/usr/bin/stockfish'
 
 def main():
     player = loadPlayer()
@@ -14,7 +15,7 @@ def main():
 
 def runEpisode(player: QAgent):
     board = chess.Board()
-    black_player = chess.engine.SimpleEngine.popen_uci("/usr/bin/stockfish")
+    black_player = chess.engine.SimpleEngine.popen_uci(STOCKFISH_BIN)
     limit = chess.engine.Limit(time=5.0)
 
     running = True
