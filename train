@@ -4,6 +4,7 @@ from qlearningagent.QAgent import QAgent, loadAgentFromFile
 import argparse
 import train_self
 import train_stockfish
+import os.path
 
 parser = argparse.ArgumentParser(description='')
 
@@ -23,9 +24,11 @@ def getAgent(agent):
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    qAgent = train_self.loadAgentFromFile(args.file)
+    if os.path.isfile('chess.sav'):
+        qAgent = loadAgentFromFile('chess.sav')
+    else:
+        qAgent = QAgent('chess.sav', 0.5, 0.7, 0.6)
 
-    print(args)
 
     if args.e >= 0:
         qAgent.setEpsilon(args.e)

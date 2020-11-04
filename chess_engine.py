@@ -34,6 +34,7 @@ def uci(name, author):
 def main():
     board = chess.Board()
     player = loadAgentFromFile("chess.sav")
+    player = player.getGreedyAgent()
 
     running = True
 

@@ -7,15 +7,19 @@ from qlearningagent.QAgent import QAgent, loadAgentFromFile
 from qlearningagent.State import State
 from qlearningagent.Reward import calculateReward
 
+prevWhiteState = (None, None)
+prevBlackState = (None, None)
+
 def run_episode(player: QAgent):
+
+    global prevWhiteState
+    global prevBlackState
+
     board = chess.Board()
 
     running = True
     turn_white_player = True
     counter = 0
-
-    prevWhiteState = (None, None)
-    prevBlackState = (None, None)
 
     while running and not board.is_game_over():
         counter += 1
@@ -39,7 +43,7 @@ def run_episode(player: QAgent):
             else:
                 print("White wins!")
 
-        if board.is_stalemate() or board.is_insufficient_material():
+        if board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves() or board.is_fivefold_repetition():
             running = False
             print("Stalemate")
 
@@ -57,6 +61,8 @@ def run_episode(player: QAgent):
             prevBlackState = (state, action)
 
     player.save()
+    print(board.result())
+    print("###################")
 
 
 def main():
