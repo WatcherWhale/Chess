@@ -3,32 +3,49 @@ from .State import State
 
 import chess
 
+
 class SimpleFeatures(Features):
     def __init__(self):
         Features.__init__(self)
-        self.append(AttackersFeature())
+        self.append(SelfAttackersFeature())
+        self.append(OpponentAttackersFeature())
         self.append(CheckFeature())
         self.append(DistanceToEnemyKing())
 
-class AttackersFeature(Feature):
+
+class SelfAttackersFeature(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "attackers"
+        self.name = "sattackers"
 
     def calculateValue(self, state: State, action):
-        nextState = state.newStateFromAction(action)
+        return calculateAttackersForPlayer(state, action, state.getPlayer())
 
-        opponentSquareSet = chess.SquareSet()
-        for piece_type in range(1, 7):
-            squares = nextState.getBoard().pieces(piece_type, not state.isWhite())
-            for square in squares:
-                opponentSquareSet.add(square)
 
-        s = 0.0
-        for square in opponentSquareSet:
-            s += len(nextState.getBoard().attackers(state.isWhite(), square))
+class OpponentAttackersFeature(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "oattackers"
 
-        return s/10
+    def calculateValue(self, state: State, action):
+        return calculateAttackersForPlayer(state, action, not state.getPlayer())
+
+
+def calculateAttackersForPlayer(state: State, action, player):
+    nextState = state.newStateFromAction(action)
+
+    opponentSquareSet = chess.SquareSet()
+    for piece_type in range(1, 7):
+        squares = nextState.getBoard().pieces(piece_type, not player)
+        for square in squares:
+            opponentSquareSet.add(square)
+
+    s = 0.0
+    for square in opponentSquareSet:
+        s += len(nextState.getBoard().attackers(player, square))
+
+    return s / 16
+
 
 class CheckFeature(Feature):
     def __init__(self):
@@ -44,6 +61,7 @@ class CheckFeature(Feature):
         else:
             return 0.0
 
+
 class DistanceToEnemyKing(Feature):
     def __init__(self):
         Feature.__init__(self)
@@ -52,13 +70,13 @@ class DistanceToEnemyKing(Feature):
     def calculateValue(self, state: State, action):
         nextState = state.newStateFromAction(action)
 
-        kingSet = nextState.getBoard().pieces(chess.KING, not state.isWhite())
+        kingSet = nextState.getBoard().pieces(chess.KING, not state.getPlayer())
         king = kingSet.pop()
 
         minDistance = 16
 
-        for piece_type in range(1,7):
-            for piece in nextState.getBoard().pieces(piece_type, state.isWhite()):
+        for piece_type in range(1, 7):
+            for piece in nextState.getBoard().pieces(piece_type, state.getPlayer()):
                 minDistance = min(minDistance, chess.square_distance(piece, king))
 
         return minDistance / 16

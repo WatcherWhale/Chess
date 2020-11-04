@@ -3,7 +3,7 @@ from .State import State
 def calculateReward(state: State, action, nextState: State):
 
     if nextState.getBoard().is_checkmate():
-        if nextState.getBoard().turn == nextState.isWhite():
+        if nextState.getBoard().turn == nextState.getPlayer():
             return 100
         else:
             return -100
