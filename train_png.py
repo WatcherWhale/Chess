@@ -8,7 +8,7 @@ def main():
 
     while running:
         pgn_game = chess.pgn.read_game(pgn)
-        
+
         if pgn_game:
             board = pgn_game.board()
 

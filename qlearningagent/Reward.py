@@ -10,7 +10,8 @@ def calculateReward(state: State, action, nextState: State):
             return 100
         else:
             return -100
-    elif nextState.getBoard().is_stalemate() or nextState.getBoard().is_insufficient_material():
+    elif nextState.getBoard().is_stalemate() or nextState.getBoard().is_insufficient_material() \
+            or nextState.getBoard().is_seventyfive_moves() or nextState.getBoard().is_fivefold_repetition():
         return -30
 
     if nextState.getBoard().is_check():

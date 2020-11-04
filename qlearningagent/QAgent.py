@@ -25,6 +25,15 @@ class QAgent:
         self.learningRate = learningRate
         self.features = features
 
+    def setEpsilon(self, epsilon):
+        self.epsilon = epsilon
+
+    def setDiscount(self, discount):
+        self.discount = discount
+
+    def setLearningRate(self, learningRate):
+        self.learningRate = learningRate
+
     def computeAction(self, state: State ):
         actions = state.getLegalActions()
         posActions = []

@@ -1,23 +1,34 @@
 #!/usr/bin/python3
 import chess
 import chess.engine
-from searchagent.search_agent import SearchAgent
+from qlearningagent.QAgent import QAgent, loadAgentFromFile
+from qlearningagent.State import State
+from qlearningagent.Reward import calculateReward
+import os.path
 
 
 def main():
+    player = loadPlayer()
+    for _ in range(2):
+        runEpisode(player)
+
+def runEpisode(player: QAgent):
     board = chess.Board()
-    white_player = SearchAgent(time_limit=5)
-    black_player = chess.engine.SimpleEngine.popen_uci("stockfish")
+    black_player = chess.engine.SimpleEngine.popen_uci("/usr/bin/stockfish")
     limit = chess.engine.Limit(time=5.0)
 
     running = True
     turn_white_player = True
 
+    prevState = (None, None)
+
     while running:
         move = None
 
+        state = State(board.copy(), turn_white_player)
+
         if turn_white_player:
-            move = white_player.random_move(board=board)
+            move = chess.Move.from_uci(player.makeMove(state))
             turn_white_player = False
 
         else:
@@ -34,14 +45,29 @@ def main():
             if turn_white_player:
                 print("Stockfish wins!")
             else:
-                print("{} wins!".format(white_player.name))
+                print("GrandQ wins!")
 
         if board.is_stalemate():
             running = False
             print("Stalemate")
 
-    black_player.quit()
+        action = move.uci()
+        if not turn_white_player:
+            if prevState[0] is not None:
+                reward = calculateReward(prevState[0], prevState[1], state.newStateFromAction(action))
+                player.update(prevState[0], prevState[1], reward, state.newStateFromAction(action))
+        else:
+            prevState = (state, action)
 
+
+    black_player.quit()
+    player.save()
+
+def loadPlayer():
+    if os.path.isfile('chess.sav'):
+        return loadAgentFromFile('chess.sav')
+    else:
+        return QAgent('chess.sav', 0.5, 0.7, 0.6)
 
 if __name__ == "__main__":
     main()
