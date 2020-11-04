@@ -39,6 +39,8 @@ def run_episode(player: QAgent):
             else:
                 print("White wins!")
 
+            print(board)
+
         if board.is_stalemate() or board.is_insufficient_material():
             running = False
             print("Stalemate")
