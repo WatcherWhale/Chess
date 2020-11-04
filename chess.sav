@@ -1,1 +1,1 @@
-{"epsilon": 0, "discount": 0.7, "learningRate": 0.6, "weights": {"attackers": 0.2056774385234359, "check": 11.58927617600435, "distance": -2.611262092393808}}
+{"epsilon": 0, "discount": 0.7, "learningRate": 0.6, "weights": {"attackers": -7.520990814038675, "check": -0.15814437643171786, "distance": -9.993340219886099}}
