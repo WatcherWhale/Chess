@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import chess
 from searchagent.search_agent import SearchAgent
-from qlearningagent.QAgent import QAgent
+from qlearningagent.QAgent import QAgent, loadAgentFromFile
 from qlearningagent.State import State
 
 # https://ucichessengine.wordpress.com/2011/03/16/description-of-uci-protocol/
@@ -33,7 +33,7 @@ def uci(name, author):
 
 def main():
     board = chess.Board()
-    player = QAgent('test.sav', 0.5, 0.7, 0.6)
+    player = loadAgentFromFile("chess.sav")
 
     running = True
 

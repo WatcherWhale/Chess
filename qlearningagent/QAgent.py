@@ -28,13 +28,16 @@ class QAgent:
     def computeAction(self, state: State ):
         actions = state.getLegalActions()
         posActions = []
+        qVals = []
         maxValue = self.maxQValue(state)
 
         if len(actions) == 0 or state.isTerminalState():
             return None
 
         for action in actions:
-            if maxValue == self.getQValue(state, action):
+            qVal = self.getQValue(state, action)
+            qVals.append(qVal)
+            if maxValue == qVal:
                 posActions.append(action)
 
         if len(posActions) == 0:
@@ -44,9 +47,16 @@ class QAgent:
 
     def makeMove(self, state: State):
         if random.random() < self.epsilon:
-            return random.choice(state.getLegalActions())
+            choice = random.choice(state.getLegalActions())
         else:
-            return self.computeAction(state)
+            choice = self.computeAction(state)
+
+
+        if choice == None:
+            print(state.getLegalActions())
+            exit(1)
+
+        return choice
 
 
     def getQValue(self, state: State, action):
@@ -66,6 +76,9 @@ class QAgent:
             vals.append(self.getQValue(state, action))
 
         return max(vals)
+
+    def getGreedyAgent(self):
+        return QAgent(self.file, 0, self.discount, self.learningRate, self.features)
 
     def save(self):
         saveData = {

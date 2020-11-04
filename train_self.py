@@ -10,24 +10,26 @@ from qlearningagent.Reward import calculateReward
 def run_episode(player: QAgent):
     board = chess.Board()
 
-
     running = True
     turn_white_player = True
     counter = 0
 
-    while running:
+    prevWhiteState = (None, None)
+    prevBlackState = (None, None)
+
+    while running and not board.is_game_over():
         counter += 1
         action = None
         state = State(board.copy(), turn_white_player)
 
-        action = player.computeAction(state)
+        action = player.makeMove(state)
+        if action == None:
+            print(board)
+            exit(1)
+
         turn_white_player = not turn_white_player
 
         board.push(chess.Move.from_uci(action))
-        #print(board)
-        #print("###########################")
-        #print(board.piece_at(chess.QUEEN))
-        #print("###########################")
 
         if board.is_checkmate():
             running = False
@@ -37,12 +39,22 @@ def run_episode(player: QAgent):
             else:
                 print("White wins!")
 
-        if board.is_stalemate() or counter > 1000:
+        if board.is_stalemate() or board.is_insufficient_material():
             running = False
             print("Stalemate")
 
-        reward = calculateReward(state, action)
-        player.update(state, action, reward, state.newStateFromAction(action))
+        if turn_white_player:
+            if prevBlackState[0] is not None:
+                reward = calculateReward(prevBlackState[0], prevBlackState[1], state.newStateFromAction(action))
+                player.update(prevBlackState[0], prevBlackState[1], reward, state.newStateFromAction(action))
+
+            prevWhiteState = (state, action)
+        else:
+            if prevWhiteState[0] is not None:
+                reward = calculateReward(prevWhiteState[0], prevWhiteState[1], state.newStateFromAction(action))
+                player.update(prevWhiteState[0], prevWhiteState[1], reward, state.newStateFromAction(action))
+
+            prevBlackState = (state, action)
 
     player.save()
 
