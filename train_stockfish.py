@@ -10,11 +10,10 @@ import os.path
 def main():
     player = loadPlayer()
     for _ in range(2):
-        board = chess.Board()
-        runEpisode(board, player)
-        player.save()
+        runEpisode(player)
 
-def runEpisode(board : chess.Board, player: QAgent):
+def runEpisode(player: QAgent):
+    board = chess.Board()
     black_player = chess.engine.SimpleEngine.popen_uci("/usr/bin/stockfish")
     limit = chess.engine.Limit(time=5.0)
 
@@ -62,6 +61,7 @@ def runEpisode(board : chess.Board, player: QAgent):
 
 
     black_player.quit()
+    player.save()
 
 def loadPlayer():
     if os.path.isfile('chess.sav'):

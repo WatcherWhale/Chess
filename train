@@ -1,0 +1,41 @@
+#!/bin/env python3
+
+from qlearningagent.QAgent import QAgent, loadAgentFromFile
+import argparse
+import train_self
+import train_stockfish
+
+parser = argparse.ArgumentParser(description='')
+
+parser.add_argument('-f', '--file', type=str, default='chess.sav')
+parser.add_argument('-a', '--agent', type=str, default='self')
+parser.add_argument('-e', type=float, help='Epsilon', default=-1)
+parser.add_argument('-d', type=float, help='Discount', default=-1)
+parser.add_argument('-l', type=float,help='LearningRate', default=-1)
+parser.add_argument('-i', default=50, type=int, help='Iterations')
+parser.add_argument('-t', '--threads', default=1, type=int, help='Amount of games played at the same time')
+
+def getAgent(agent):
+    if agent == 'self':
+        return train_self.run_episode
+    elif agent == 'stockfish':
+        return train_stockfish.runEpisode
+
+if __name__ == "__main__":
+    args = parser.parse_args()
+    qAgent = train_self.loadAgentFromFile(args.file)
+
+    print(args)
+
+    if args.e >= 0:
+        qAgent.setEpsilon(args.e)
+    if args.d >= 0:
+        qAgent.setDiscount(args.d)
+    if args.l >= 0:
+        qAgent.setLearningRate(args.l)
+
+    runEpisode = getAgent(args.agent)
+
+    for _ in range(args.i):
+        runEpisode(qAgent)
+
