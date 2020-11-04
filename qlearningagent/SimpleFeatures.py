@@ -1,8 +1,8 @@
 from .Features import Features, Feature
+from .Reward import calculatePieceAdvantage
 from .State import State
 
 import chess
-
 
 class SimpleFeatures(Features):
     def __init__(self):
@@ -10,7 +10,10 @@ class SimpleFeatures(Features):
         self.append(SelfAttackersFeature())
         self.append(OpponentAttackersFeature())
         self.append(CheckFeature())
+        self.append(NextCheckFeature())
         self.append(DistanceToEnemyKing())
+        self.append(AdvantageFeature())
+        self.append(NextAdvantageFeature())
 
 
 class SelfAttackersFeature(Feature):
@@ -61,6 +64,22 @@ class CheckFeature(Feature):
         else:
             return 0.0
 
+class NextCheckFeature(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "ncheck"
+
+    def calculateValue(self, state: State, action):
+
+        nextState = state.newStateFromAction(action)
+
+        checkMoves = 0
+        for move in nextState.getBoard().legal_moves():
+            if nextState.getBoard().gives_check(move):
+                checkMoves += 1
+
+        return checkMoves / 16.0
+
 
 class DistanceToEnemyKing(Feature):
     def __init__(self):
@@ -80,3 +99,28 @@ class DistanceToEnemyKing(Feature):
                 minDistance = min(minDistance, chess.square_distance(piece, king))
 
         return minDistance / 16
+
+class AdvantageFeature(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "advantage"
+
+    def calculateValue(self, state: State, action):
+        nextState = state.newStateFromAction(action)
+        return calculatePieceAdvantage(state, nextState) / 39
+
+class NextAdvantageFeature(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "nextadvantage"
+
+    def calculateValue(self, state: State, action):
+        nextState = state.newStateFromAction(action)
+
+        minAdvantage = 8 + 4 * 3 + 2 * 5 + 9
+
+        for nextAction in nextState.getLegalActions():
+            nextNextState = nextState.newStateFromAction(nextAction)
+            minAdvantage = min(minAdvantage, calculatePieceAdvantage(state, nextNextState))
+
+        return minAdvantage / 39
