@@ -2,7 +2,7 @@ import random
 import json
 
 import chess
-import numpy as np
+
 
 from .Features import Feature, Features
 from .State import State

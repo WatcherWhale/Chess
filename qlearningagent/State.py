@@ -20,7 +20,7 @@ class State:
     def getBoard(self):
         return self.board
 
-    def isWhite(self):
+    def getPlayer(self):
         return self.white
 
     def setPlayer(self, isWhite):
