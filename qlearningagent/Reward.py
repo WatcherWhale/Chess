@@ -31,7 +31,7 @@ def calculatePieceAdvantage(state: State, nextState: State):
         whiteAdvantage += getPieceReward(piece_type) * ( len(state.getBoard().pieces(piece_type, True)) - len(nextState.getBoard().pieces(piece_type, True)))
         blackAdvantage += getPieceReward(piece_type) * ( len(state.getBoard().pieces(piece_type, False)) - len(nextState.getBoard().pieces(piece_type, False)))
 
-    if state.isWhite():
+    if state.getPlayer():
         return whiteAdvantage - blackAdvantage
     else:
         return blackAdvantage - whiteAdvantage
