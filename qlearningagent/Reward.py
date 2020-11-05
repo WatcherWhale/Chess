@@ -21,6 +21,8 @@ def calculateReward(state: State, action, nextState: State):
 
     reward += calculatePieceAdvantage(state.newStateFromAction(action), nextState)
 
+    reward += getCastleReward(state, chess.Move.from_uci(action))
+
     return reward
 
 def calculatePieceAdvantage(state: State, nextState: State):
@@ -47,3 +49,6 @@ def getPieceReward(piece_type):
         return 9
 
     return 0
+
+def getCastleReward(state: State, move):
+    return state.getBoard().is_castling(move)*2

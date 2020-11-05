@@ -47,6 +47,7 @@ def run_episode(player: QAgent):
                 print("White wins!")
 
         if board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves() or board.is_fivefold_repetition():
+
             running = False
             print("Stalemate")
 
@@ -68,6 +69,7 @@ def run_episode(player: QAgent):
 
     player.save()
     print(board.result())
+    print(board)
     print("###################")
 
 
