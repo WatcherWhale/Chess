@@ -38,6 +38,9 @@ def run_episode(player: QAgent):
         if board.is_checkmate():
             running = False
 
+            reward = calculateReward(state, action, state.newStateFromAction(action))
+            player.update(state, action, reward, state.newStateFromAction(action))
+
             if turn_white_player:
                 print("Black wins!")
             else:
@@ -46,6 +49,9 @@ def run_episode(player: QAgent):
         if board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves() or board.is_fivefold_repetition():
             running = False
             print("Stalemate")
+
+            reward = calculateReward(state, action, state.newStateFromAction(action))
+            player.update(state, action, reward, state.newStateFromAction(action))
 
         if turn_white_player:
             if prevBlackState[0] is not None:
