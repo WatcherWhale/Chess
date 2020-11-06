@@ -7,6 +7,7 @@ from qlearningagent.Reward import calculateReward
 import os.path
 
 STOCKFISH_BIN = '/usr/bin/stockfish'
+QUIET = False
 
 def main():
     player = loadPlayer()
@@ -37,8 +38,10 @@ def runEpisode(player: QAgent):
             turn_white_player = True
 
         board.push(move)
-        print(board)
-        print("###########################")
+        
+        if not QUIET:
+            print(board)
+            print("###########################")
 
         if board.is_checkmate():
             running = False

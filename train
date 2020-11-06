@@ -16,6 +16,7 @@ parser.add_argument('-l', type=float,help='LearningRate', default=-1)
 parser.add_argument('-i', default=50, type=int, help='Iterations')
 parser.add_argument('-t', '--threads', default=1, type=int, help='Amount of games played at the same time')
 parser.add_argument('-win', action='store_true', help='For those beings that think Windows is a good OS')
+parser.add_argument('-q', action='store_true', help='Quiet logging')
 
 def getAgent(agent):
     if agent == 'self':
@@ -33,6 +34,10 @@ if __name__ == "__main__":
     if args.win:
         train_stockfish.STOCKFISH_BIN = './stockfish-win/stockfish.exe'
 
+    if args.q:
+        train_stockfish.QUIET = True
+        train_self.QUIET = True
+        
     if args.e >= 0:
         qAgent.setEpsilon(args.e)
     if args.d >= 0:

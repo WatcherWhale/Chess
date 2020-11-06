@@ -7,6 +7,8 @@ from qlearningagent.QAgent import QAgent, loadAgentFromFile
 from qlearningagent.State import State
 from qlearningagent.Reward import calculateReward
 
+QUIET = False;
+
 prevWhiteState = (None, None)
 prevBlackState = (None, None)
 
@@ -69,8 +71,10 @@ def run_episode(player: QAgent):
 
     player.save()
     print(board.result())
-    print(board)
-    print("###################")
+    
+    if not QUIET:
+        print(board)
+        print("###################")
 
 
 def main():
