@@ -51,4 +51,4 @@ def getPieceReward(piece_type):
     return 0
 
 def getCastleReward(state: State, move):
-    return state.getBoard().is_castling(move)*2
+    return state.getBoard().is_castling(move) * 2

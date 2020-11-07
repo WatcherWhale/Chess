@@ -2,17 +2,22 @@ import chess
 from .State import State
 
 class Features(list):
-    def calculateFeatures(self, state: chess.Board, action):
+    def calculateFeatures(self, state: State, action):
         vals = []
 
+        nextState = state.newStateFromAction(action)
+
         for f in self:
-            vals.append(f.calculateFeature(state, action))
+            vals.append(f.calculateFeature(state, action, nextState))
 
         return vals
 
     def updateWeights(self, state: State, action, learningDifference):
+
+        nextState = state.newStateFromAction(action)
+
         for f in self:
-            f.updateWeight(state, action, learningDifference)
+            f.updateWeight(state, action, nextState, learningDifference)
 
     def toDict(self):
         dict = {}
@@ -32,14 +37,14 @@ class Feature:
         self.name = "feature"
         self.weight = 0
 
-    def calculateFeature(self, state: State, action):
-        return self.weight * self.calculateValue(state, action)
+    def calculateFeature(self, state: State, action, nextState: State):
+        return self.weight * self.calculateValue(state, action, nextState)
 
-    def calculateValue(self, state: chess.Board, action):
+    def calculateValue(self, state: chess.Board, action, nextState: State):
         pass
 
-    def updateWeight(self, state: State, action, learningDifference):
-        self.weight = self.weight + learningDifference * self.calculateValue(state, action)
+    def updateWeight(self, state: State, action, nextState: State, learningDifference):
+        self.weight = self.weight + learningDifference * self.calculateValue(state, action, nextState)
 
     def getWeight(self):
         return self.weight

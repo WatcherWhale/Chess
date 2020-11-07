@@ -21,8 +21,8 @@ class SelfAttackersFeature(Feature):
         Feature.__init__(self)
         self.name = "sattackers"
 
-    def calculateValue(self, state: State, action):
-        return calculateAttackersForPlayer(state, action, state.getPlayer())
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateAttackersForPlayer(state, action, state.getPlayer(), nextState)
 
 
 class OpponentAttackersFeature(Feature):
@@ -30,12 +30,11 @@ class OpponentAttackersFeature(Feature):
         Feature.__init__(self)
         self.name = "oattackers"
 
-    def calculateValue(self, state: State, action):
-        return calculateAttackersForPlayer(state, action, not state.getPlayer())
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateAttackersForPlayer(state, action, not state.getPlayer(), nextState)
 
 
-def calculateAttackersForPlayer(state: State, action, player):
-    nextState = state.newStateFromAction(action)
+def calculateAttackersForPlayer(state: State, action, player, nextState):
 
     opponentSquareSet = chess.SquareSet()
     for piece_type in range(1, 7):
@@ -55,9 +54,7 @@ class CheckFeature(Feature):
         Feature.__init__(self)
         self.name = "check"
 
-    def calculateValue(self, state: State, action):
-
-        nextState = state.newStateFromAction(action)
+    def calculateValue(self, state: State, action, nextState):
 
         if (nextState.getBoard().is_check()):
             return 1.0
@@ -69,9 +66,7 @@ class NextCheckFeature(Feature):
         Feature.__init__(self)
         self.name = "ncheck"
 
-    def calculateValue(self, state: State, action):
-
-        nextState = state.newStateFromAction(action)
+    def calculateValue(self, state: State, action, nextState: State):
 
         checkMoves = 0
         for action in nextState.getLegalActions():
@@ -87,8 +82,7 @@ class DistanceToEnemyKing(Feature):
         Feature.__init__(self)
         self.name = "distance"
 
-    def calculateValue(self, state: State, action):
-        nextState = state.newStateFromAction(action)
+    def calculateValue(self, state: State, action, nextState: State):
 
         kingSet = nextState.getBoard().pieces(chess.KING, not state.getPlayer())
         king = kingSet.pop()
@@ -106,7 +100,7 @@ class AdvantageFeature(Feature):
         Feature.__init__(self)
         self.name = "advantage"
 
-    def calculateValue(self, state: State, action):
+    def calculateValue(self, state: State, action, nextState: State):
         nextState = state.newStateFromAction(action)
         return calculatePieceAdvantage(state, nextState) / 39
 
@@ -115,13 +109,11 @@ class NextAdvantageFeature(Feature):
         Feature.__init__(self)
         self.name = "nextadvantage"
 
-    def calculateValue(self, state: State, action):
-        nextState = state.newStateFromAction(action)
-
-        minAdvantage = 8 + 4 * 3 + 2 * 5 + 9
+    def calculateValue(self, state: State, action, nextState: State):
+        minAdvantage = 40
 
         for nextAction in nextState.getLegalActions():
             nextNextState = nextState.newStateFromAction(nextAction)
             minAdvantage = min(minAdvantage, calculatePieceAdvantage(state, nextNextState))
 
-        return minAdvantage / 39
+        return minAdvantage / 40
