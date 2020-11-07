@@ -39,7 +39,7 @@ def calculatePieceAdvantage(state: State, nextState: State):
         return blackAdvantage - whiteAdvantage
 
 def getPieceReward(piece_type):
-    if piece_type is chess.PAWN:
+    if piece_type is chess.PAWN or piece_type is chess.KING:
         return 1
     elif piece_type is chess.KNIGHT or piece_type is chess.BISHOP:
         return 3
@@ -49,6 +49,7 @@ def getPieceReward(piece_type):
         return 9
 
     return 0
+
 
 def getCastleReward(state: State, move):
     return state.getBoard().is_castling(move)*2
