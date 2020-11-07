@@ -39,7 +39,7 @@ def runEpisode(player: qlearningagent.QAgent.QAgent):
                 turnWhite = not turnWhite
 
                 if turnWhite:
-             /home/watcherwhale/Projects/AI/chess/chessUtil/Reward.py       if prevWhite[0] is not None:
+                    if prevWhite[0] is not None:
                         updateAgent(player, prevWhite, newState)
                     prevBlack = (state, move.uci())
                 else:

@@ -6,6 +6,7 @@ import train_self
 import train_stockfish
 import train_pgn
 import os.path
+import time
 
 parser = argparse.ArgumentParser(description='')
 
@@ -46,5 +47,7 @@ if __name__ == "__main__":
     runEpisode = getAgent(args.agent)
 
     for _ in range(args.i):
+        start = time.time()
         runEpisode(qAgent)
+        print("Last episode took {}s".format(time.time() - start))
 

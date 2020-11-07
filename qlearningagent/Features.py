@@ -3,14 +3,8 @@ from chessUtil.State import State
 
 class Features(list):
     def calculateFeatures(self, state: State, action):
-        vals = []
-
         nextState = state.newStateFromAction(action)
-
-        for f in self:
-            vals.append(f.calculateFeature(state, action, nextState))
-
-        return vals
+        return [f.calculateFeature(state, action, nextState) for f in self]
 
     def updateWeights(self, state: State, action, learningDifference):
 
@@ -30,7 +24,6 @@ class Features(list):
     def fromDict(self, dict):
         for f in self:
             f.setWeight(dict[f.getName()])
-
 
 class Feature:
     def __init__(self):
