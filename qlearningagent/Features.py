@@ -1,5 +1,5 @@
 import chess
-from .State import State
+from chessUtil.State import State
 
 class Features(list):
     def calculateFeatures(self, state: State, action):

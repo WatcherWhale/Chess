@@ -1,6 +1,6 @@
 from .Features import Features, Feature
-from .Reward import calculatePieceAdvantage
-from .State import State
+from chessUtil.State import State
+from chessUtil.Material import calculateMaterialAdvantage
 
 import chess
 
@@ -101,8 +101,7 @@ class AdvantageFeature(Feature):
         self.name = "advantage"
 
     def calculateValue(self, state: State, action, nextState: State):
-        nextState = state.newStateFromAction(action)
-        return calculatePieceAdvantage(state, nextState) / 39
+        return calculateMaterialAdvantage(nextState, state.getPlayer()) / 40
 
 class NextAdvantageFeature(Feature):
     def __init__(self):
@@ -114,6 +113,6 @@ class NextAdvantageFeature(Feature):
 
         for nextAction in nextState.getLegalActions():
             nextNextState = nextState.newStateFromAction(nextAction)
-            minAdvantage = min(minAdvantage, calculatePieceAdvantage(state, nextNextState))
+            minAdvantage = min(minAdvantage, calculateMaterialAdvantage(nextNextState, state.getPlayer()))
 
         return minAdvantage / 40

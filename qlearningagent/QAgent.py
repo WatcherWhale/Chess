@@ -3,9 +3,8 @@ import json
 
 import chess
 
-
+from chessUtil.State import State
 from .Features import Feature, Features
-from .State import State
 from .SimpleFeatures import SimpleFeatures
 
 def loadAgentFromFile(file, features: Features = SimpleFeatures()):

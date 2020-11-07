@@ -4,6 +4,7 @@ from qlearningagent.QAgent import QAgent, loadAgentFromFile
 import argparse
 import train_self
 import train_stockfish
+import train_pgn
 import os.path
 
 parser = argparse.ArgumentParser(description='')
@@ -19,9 +20,11 @@ parser.add_argument('-win', action='store_true', help='For those beings that thi
 
 def getAgent(agent):
     if agent == 'self':
-        return train_self.run_episode
+        return train_self.runEpisode
     elif agent == 'stockfish':
         return train_stockfish.runEpisode
+    elif agent == 'pgn':
+        return train_pgn.runEpisode
 
 if __name__ == "__main__":
     args = parser.parse_args()
