@@ -50,10 +50,31 @@ def knightMobility(position: chess.Square, board: chess.Board):
     return sum
 
 def rookHorizontalMobility(position: chess.Square, board: chess.Board):
-    return 0
+
+    r, c = getRowColumn(position)
+
+    squares = chess.SquareSet.ray(position, getSquareFromRowColumn(r, 0))
+    squares = squares.union(chess.SquareSet.ray(position, getSquareFromRowColumn(r, 7)))
+
+    sum = 0
+
+    for s in squares:
+        sum += board.is_legal(chess.Move(position, s))
+
+    return sum
 
 def rookVerticalMobility(position: chess.Square, board: chess.Board):
-    return 0
+    r, c = getRowColumn(position)
+
+    squares = chess.SquareSet.ray(position, getSquareFromRowColumn(0, c))
+    squares = squares.union(chess.SquareSet.ray(position, getSquareFromRowColumn(7, c)))
+
+    sum = 0
+
+    for s in squares:
+        sum += board.is_legal(chess.Move(position, s))
+
+    return sum
 
 def rookMobility(position: chess.Square, board: chess.Board):
     return rookHorizontalMobility(position, board) + rookVerticalMobility(position,board)
