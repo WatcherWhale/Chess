@@ -6,8 +6,9 @@ import chess
 from chessUtil.State import State
 from .Features import Feature, Features
 from .SimpleFeatures import SimpleFeatures
+from .BetterFeatures import BetterFeatures
 
-def loadAgentFromFile(file, features: Features = SimpleFeatures()):
+def loadAgentFromFile(file, features: Features = BetterFeatures()):
     f = open(file)
     saveData = json.load(f)
     f.close()
@@ -17,7 +18,7 @@ def loadAgentFromFile(file, features: Features = SimpleFeatures()):
     return QAgent(file, saveData['epsilon'], saveData['discount'], saveData['learningRate'], features)
 
 class QAgent:
-    def __init__(self, file, epsilon, discount, learningRate, features: Features = SimpleFeatures()):
+    def __init__(self, file, epsilon, discount, learningRate, features: Features = BetterFeatures()):
         self.file = file
         self.epsilon = epsilon
         self.discount = discount
