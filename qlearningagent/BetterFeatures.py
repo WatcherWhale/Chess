@@ -23,10 +23,10 @@ class BetterFeatures(Features):
         self.append(TotalAmountPiecesFeature())
         self.append(TotalPiecesBalanceFeature())
 
-        self.append(QueensMobilityFeature)
-        self.append(KingMobilityFeature)
-        self.append(KnightMobilityFeature)
-        self.append(BischopMobilityFeature)
+        self.append(QueenMobilityFeature())
+        self.append(KingMobilityFeature())
+        self.append(KnightMobilityFeature())
+        self.append(BischopMobilityFeature())
 
         self.append(CenterPossesionFeature())
         self.append(IsolationFeature())
@@ -130,10 +130,10 @@ class TotalPiecesBalanceFeature(Feature):
 
 
 
-class QueensMobilityFeature(Feature):
+class QueenMobilityFeature(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "queensMobility"
+        self.name = "queenMobility"
 
     def calculateValue(self, state: State, action, nextState: State):
         queens = nextState.getBoard().pieces(chess.QUEEN, state.getPlayer())
@@ -144,7 +144,7 @@ class QueensMobilityFeature(Feature):
         minMobility = 64
 
         for queen in queens:
-            minMobility = min(minMobility, queenMobility(queen))
+            minMobility = min(minMobility, queenMobility(queen, nextState.getBoard()))
 
         return minMobility
 
@@ -154,7 +154,7 @@ class KingMobilityFeature(Feature):
         self.name = "knightMobility"
 
     def calculateValue(self, state: State, action, nextState: State):
-        minMobility = kingMobility(king)
+        minMobility = kingMobility(nextState.getBoard().pieces(chess.KING, state.getPlayer()).pop(), nextState.getBoard())
 
         return minMobility/8
 
@@ -172,7 +172,7 @@ class KnightMobilityFeature(Feature):
         minMobility = 64
 
         for knight in knights:
-            minMobility = min(minMobility, knightMobility(knight))
+            minMobility = min(minMobility, knightMobility(knight, nextState.getBoard()))
             
         return minMobility/8
 
@@ -181,9 +181,8 @@ class BischopMobilityFeature(Feature):
         Feature.__init__(self)
         self.name = "bishopMobility"
 
-    def calculateValue(self, state: State, action):
+    def calculateValue(self, state: State, action, nextState):
 
-        nextState = state.newStateFromAction(action)
         bishops = nextState.getBoard().pieces(chess.BISHOP, state.getPlayer())
         
         if  len(bishops) == 0:
@@ -191,8 +190,8 @@ class BischopMobilityFeature(Feature):
 
         minMobility = 64
 
-        for bishop in bishop:
-            minMobility = min(minMobility, bishopMobility(bishop))
+        for bishop in bishops:
+            minMobility = min(minMobility, bishopMobility(bishop, nextState.getBoard()))
             
         return minMobility/13
 
@@ -201,14 +200,14 @@ class CenterPossesionFeature(Feature):
         Feature.__init__(self)
         self.name = "centerPossesion"
 
-    def calculateValue(self, state: State, action, nexState: State):
+    def calculateValue(self, state: State, action, nextState: State):
 
-        board : chess.Board = nextState.getBoard()
+        board = nextState.getBoard()
         sum = 0
 
-        for s in chess.BB_CENTER:
+        for s in [chess.D4, chess.E4, chess.D5, chess.E5]:
             piece = board.piece_at(s)
-            sum += piece.color == state.getPlayer() and piece.piece_type == chess.PAWN
+            sum += piece is not None and piece.color == state.getPlayer() and piece.piece_type == chess.PAWN
 
         return sum / 4.0
 
@@ -217,9 +216,9 @@ class IsolationFeature(Feature):
         Feature.__init__(self)
         self.name = "isolation"
 
-    def calculateValue(self, state: State, action, nexState: State):
+    def calculateValue(self, state: State, action, nextState: State):
 
-        board : chess.Board = nextState.getBoard()
+        board = nextState.getBoard()
         sum = 0
 
         pawns = board.pieces(chess.PAWN, state.getPlayer())
@@ -230,4 +229,4 @@ class IsolationFeature(Feature):
                     sum += 1
                     break
 
-        return (8 - sum)
+        return (8 - sum) / 8.0

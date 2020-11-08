@@ -9,18 +9,18 @@ def kingMobility(position: chess.Square, board: chess.Board):
 
     squares = []
 
-    squares[0] = (row, column-1)
-    squares[1] = (row+1, column-1)
-    squares[2] = (row+1, column)
-    squares[3] = (row+1, column+1)
-    squares[4] = (row, column+1)
-    squares[5] = (row-1, column+1)
-    squares[6] = (row-1, column)
-    squares[7] = (row-1, column-1)
+    squares.append((row, column-1))
+    squares.append((row+1, column-1))
+    squares.append((row+1, column))
+    squares.append((row+1, column+1))
+    squares.append((row, column+1))
+    squares.append((row-1, column+1))
+    squares.append((row-1, column))
+    squares.append((row-1, column-1))
     
     sum = 0
 
-    for s in S:
+    for s in squares:
         sum += s[0] > 0 and s[0] < 8 and s[1] > 0 and s[1] < 8 and board.is_legal(chess.Move(position, getSquareFromRowColumn(s[0], s[1])))
     
     return sum
@@ -28,10 +28,10 @@ def kingMobility(position: chess.Square, board: chess.Board):
 def bishopMobility(position: chess.Square, board: chess.Board):
     row, column = getRowColumn(position)
 
-    topLeft = getSquareFromRowColumn(row + min(8 - row, column), column - min(8 - row, column))
-    topRight = getSquareFromRowColumn(row + min(8 - row, 8 - column), column + min(8 - row, 8 - column))
+    topLeft = getSquareFromRowColumn(row + min(7 - row, column), column - min(7 - row, column))
+    topRight = getSquareFromRowColumn(row + min(7 - row, 7 - column), column + min(7 - row, 7 - column))
     bottomLeft = getSquareFromRowColumn(row - min(row, column), column - min(row, column))
-    bottomRight = getSquareFromRowColumn(row - min(row, 8 - column), column + min(row, 8 - column))
+    bottomRight = getSquareFromRowColumn(row - min(row, 7 - column), column + min(row, 7 - column))
 
     squares = chess.SquareSet.ray(topLeft, bottomRight)
     squares = squares.union(chess.SquareSet.ray(topRight, bottomLeft))
@@ -48,14 +48,14 @@ def knightMobility(position: chess.Square, board: chess.Board):
 
     squares = []
 
-    squares[0] = (row+1, column-2)
-    squares[1] = (row+2, column-1)
-    squares[2] = (row+2, column+1)
-    squares[3] = (row+1, column+2)
-    squares[4] = (row-1, column+2)
-    squares[5] = (row-2, column+1)
-    squares[6] = (row-2, column-1)
-    squares[7] = (row-1, column-2)
+    squares.append((row+1, column-2))
+    squares.append((row+2, column-1))
+    squares.append((row+2, column+1))
+    squares.append((row+1, column+2))
+    squares.append((row-1, column+2))
+    squares.append((row-2, column+1))
+    squares.append((row-2, column-1))
+    squares.append((row-1, column-2))
 
     sum = 0
 
