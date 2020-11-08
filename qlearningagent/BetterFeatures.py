@@ -5,6 +5,7 @@ from ..chessUtil.Mobility import queenMobility, knightMobility, kingMobility, bi
 
 import chess
 
+# Source: https://areeweb.polito.it/didattica/gcia/tesine/Tesine_2016/Mannella/Thesis_Mannen-Learning_to_Play_Chess_Using_Reinforcement_Learning.pdf
 
 class BetterFeatures(Features):
     def __init__(self):
@@ -21,25 +22,23 @@ class BetterFeatures(Features):
         self.append(AmountOpponentPawnsFeature())
         self.append(TotalAmountPiecesFeature())
         self.append(TotalPiecesBalanceFeature())
+        self.append(CenterPossesionFeature())
+        self.append(IsolationFeature())
 
 class AmountSelfQueensFeature(Feature):
     def __init__(self):
         Feature.__init__(self)
         self.name = "amountSelfQueens"
 
-    def calculateValue(self, state: State, action):
-        
-        nextState = state.newStateFromAction(action)
+    def calculateValue(self, state: State, action, nextState: State):
         return len(nextState.getBoard().pieces(chess.QUEEN, state.getPlayer())) / 2.0
-        
+
 class AmountOpponentQueensFeature(Feature):
     def __init__(self):
         Feature.__init__(self)
         self.name = "amountOpponentQueens"
 
-    def calculateValue(self, state: State, action):
-        
-        nextState = state.newStateFromAction(action)
+    def calculateValue(self, state: State, action, nextState: State):
         return len(nextState.getBoard().pieces(chess.QUEEN, not state.getPlayer())) / 2.0  
 
 class AmountSelfRooksFeature(Feature):
@@ -47,9 +46,7 @@ class AmountSelfRooksFeature(Feature):
             Feature.__init__(self)
             self.name = "amountSelfRooks"
 
-        def calculateValue(self, state: State, action):
-            
-            nextState = state.newStateFromAction(action)
+        def calculateValue(self, state: State, action, nextState: State):
             return len(nextState.getBoard().pieces(chess.ROOK, state.getPlayer())) / 2.0
 
 class AmountOpponentRooksFeature(Feature):
@@ -57,19 +54,15 @@ class AmountOpponentRooksFeature(Feature):
         Feature.__init__(self)
         self.name = "amountOpponentRooks"
 
-    def calculateValue(self, state: State, action):
-        
-        nextState = state.newStateFromAction(action)
-        return len(nextState.getBoard().pieces(chess.ROOK, not state.getPlayer())) / 2.0              
+    def calculateValue(self, state: State, action, nextState: State):
+        return len(nextState.getBoard().pieces(chess.ROOK, not state.getPlayer())) / 2.0
 
 class AmountSelfBishopsFeature(Feature):
     def __init__(self):
             Feature.__init__(self)
             self.name = "amountSelfBishops"
 
-        def calculateValue(self, state: State, action):
-            
-            nextState = state.newStateFromAction(action)
+        def calculateValue(self, state: State, action, nextState: State):
             return len(nextState.getBoard().pieces(chess.BISHOP, state.getPlayer())) / 2.0
 
 class AmountOpponentBishopsFeature(Feature):
@@ -77,9 +70,7 @@ class AmountOpponentBishopsFeature(Feature):
             Feature.__init__(self)
             self.name = "amountOpponentBishops"
 
-        def calculateValue(self, state: State, action):
-            
-            nextState = state.newStateFromAction(action)
+        def calculateValue(self, state: State, action, nextState: State):
             return len(nextState.getBoard().pieces(chess.BISHOP, not state.getPlayer())) / 2.0
 
 class AmountSelfKnightsFeature(Feature):
@@ -87,9 +78,7 @@ class AmountSelfKnightsFeature(Feature):
             Feature.__init__(self)
             self.name = "amountSelfKnights"
 
-        def calculateValue(self, state: State, action):
-            
-            nextState = state.newStateFromAction(action)
+        def calculateValue(self, state: State, action, nextState: State):
             return len(nextState.getBoard().pieces(chess.KNIGHT, state.getPlayer())) / 2.0
 
 class AmountOpponentKnightsFeature(Feature):
@@ -97,9 +86,7 @@ class AmountOpponentKnightsFeature(Feature):
             Feature.__init__(self)
             self.name = "amountOpponentKnights"
 
-        def calculateValue(self, state: State, action):
-            
-            nextState = state.newStateFromAction(action)
+        def calculateValue(self, state: State, action, nextState: State):
             return len(nextState.getBoard().pieces(chess.KNIGHT, not state.getPlayer())) / 2.0
 
 class AmountSelfPawnsFeature(Feature):
@@ -107,9 +94,7 @@ class AmountSelfPawnsFeature(Feature):
             Feature.__init__(self)
             self.name = "amountSelfPawns"
 
-        def calculateValue(self, state: State, action):
-            
-            nextState = state.newStateFromAction(action)
+        def calculateValue(self, state: State, action, nextState: State):
             return len(nextState.getBoard().pieces(chess.PAWN, state.getPlayer())) / 8.0
 
 class AmountOpponentPawnsFeature(Feature):
@@ -117,9 +102,7 @@ class AmountOpponentPawnsFeature(Feature):
             Feature.__init__(self)
             self.name = "amountOpponentPawns"
 
-        def calculateValue(self, state: State, action):
-            
-            nextState = state.newStateFromAction(action)
+        def calculateValue(self, state: State, action, nextState):
             return len(nextState.getBoard().pieces(chess.PAWNS, not state.getPlayer())) / 8.0
 
 class TotalAmountPiecesFeature(Feature):
@@ -127,15 +110,13 @@ class TotalAmountPiecesFeature(Feature):
         Feature.__init__(self)
         self.name = "totalAmount"
 
-    def calculateValue(self, state: State, action):
-        
-        nextState = state.newStateFromAction(action)
+    def calculateValue(self, state: State, action, nextState):
         sum=0
 
         for pieceType in range(1,7):
             sum += len(nextState.getBoard().pieces(piece_type, True)) * getPieceReward(piece_type)
             sum += len(nextState.getBoard().pieces(piece_type, False)) * getPieceReward(piece_type)
-        
+
         return sum/(80.0)
 
 class TotalPiecesBalanceFeature(Feature):
@@ -143,9 +124,7 @@ class TotalPiecesBalanceFeature(Feature):
         Feature.__init__(self)
         self.name = "totalPiecesBalance"
 
-    def calculateValue(self, state: State, action):
-        
-        nextState = state.newStateFromAction(action)
+    def calculateValue(self, state: State, action, nextState: State):
         return calculatePieceAdvantage(state,nextState)
 
 class QueensMobilityFeature(Feature):
@@ -153,19 +132,17 @@ class QueensMobilityFeature(Feature):
         Feature.__init__(self)
         self.name = "queensMobility"
 
-    def calculateValue(self, state: State, action):
-
-        nextState = state.newStateFromAction(action)
+    def calculateValue(self, state: State, action, nextState: State):
         queens = nextState.getBoard().pieces(chess.QUEEN, state.getPlayer())
-        
-        if  len(queens) == 0
+
+        if len(queens) == 0
             return 0
 
         minMobility = 64
 
         for queen in queens:
             minMobility = min(minMobility, queenMobility(queen))
-            
+
         return minMobility
 
 class KingMobilityFeature(Feature):
@@ -173,13 +150,9 @@ class KingMobilityFeature(Feature):
         Feature.__init__(self)
         self.name = "knightMobility"
 
-    def calculateValue(self, state: State, action):
-
-        nextState = state.newStateFromAction(action)
-
-        
+    def calculateValue(self, state: State, action, nextState: State):
         minMobility = kingMobility(king)
-            
+
         return minMobility/8
 
 class KnightMobilityFeature(Feature):
@@ -187,11 +160,9 @@ class KnightMobilityFeature(Feature):
         Feature.__init__(self)
         self.name = "knightMobility"
 
-    def calculateValue(self, state: State, action):
-
-        nextState = state.newStateFromAction(action)
+    def calculateValue(self, state: State, action, nextState: State):
         knights = nextState.getBoard().pieces(chess.KNIGHT, state.getPlayer())
-        
+
         if  len(knights) == 0
             return 0
 
@@ -199,11 +170,10 @@ class KnightMobilityFeature(Feature):
 
         for knight in knights:
             minMobility = min(minMobility, knightMobility(knight))
-            
+
         return minMobility/8
 
-
-class CenterPosseionFeature(Feature):
+class CenterPossesionFeature(Feature):
     def __init__(self):
         Feature.__init__(self)
         self.name = "centerPossesion"
