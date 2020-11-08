@@ -1,45 +1,54 @@
 import chess
-from .State import State
+import numpy as np
+
+from chessUtil.State import State
 
 class Features(list):
-    def calculateFeatures(self, state: chess.Board, action):
-        vals = []
 
-        for f in self:
-            vals.append(f.calculateFeature(state, action))
+    def __init__(self):
+        list.__init__(self)
+        self.weights = np.array([])
 
-        return vals
+    def append(self, feature):
+        super(Features, self).append(feature)
+        self.weights = np.append(self.weights, 0)
+        feature.setWeight(0)
+
+    def calculateFeatures(self, state: State, action):
+        nextState = state.newStateFromAction(action)
+
+        fs = np.array([f.calculateValue(state, action, nextState) for f in self], copy=False)
+
+        return np.sum(np.multiply(self.weights, fs))
 
     def updateWeights(self, state: State, action, learningDifference):
-        for f in self:
-            f.updateWeight(state, action, learningDifference)
+
+        nextState = state.newStateFromAction(action)
+
+        fs = np.array([f.calculateValue(state, action, nextState) for f in self], copy=False)
+
+        self.weights = self.weights + learningDifference * fs
 
     def toDict(self):
         dict = {}
 
         for f in self:
-            dict[f.getName()] = f.getWeight()
+            dict[f.getName()] = self.weights[self.index(f)]
 
         return dict
 
     def fromDict(self, dict):
         for f in self:
             f.setWeight(dict[f.getName()])
-
+            self.weights[self.index(f)] = dict[f.getName()]
 
 class Feature:
     def __init__(self):
         self.name = "feature"
         self.weight = 0
 
-    def calculateFeature(self, state: State, action):
-        return self.weight * self.calculateValue(state, action)
-
-    def calculateValue(self, state: chess.Board, action):
+    def calculateValue(self, state: chess.Board, action, nextState: State):
         pass
-
-    def updateWeight(self, state: State, action, learningDifference):
-        self.weight = self.weight + learningDifference * self.calculateValue(state, action)
 
     def getWeight(self):
         return self.weight

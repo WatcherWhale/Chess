@@ -201,3 +201,40 @@ class KnightMobilityFeature(Feature):
             minMobility = min(minMobility, knightMobility(knight))
             
         return minMobility/8
+
+
+class CenterPosseionFeature(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "centerPossesion"
+
+    def calculateValue(self, state: State, action, nexState: State):
+
+        board : chess.Board = nextState.getBoard()
+        sum = 0
+
+        for s in chess.BB_CENTER:
+            piece = board.piece_at(s)
+            sum += piece.color == state.getPlayer() and piece.piece_type == chess.PAWN
+
+        return sum / 4.0
+
+class IsolationFeature(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "isolation"
+
+    def calculateValue(self, state: State, action, nexState: State):
+
+        board : chess.Board = nextState.getBoard()
+        sum = 0
+
+        pawns = board.pieces(chess.PAWN, state.getPlayer())
+
+        for p1 in pawns:
+            for p2 in pawns:
+                if chess.square_distance(p1, p2) == 1:
+                    sum += 1
+                    break
+
+        return (8 - sum)

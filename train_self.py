@@ -4,15 +4,15 @@ import os.path
 
 #from searchagent.search_agent import SearchAgent
 from qlearningagent.QAgent import QAgent, loadAgentFromFile
-from qlearningagent.State import State
-from qlearningagent.Reward import calculateReward
+from chessUtil.State import State
+from chessUtil.Reward import calculateReward
 
 QUIET = False;
 
 prevWhiteState = (None, None)
 prevBlackState = (None, None)
 
-def run_episode(player: QAgent):
+def runEpisode(player: QAgent):
 
     global prevWhiteState
     global prevBlackState
@@ -84,7 +84,7 @@ def main():
         player = QAgent('chess.sav', 0.5, 0.7, 0.6)
 
     for _ in range(20):
-        run_episode(player)
+        runEpisode(player)
 
 
 if __name__ == "__main__":
