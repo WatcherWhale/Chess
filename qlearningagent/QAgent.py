@@ -3,9 +3,8 @@ import json
 
 import chess
 
-
+from chessUtil.State import State
 from .Features import Feature, Features
-from .State import State
 from .SimpleFeatures import SimpleFeatures
 
 def loadAgentFromFile(file, features: Features = SimpleFeatures()):
@@ -60,7 +59,6 @@ class QAgent:
         else:
             choice = self.computeAction(state)
 
-
         if choice == None:
             print(state.getLegalActions())
             exit(1)
@@ -69,7 +67,7 @@ class QAgent:
 
 
     def getQValue(self, state: State, action):
-        return sum(self.features.calculateFeatures(state, action))
+        return self.features.calculateFeatures(state, action)
 
     def update(self, state: State, action, reward, nextState: State):
         diff = (reward + self.discount * self.maxQValue(nextState)) - self.getQValue(state, action)

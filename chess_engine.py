@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 import chess
-from searchagent.search_agent import SearchAgent
 from qlearningagent.QAgent import QAgent, loadAgentFromFile
-from qlearningagent.State import State
+from chessUtil.State import State
 
 # https://ucichessengine.wordpress.com/2011/03/16/description-of-uci-protocol/
 
@@ -84,7 +83,6 @@ def main():
 
             else:
                 print("error command: {}".format(input_val))
-
 
 if __name__ == "__main__":
     main()
