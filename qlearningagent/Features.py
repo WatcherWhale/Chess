@@ -1,43 +1,57 @@
 import chess
+import numpy as np
+
 from chessUtil.State import State
 
 class Features(list):
+
+    def __init__(self):
+        list.__init__(self)
+        self.weights = np.array([])
+
+    def append(self, feature):
+        super(Features, self).append(feature)
+        self.weights = np.append(self.weights, 0)
+        feature.setWeight(0)
+
     def calculateFeatures(self, state: State, action):
         nextState = state.newStateFromAction(action)
-        return [f.calculateFeature(state, action, nextState) for f in self]
+
+        fs = np.array([f.calculateValue(state, action, nextState) for f in self], copy=False)
+
+        return np.sum(np.multiply(self.weights, fs))
 
     def updateWeights(self, state: State, action, learningDifference):
 
         nextState = state.newStateFromAction(action)
 
-        for f in self:
-            f.updateWeight(state, action, nextState, learningDifference)
+        fs = np.array([f.calculateValue(state, action, nextState) for f in self], copy=False)
+
+        update = self.weights + learningDifference * fs
+
+        for i in range(len(self)):
+            self[i].setWeight(update[i])
 
     def toDict(self):
         dict = {}
 
         for f in self:
-            dict[f.getName()] = f.getWeight()
+            dict[f.getName()] = self.weights[self.index(f)]
 
         return dict
 
     def fromDict(self, dict):
         for f in self:
             f.setWeight(dict[f.getName()])
+            self.weights[self.index(f)] = dict[f.getName()]
 
 class Feature:
     def __init__(self):
         self.name = "feature"
         self.weight = 0
 
-    def calculateFeature(self, state: State, action, nextState: State):
-        return self.weight * self.calculateValue(state, action, nextState)
-
     def calculateValue(self, state: chess.Board, action, nextState: State):
         pass
-
-    def updateWeight(self, state: State, action, nextState: State, learningDifference):
-        self.weight = self.weight + learningDifference * self.calculateValue(state, action, nextState)
 
     def getWeight(self):
         return self.weight

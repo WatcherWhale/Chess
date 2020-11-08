@@ -84,6 +84,5 @@ def main():
             else:
                 print("error command: {}".format(input_val))
 
-
 if __name__ == "__main__":
     main()

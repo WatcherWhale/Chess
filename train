@@ -50,4 +50,3 @@ if __name__ == "__main__":
         start = time.time()
         runEpisode(qAgent)
         print("Last episode took {}s".format(time.time() - start))
-

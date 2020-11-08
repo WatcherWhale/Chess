@@ -4,7 +4,7 @@ import chessUtil.Reward
 from chessUtil.State import State
 import qlearningagent.QAgent
 
-QUIET = False
+QUIET = True
 
 def updateAgent(player, prevState, currentState):
     reward = chessUtil.Reward.calculateReward(prevState[0], prevState[1], currentState)

@@ -10,10 +10,10 @@ class SimpleFeatures(Features):
         self.append(SelfAttackersFeature())
         self.append(OpponentAttackersFeature())
         self.append(CheckFeature())
-        self.append(NextCheckFeature())
+        #self.append(NextCheckFeature())
         self.append(DistanceToEnemyKing())
-        self.append(AdvantageFeature())
-        self.append(NextAdvantageFeature())
+        #self.append(AdvantageFeature())
+        #self.append(NextAdvantageFeature())
 
 
 class SelfAttackersFeature(Feature):
