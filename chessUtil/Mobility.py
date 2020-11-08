@@ -5,7 +5,25 @@ def queenMobility(position: chess.Square, board: chess.Board):
     return bishopMobility(position,board) + rookHorizontalMobility(position, board) + rookVerticalMobility(position, board)
 
 def kingMobility(position: chess.Square, board: chess.Board):
-    return 0
+    row, column = getRowColumn(position)
+
+    squares = []
+
+    squares[0] = (row, column-1)
+    squares[1] = (row+1, column-1)
+    squares[2] = (row+1, column)
+    squares[3] = (row+1, column+1)
+    squares[4] = (row, column+1)
+    squares[5] = (row-1, column+1)
+    squares[6] = (row-1, column)
+    squares[7] = (row-1, column-1)
+    
+    sum = 0
+
+    for s in S:
+        sum += s[0] > 0 and s[0] < 8 and s[1] > 0 and s[1] < 8 and board.is_legal(chess.Move(position, getSquareFromRowColumn(s[0], s[1])))
+    
+    return sum
 
 def bishopMobility(position: chess.Square, board: chess.Board):
     return 0
@@ -27,7 +45,7 @@ def knightMobility(position: chess.Square, board: chess.Board):
     sum = 0
 
     for s in squares:
-        sum += s[0] > 0 and s[0] < 8 and s[1] > 0 and s[1] < 8 and board.is_legal(chess.Move(position,getSquareFromRowColumn(s[0],s[1])))
+        sum += s[0] > 0 and s[0] < 8 and s[1] > 0 and s[1] < 8 and board.is_legal(chess.Move(position, getSquareFromRowColumn(s[0], s[1])))
 
     return sum
 

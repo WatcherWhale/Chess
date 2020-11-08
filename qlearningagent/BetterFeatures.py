@@ -168,6 +168,20 @@ class QueensMobilityFeature(Feature):
             
         return minMobility
 
+class KingMobilityFeature(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "knightMobility"
+
+    def calculateValue(self, state: State, action):
+
+        nextState = state.newStateFromAction(action)
+
+        
+        minMobility = kingMobility(king)
+            
+        return minMobility/8
+
 class KnightMobilityFeature(Feature):
     def __init__(self):
         Feature.__init__(self)
