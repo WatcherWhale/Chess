@@ -1,4 +1,5 @@
 import chess
+from .PositionParser import getRowColumn, getSquareFromRowColumn
 
 
 
@@ -15,7 +16,24 @@ def bishopMobility(position: chess.Square, board: chess.Board):
 
     
 def knightMobility(position: chess.Square, board: chess.Board):
-    return 0
+    sum=0
+    S[]
+    row,column = getRowColumn(position)
+    S[0] = (row+1, column-2)
+    S[1] = (row+2, column-1)
+    S[2] = (row+2, column+1)
+    S[3] = (row+1, column+2)
+    S[4] = (row-1, column+2)
+    S[5] = (row-2, column+1)
+    S[6] = (row-2, column-1)
+    S[7] = (row-1, column-2)
+
+    for s in S:
+        if s[0] > 0 and s[0] < 8 and s[1] > 0 and s[1] < 8:
+            
+            if board.is_legal(chess.Move(position,getSquareFromRowColumn(s[0],s[1]))):
+                sum += 1          
+    return sum
 
 
 def rookHorizontalMobility(position: chess.Square, board: chess.Board):
