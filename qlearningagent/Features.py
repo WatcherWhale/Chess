@@ -27,10 +27,7 @@ class Features(list):
 
         fs = np.array([f.calculateValue(state, action, nextState) for f in self], copy=False)
 
-        update = self.weights + learningDifference * fs
-
-        for i in range(len(self)):
-            self[i].setWeight(update[i])
+        self.weights = self.weights + learningDifference * fs
 
     def toDict(self):
         dict = {}
