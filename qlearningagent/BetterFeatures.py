@@ -176,7 +176,6 @@ class KingMobilityFeature(Feature):
     def calculateValue(self, state: State, action):
 
         nextState = state.newStateFromAction(action)
-
         
         minMobility = kingMobility(king)
             
@@ -201,3 +200,23 @@ class KnightMobilityFeature(Feature):
             minMobility = min(minMobility, knightMobility(knight))
             
         return minMobility/8
+
+class BischopMobilityFeature(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "bishopMobility"
+
+    def calculateValue(self, state: State, action):
+
+        nextState = state.newStateFromAction(action)
+        bishops = nextState.getBoard().pieces(chess.BISHOP, state.getPlayer())
+        
+        if  len(bishops) == 0
+            return 0
+
+        minMobility = 64
+
+        for bishop in bishop:
+            minMobility = min(minMobility, bishopMobility(bishop))
+            
+        return minMobility/13

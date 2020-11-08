@@ -26,7 +26,22 @@ def kingMobility(position: chess.Square, board: chess.Board):
     return sum
 
 def bishopMobility(position: chess.Square, board: chess.Board):
-    return 0
+    row, column = getRowColumn(position)
+
+    topLeft = getSquareFromRowColumn(row + min(8 - row, column), column - min(8 - row, column))
+    topRight = getSquareFromRowColumn(row + min(8 - row, 8 - column), column + min(8 - row, 8 - column))
+    bottomLeft = getSquareFromRowColumn(row - min(row, column), column - min(row, column))
+    bottomRight = getSquareFromRowColumn(row - min(row, 8 - column), column + min(row, 8 - column))
+
+    squares = chess.SquareSet.ray(topLeft, bottomRight)
+    squares = squares.union(chess.SquareSet.ray(topRight, bottomLeft))
+
+    sum = 0
+
+    for s in squares:
+        sum += board.is_legal(chess.Move(position,s))
+    
+    return sum
 
 def knightMobility(position: chess.Square, board: chess.Board):
     row, column = getRowColumn(position)
