@@ -1,4 +1,4 @@
-from chessUtil.State import State
+from .State import State
 
 class Agent:
     def __init__(self, goTime):
@@ -14,4 +14,4 @@ class Agent:
         raise NotImplementedError()
 
     def save(self):
-        raise NotImplementedError()
+        pass

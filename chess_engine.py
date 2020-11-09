@@ -5,7 +5,6 @@ from chessUtil.State import State
 
 # https://ucichessengine.wordpress.com/2011/03/16/description-of-uci-protocol/
 
-
 def uci(name, author):
     print("""id name {}
         id author {}
