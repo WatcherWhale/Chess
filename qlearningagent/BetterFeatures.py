@@ -38,6 +38,7 @@ class BetterFeatures(Features):
         self.append(KingOpponentAttacked())
 
         self.append(HorizontalConnectedRooks())
+        self.append(VerticalConnectedRooks())
         
 
 class AmountSelfQueensFeature(Feature):
@@ -295,6 +296,44 @@ class HorizontalConnectedRooks(Feature):
                     continue
 
                 if getRowColumn(r1)[0] == getRowColumn(r2)[0]:
+                    pairs.append((r1,r2))
+
+        for r1, r2 in pairs:
+            squares = chess.SquareSet().ray(r1, r2)
+            notConnected = False
+
+            for s in squares:
+                if nextState.getBoard().piece_at(s) is not None:
+                    notConnected = True
+                    break
+            if notConnected == False:
+                return True
+
+        return False
+
+class VerticalConnectedRooks(Feature):
+    def __init__(self):
+            Feature.__init__(self)
+            self.name = "verticalConnectedRooks"
+
+    def calculateValue(self, state: State, action, nextState: State):
+
+        rooks = nextState.getBoard().pieces(chess.ROOK, state.getPlayer())
+
+        if len(rooks) < 2:
+            return False
+        
+        pairs = []
+
+        for r1 in rooks:
+            for r2 in rooks:
+                if r1 == r2:
+                    continue
+                
+                if (r2, r1) in pairs:
+                    continue
+
+                if getRowColumn(r1)[1] == getRowColumn(r2)[1]:
                     pairs.append((r1,r2))
 
         for r1, r2 in pairs:
