@@ -2,7 +2,7 @@ from .Features import Features, Feature
 from chessUtil.Material import calculateMaterialAdvantage, calculateMaterialValue
 from chessUtil.State import State
 from chessUtil.Mobility import queenMobility, knightMobility, kingMobility, bishopMobility, rookMobility
-from chessUtil.PositionParser import getRowColumn
+from chessUtil.PositionParser import getRowColumn, getSquareFromRowColumn
 
 import chess
 
@@ -39,6 +39,8 @@ class BetterFeatures(Features):
 
         self.append(HorizontalConnectedRooks())
         self.append(VerticalConnectedRooks())
+
+        self.append(PawnFork())
         
 
 class AmountSelfQueensFeature(Feature):
@@ -348,3 +350,32 @@ class VerticalConnectedRooks(Feature):
                 return True
 
         return False
+
+class PawnFork(Feature):
+    def __init__(self):
+            Feature.__init__(self)
+            self.name = "pawnFork"
+
+    def calculateValue(self, state: State, action, nextState: State):
+
+        board = nextState.getBoard()
+        pawns = board.pieces(chess.PAWN, state.getPlayer())
+        sum = 0
+
+        if state.getPlayer():
+            for p in pawns:
+                r,c = getRowColumn(p)
+                if r < 7 and c > 0 and c < 7:
+                    if board.piece_at(getSquareFromRowColumn(r+1,c-1)) is not None and board.piece_at(getSquareFromRowColumn(r+1,c+1)) is not None:
+                        sum += board.piece_at(getSquareFromRowColumn(r+1,c-1)).piece_type > 1 and board.color_at(getSquareFromRowColumn(r+1,c-1)) \
+                        and board.piece_at(getSquareFromRowColumn(r+1,c+1)).piece_type > 1 and board.color_at(getSquareFromRowColumn(r+1,c+1))
+
+        else:
+            for p in pawns:
+                r,c = getRowColumn(p)
+                if r > 1  and c > 0 and c < 7:
+                    if board.piece_at(getSquareFromRowColumn(r-1,c-1)) is not None and board.piece_at(getSquareFromRowColumn(r-1,c+1)) is not None:
+                        sum += board.piece_at(getSquareFromRowColumn(r-1,c-1)).piece_type > 1 and not board.color_at(getSquareFromRowColumn(r-1,c-1)) \
+                        and board.piece_at(getSquareFromRowColumn(r-1,c+1)).piece_type > 1 and not board.color_at(getSquareFromRowColumn(r-1,c+1))
+                
+        return sum / 8.0
