@@ -2,6 +2,7 @@ from .Features import Features, Feature
 from chessUtil.Material import calculateMaterialAdvantage, calculateMaterialValue
 from chessUtil.State import State
 from chessUtil.Mobility import queenMobility, knightMobility, kingMobility, bishopMobility, rookMobility
+from chessUtil.PositionParser import getRowColumn
 
 import chess
 
@@ -35,6 +36,8 @@ class BetterFeatures(Features):
         
         self.append(KingSelfAttacked())
         self.append(KingOpponentAttacked())
+
+        self.append(HorizontalConnectedRooks())
         
 
 class AmountSelfQueensFeature(Feature):
@@ -260,7 +263,7 @@ class LightFirstRank(Feature):
 class KingSelfAttacked(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "kingSelfAttacked"  
+        self.name = "kingSelfAttacked"
 
     def calculateValue(self, state: State, action, nextState: State):
         return state.getBoard().is_check()
@@ -269,7 +272,45 @@ class KingSelfAttacked(Feature):
 class KingOpponentAttacked(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "kingOpponentAttacked"  
+        self.name = "kingOpponentAttacked"
 
     def calculateValue(self, state: State, action, nextState: State):
         return nextState.getBoard().is_check()
+
+class HorizontalConnectedRooks(Feature):
+    def __init__(self):
+            Feature.__init__(self)
+            self.name = "horizontalConnectedRooks"
+
+    def calculateValue(self, state: State, action, nextState: State):
+
+        rooks = nextState.getBoard().pieces(chess.ROOK, state.getPlayer())
+
+        if len(rooks) < 2:
+            return False
+        
+        pairs = []
+
+        for r1 in rooks:
+            for r2 in rooks:
+                if r1 == r2:
+                    continue
+                
+                if (r2, r1) in pairs:
+                    continue
+
+                if getRowColumn(r1)[0] == getRowColumn(r2)[0]:
+                    pairs.append((r1,r2))
+
+        for r1, r2 in pairs:
+            squares = chess.SquareSet().ray(r1, r2)
+            notConnected = False
+
+            for s in squares:
+                if nextState.getBoard().piece_at(s) is not None:
+                    notConnected = True
+                    break
+            if notConnected == False:
+                return True
+
+        return False
