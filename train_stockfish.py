@@ -2,8 +2,8 @@
 import chess
 import chess.engine
 from qlearningagent.QAgent import QAgent, loadAgentFromFile
-from qlearningagent.State import State
-from qlearningagent.Reward import calculateReward
+from chessUtil.State import State
+from chessUtil.Reward import calculateReward
 import os.path
 
 STOCKFISH_BIN = '/usr/bin/stockfish'

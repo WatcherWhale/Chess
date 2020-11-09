@@ -4,7 +4,9 @@ from qlearningagent.QAgent import QAgent, loadAgentFromFile
 import argparse
 import train_self
 import train_stockfish
+import train_pgn
 import os.path
+import time
 
 parser = argparse.ArgumentParser(description='')
 
@@ -20,9 +22,11 @@ parser.add_argument('-q', action='store_true', help='Quiet logging')
 
 def getAgent(agent):
     if agent == 'self':
-        return train_self.run_episode
+        return train_self.runEpisode
     elif agent == 'stockfish':
         return train_stockfish.runEpisode
+    elif agent == 'pgn':
+        return train_pgn.runEpisode
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -48,5 +52,6 @@ if __name__ == "__main__":
     runEpisode = getAgent(args.agent)
 
     for _ in range(args.i):
+        start = time.time()
         runEpisode(qAgent)
-
+        print("Last episode took {}s".format(time.time() - start))
