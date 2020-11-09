@@ -33,6 +33,9 @@ class BetterFeatures(Features):
 
         self.append(LightFirstRank())
         
+        self.append(KingSelfAttacked())
+        self.append(KingOpponentAttacked())
+        
 
 class AmountSelfQueensFeature(Feature):
     def __init__(self):
@@ -253,3 +256,20 @@ class LightFirstRank(Feature):
             sum += ((board.piece_type_at(chess.C8) == 3) and (not board.color_at(chess.C8))) + ((board.piece_type_at(chess.F8) == 3) and (not board.color_at(chess.F8)))
 
         return sum / 4.0
+
+class KingSelfAttacked(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "kingSelfAttacked"  
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return state.getBoard().is_check()
+
+
+class KingOpponentAttacked(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "kingOpponentAttacked"  
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return nextState.getBoard().is_check()
