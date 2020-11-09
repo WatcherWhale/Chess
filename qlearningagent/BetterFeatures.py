@@ -30,6 +30,8 @@ class BetterFeatures(Features):
 
         self.append(CenterPossesionFeature())
         self.append(IsolationFeature())
+
+        self.append(LightFirstRank())
         
 
 class AmountSelfQueensFeature(Feature):
@@ -230,3 +232,24 @@ class IsolationFeature(Feature):
                     break
 
         return (8 - sum) / 8.0
+
+class LightFirstRank(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "lightFirstRank"  
+
+    def calculateValue(self, state: State, action, nextState: State):
+        sum = 0
+        
+        board = nextState.getBoard()
+
+        #if player is white check squares B1, C1, F1 and G1
+        #if player is black check squares B8, C8, F8 and G8
+        if state.getPlayer():
+            sum += ((board.piece_type_at(chess.B1) == 2) and board.color_at(chess.B1)) + ((board.piece_type_at(chess.G1) == 2) and board.color_at(chess.G1))
+            sum += ((board.piece_type_at(chess.C1) == 3) and board.color_at(chess.C1)) + ((board.piece_type_at(chess.F1) == 3) and board.color_at(chess.F1))
+        else:
+            sum += ((board.piece_type_at(chess.B8) == 2) and (not board.color_at(chess.B1))) + ((board.piece_type_at(chess.G8) == 2) and (not board.color_at(chess.G8)))
+            sum += ((board.piece_type_at(chess.C8) == 3) and (not board.color_at(chess.C8))) + ((board.piece_type_at(chess.F8) == 3) and (not board.color_at(chess.F8)))
+
+        return sum / 4.0
