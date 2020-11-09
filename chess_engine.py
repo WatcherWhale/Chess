@@ -50,8 +50,12 @@ def main():
                     board.push_uci(move)
 
             elif input_val[0] == "go":
-                #btime = input_val[2]
-                #wtime = input_val[4]
+
+                goTime = 5000
+
+                if input_val[1] == "movetime":
+                    goTime = float(input_val[2])
+
                 action = player.computeAction(State(board, board.turn))
                 print("bestmove {}".format(action))
 

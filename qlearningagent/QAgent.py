@@ -18,12 +18,13 @@ def loadAgentFromFile(file, features: Features = SimpleFeatures()):
     return QAgent(file, saveData['epsilon'], saveData['discount'], saveData['learningRate'], features)
 
 class QAgent:
-    def __init__(self, file, epsilon, discount, learningRate, features: Features = SimpleFeatures()):
+    def __init__(self, file, epsilon, discount, learningRate, features: Features = SimpleFeatures(), goTime = 5000):
         self.file = file
         self.epsilon = epsilon
         self.discount = discount
         self.learningRate = learningRate
         self.features = features
+        self.goTime = goTime
 
     def setEpsilon(self, epsilon):
         self.epsilon = epsilon
@@ -33,6 +34,9 @@ class QAgent:
 
     def setLearningRate(self, learningRate):
         self.learningRate = learningRate
+
+    def setGoTime(self, goTime):
+        self.goTime = goTime
 
     def computeAction(self, state: State ):
         actions = state.getLegalActions()
