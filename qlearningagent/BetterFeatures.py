@@ -54,7 +54,7 @@ class AmountOpponentQueensFeature(Feature):
         self.name = "amountOpponentQueens"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return len(nextState.getBoard().pieces(chess.QUEEN, not state.getPlayer())) / 2.0  
+        return len(nextState.getBoard().pieces(chess.QUEEN, not state.getPlayer())) / 2.0
 
 class AmountSelfRooksFeature(Feature):
     def __init__(self):
@@ -136,8 +136,6 @@ class TotalPiecesBalanceFeature(Feature):
     def calculateValue(self, state: State, action, nextState: State):
         return calculateMaterialAdvantage(nextState, state.getPlayer())
 
-
-
 class QueenMobilityFeature(Feature):
     def __init__(self):
         Feature.__init__(self)
@@ -181,7 +179,7 @@ class KnightMobilityFeature(Feature):
 
         for knight in knights:
             minMobility = min(minMobility, knightMobility(knight, nextState.getBoard()))
-            
+
         return minMobility/8
 
 class BischopMobilityFeature(Feature):
@@ -190,9 +188,8 @@ class BischopMobilityFeature(Feature):
         self.name = "bishopMobility"
 
     def calculateValue(self, state: State, action, nextState):
-
         bishops = nextState.getBoard().pieces(chess.BISHOP, state.getPlayer())
-        
+
         if  len(bishops) == 0:
             return 0
 
@@ -200,7 +197,7 @@ class BischopMobilityFeature(Feature):
 
         for bishop in bishops:
             minMobility = min(minMobility, bishopMobility(bishop, nextState.getBoard()))
-            
+
         return minMobility/13
 
 class CenterPossesionFeature(Feature):
@@ -209,7 +206,6 @@ class CenterPossesionFeature(Feature):
         self.name = "centerPossesion"
 
     def calculateValue(self, state: State, action, nextState: State):
-
         board = nextState.getBoard()
         sum = 0
 
@@ -225,7 +221,6 @@ class IsolationFeature(Feature):
         self.name = "isolation"
 
     def calculateValue(self, state: State, action, nextState: State):
-
         board = nextState.getBoard()
         sum = 0
 

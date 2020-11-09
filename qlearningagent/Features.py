@@ -17,15 +17,16 @@ class Features(list):
     def calculateFeatures(self, state: State, action):
         nextState = state.newStateFromAction(action)
 
-        fs = np.array([f.calculateValue(state, action, nextState) for f in self], copy=False)
+        fs = np.array([f.calculateValue(state, action, nextState) for f in self])
+        fs = 1/(1 + np.exp(-fs))
 
         return np.sum(np.multiply(self.weights, fs))
 
     def updateWeights(self, state: State, action, learningDifference):
-
         nextState = state.newStateFromAction(action)
 
-        fs = np.array([f.calculateValue(state, action, nextState) for f in self], copy=False)
+        fs = np.array([f.calculateValue(state, action, nextState) for f in self])
+        fs = 1/(1 + np.exp(-fs))
 
         self.weights = self.weights + learningDifference * fs
 

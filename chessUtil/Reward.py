@@ -21,9 +21,9 @@ def calculateReward(state: State, action, nextState: State):
     elif state.newStateFromAction(action).getBoard().is_check():
         reward += 2
 
-    reward += calculateMaterialAdvantage(nextState, nextState.getPlayer())
+    #reward += calculateMaterialAdvantage(nextState, nextState.getPlayer())
 
-    reward += getCastleReward(state, chess.Move.from_uci(action))
+    #reward += getCastleReward(state, chess.Move.from_uci(action))
 
     return reward
 
