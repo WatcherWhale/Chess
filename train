@@ -1,6 +1,8 @@
 #!/bin/env python3
 
 from qlearningagent.QAgent import QAgent, loadAgentFromFile
+from chessUtil.Agent import Agent
+
 import argparse
 import train_self
 import train_stockfish
@@ -11,7 +13,8 @@ import time
 parser = argparse.ArgumentParser(description='')
 
 parser.add_argument('-f', '--file', type=str, default='chess.sav')
-parser.add_argument('-a', '--agent', type=str, default='self')
+parser.add_argument('-a', '--agent', type=str, default='qAgent', help="'qAgent' or 'abAgent'")
+parser.add_argument('-o', '--opponent', type=str, default='self', help="'self', 'stockfish' or 'pgn'")
 parser.add_argument('-e', type=float, help='Epsilon', default=-1)
 parser.add_argument('-d', type=float, help='Discount', default=-1)
 parser.add_argument('-l', type=float,help='LearningRate', default=-1)
@@ -20,7 +23,7 @@ parser.add_argument('-t', '--threads', default=1, type=int, help='Amount of game
 parser.add_argument('-win', action='store_true', help='For those beings that think Windows is a good OS')
 parser.add_argument('-q', action='store_true', help='Quiet logging')
 
-def getAgent(agent):
+def getOpponentAgent(agent):
     if agent == 'self':
         return train_self.runEpisode
     elif agent == 'stockfish':
@@ -28,12 +31,27 @@ def getAgent(agent):
     elif agent == 'pgn':
         return train_pgn.runEpisode
 
+def getAgent(agent, args):
+    if agent == 'qAgent' or agent == 'qagent' or agent == 'q':
+        if os.path.isfile('chess.sav'):
+            qAgent = loadAgentFromFile(args.f)
+        else:
+            qAgent = QAgent(args.f, 0.5, 0.7, 0.6)
+
+        if args.e >= 0:
+            qAgent.setEpsilon(args.e)
+        if args.d >= 0:
+            qAgent.setDiscount(args.d)
+        if args.l >= 0:
+            qAgent.setLearningRate(args.l)
+
+        return qAgent
+
+    elif agent == 'abAgent' or agent == 'abagent' or agent == 'ab':
+        return None
+
 if __name__ == "__main__":
     args = parser.parse_args()
-    if os.path.isfile('chess.sav'):
-        qAgent = loadAgentFromFile('chess.sav')
-    else:
-        qAgent = QAgent('chess.sav', 0.5, 0.7, 0.6)
 
     if args.win:
         train_stockfish.STOCKFISH_BIN = './stockfish-win/stockfish.exe'
@@ -41,17 +59,12 @@ if __name__ == "__main__":
     if args.q:
         train_stockfish.QUIET = True
         train_self.QUIET = True
-        
-    if args.e >= 0:
-        qAgent.setEpsilon(args.e)
-    if args.d >= 0:
-        qAgent.setDiscount(args.d)
-    if args.l >= 0:
-        qAgent.setLearningRate(args.l)
+        train_pgn.QUIET = True
 
-    runEpisode = getAgent(args.agent)
+    agent : Agent = getAgent(args.a, args)
+    runEpisode = getOpponentAgent(args.o)
 
     for _ in range(args.i):
         start = time.time()
-        runEpisode(qAgent)
+        runEpisode(agent)
         print("Last episode took {}s".format(time.time() - start))

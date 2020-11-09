@@ -1,14 +1,15 @@
 #!/usr/bin/python3
 import chess.pgn
+
 from chessUtil.State import State
-import qlearningagent.QAgent
+from chessUtil.Agent import Agent
 
 QUIET = True
 
 def updateAgent(player, prevState, currentState):
     player.update(prevState[0], prevState[1], currentState)
 
-def runEpisode(player: qlearningagent.QAgent.QAgent):
+def runEpisode(player: Agent):
     # get from https://raw.githubusercontent.com/niklasf/python-chess/master/data/pgn/kasparov-deep-blue-1997.pgn
     pgn = open("data/kasparov-deep-blue-1997.pgn")
     running = True

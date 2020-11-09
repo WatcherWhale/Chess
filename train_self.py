@@ -3,15 +3,15 @@ import chess
 import os.path
 
 #from searchagent.search_agent import SearchAgent
-from qlearningagent.QAgent import QAgent, loadAgentFromFile
 from chessUtil.State import State
+from chessUtil.Agent import Agent
 
 QUIET = False;
 
 prevWhiteState = (None, None)
 prevBlackState = (None, None)
 
-def runEpisode(player: QAgent):
+def runEpisode(player: Agent):
 
     global prevWhiteState
     global prevBlackState
@@ -67,21 +67,7 @@ def runEpisode(player: QAgent):
 
     player.save()
     print(board.result())
-    
+
     if not QUIET:
         print(board)
         print("###################")
-
-
-def main():
-    if os.path.isfile('chess.sav'):
-        player = loadAgentFromFile('chess.sav')
-    else:
-        player = QAgent('chess.sav', 0.5, 0.7, 0.6)
-
-    for _ in range(20):
-        runEpisode(player)
-
-
-if __name__ == "__main__":
-    main()

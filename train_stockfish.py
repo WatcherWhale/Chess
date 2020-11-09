@@ -1,20 +1,16 @@
 #!/usr/bin/python3
 import chess
 import chess.engine
-from qlearningagent.QAgent import QAgent, loadAgentFromFile
-from chessUtil.State import State
-from chessUtil.Reward import calculateReward
+
 import os.path
+
+from chessUtil.State import State
+from chessUtil.Agent import Agent
 
 STOCKFISH_BIN = '/usr/bin/stockfish'
 QUIET = False
 
-def main():
-    player = loadPlayer()
-    for _ in range(2):
-        runEpisode(player)
-
-def runEpisode(player: QAgent):
+def runEpisode(player: Agent):
     board = chess.Board()
     black_player = chess.engine.SimpleEngine.popen_uci(STOCKFISH_BIN)
     limit = chess.engine.Limit(time=5.0)
@@ -65,12 +61,3 @@ def runEpisode(player: QAgent):
 
     black_player.quit()
     player.save()
-
-def loadPlayer():
-    if os.path.isfile('chess.sav'):
-        return loadAgentFromFile('chess.sav')
-    else:
-        return QAgent('chess.sav', 0.5, 0.7, 0.6)
-
-if __name__ == "__main__":
-    main()
