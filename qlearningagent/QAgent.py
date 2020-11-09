@@ -6,7 +6,10 @@ import chess
 
 from .Features import Feature, Features
 from .State import State
-from .SimpleFeatures import SimpleFeatures
+from .SimpleFeatures import SimpleFeature
+
+from chessUtil.Agent import Agent
+from chessUtil.Reward import calculateReward
 
 def loadAgentFromFile(file, features: Features = SimpleFeatures()):
     f = open(file)
@@ -17,14 +20,14 @@ def loadAgentFromFile(file, features: Features = SimpleFeatures()):
 
     return QAgent(file, saveData['epsilon'], saveData['discount'], saveData['learningRate'], features)
 
-class QAgent:
+class QAgent(Agent):
     def __init__(self, file, epsilon, discount, learningRate, features: Features = SimpleFeatures(), goTime = 5000):
+        Agent.__init__(goTime)
         self.file = file
         self.epsilon = epsilon
         self.discount = discount
         self.learningRate = learningRate
         self.features = features
-        self.goTime = goTime
 
     def setEpsilon(self, epsilon):
         self.epsilon = epsilon
@@ -75,7 +78,8 @@ class QAgent:
     def getQValue(self, state: State, action):
         return sum(self.features.calculateFeatures(state, action))
 
-    def update(self, state: State, action, reward, nextState: State):
+    def update(self, state: State, action, nextState: State):
+        reward = calculateReward(state, action, nextState)
         diff = (reward + self.discount * self.maxQValue(nextState)) - self.getQValue(state, action)
         self.features.updateWeights(state, action, self.learningRate * diff)
 
