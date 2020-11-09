@@ -22,7 +22,7 @@ def loadAgentFromFile(file, features: Features = BetterFeatures()):
 
 class QAgent(Agent):
     def __init__(self, file, epsilon, discount, learningRate, features: Features = BetterFeatures(), goTime = 5000):
-        Agent.__init__(goTime)
+        Agent.__init__(self, goTime)
         self.file = file
         self.epsilon = epsilon
         self.discount = discount

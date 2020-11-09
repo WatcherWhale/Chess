@@ -5,7 +5,6 @@ import os.path
 #from searchagent.search_agent import SearchAgent
 from qlearningagent.QAgent import QAgent, loadAgentFromFile
 from chessUtil.State import State
-from chessUtil.Reward import calculateReward
 
 QUIET = False;
 
@@ -53,19 +52,16 @@ def runEpisode(player: QAgent):
             running = False
             print("Stalemate")
 
-            reward = calculateReward(state, action, state.newStateFromAction(action))
-            player.update(state, action, reward, state.newStateFromAction(action))
+            player.update(state, action, state.newStateFromAction(action))
 
         if turn_white_player:
             if prevBlackState[0] is not None:
-                reward = calculateReward(prevBlackState[0], prevBlackState[1], state.newStateFromAction(action))
-                player.update(prevBlackState[0], prevBlackState[1], reward, state.newStateFromAction(action))
+                player.update(prevBlackState[0], prevBlackState[1], state.newStateFromAction(action))
 
             prevWhiteState = (state, action)
         else:
             if prevWhiteState[0] is not None:
-                reward = calculateReward(prevWhiteState[0], prevWhiteState[1], state.newStateFromAction(action))
-                player.update(prevWhiteState[0], prevWhiteState[1], reward, state.newStateFromAction(action))
+                player.update(prevWhiteState[0], prevWhiteState[1], state.newStateFromAction(action))
 
             prevBlackState = (state, action)
 

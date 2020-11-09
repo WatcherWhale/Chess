@@ -1,14 +1,12 @@
 #!/usr/bin/python3
 import chess.pgn
-import chessUtil.Reward
 from chessUtil.State import State
 import qlearningagent.QAgent
 
 QUIET = True
 
 def updateAgent(player, prevState, currentState):
-    reward = chessUtil.Reward.calculateReward(prevState[0], prevState[1], currentState)
-    player.update(prevState[0], prevState[1], reward, currentState)
+    player.update(prevState[0], prevState[1], currentState)
 
 def runEpisode(player: qlearningagent.QAgent.QAgent):
     # get from https://raw.githubusercontent.com/niklasf/python-chess/master/data/pgn/kasparov-deep-blue-1997.pgn

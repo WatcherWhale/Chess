@@ -38,7 +38,7 @@ def runEpisode(player: QAgent):
             turn_white_player = True
 
         board.push(move)
-        
+
         if not QUIET:
             print(board)
             print("###########################")
@@ -58,8 +58,7 @@ def runEpisode(player: QAgent):
         action = move.uci()
         if not turn_white_player:
             if prevState[0] is not None:
-                reward = calculateReward(prevState[0], prevState[1], state.newStateFromAction(action))
-                player.update(prevState[0], prevState[1], reward, state.newStateFromAction(action))
+                player.update(prevState[0], prevState[1], state.newStateFromAction(action))
         else:
             prevState = (state, action)
 
