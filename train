@@ -87,7 +87,7 @@ if __name__ == "__main__":
     if args.depth:
         agent.setMaxDepth(args.depth)
 
-    for _ in range(args.i):
+    for e in range(args.i):
         start = time.time()
         runEpisode(agent)
-        print("Last episode took {}s".format(time.time() - start))
+        print("Episode " + str(e) + " took {}s".format(time.time() - start))
