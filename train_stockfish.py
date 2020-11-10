@@ -9,6 +9,7 @@ from chessUtil.Agent import Agent
 
 STOCKFISH_BIN = '/usr/bin/stockfish'
 QUIET = False
+LOUD = False
 LIMIT = 5.0
 
 def runEpisode(player: Agent):
@@ -36,9 +37,9 @@ def runEpisode(player: Agent):
 
         board.push(move)
 
-        if not QUIET:
+        if LOUD:
             print(board)
-            print("###########################")
+            print("###################")
 
         if board.is_checkmate():
             running = False
@@ -59,6 +60,9 @@ def runEpisode(player: Agent):
         else:
             prevState = (state, action)
 
-
     black_player.quit()
     player.save()
+
+    if not QUIET:
+        print(board)
+        print("###########################")

@@ -7,6 +7,7 @@ from chessUtil.State import State
 from chessUtil.Agent import Agent
 
 QUIET = False
+LOUD = False
 
 prevWhiteState = (None, None)
 prevBlackState = (None, None)
@@ -35,6 +36,10 @@ def runEpisode(player: Agent):
         turn_white_player = not turn_white_player
 
         board.push(chess.Move.from_uci(action))
+
+        if LOUD:
+            print(board)
+            print("###################")
 
         if board.is_checkmate():
             running = False

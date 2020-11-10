@@ -232,10 +232,10 @@ class MobilityBishopO(Feature):
         return calculateMobility(nextState, not state.getPlayer(), chess.BISHOP, 13.0)
 
 
-class CenterPossesionS(Feature):
+class CenterPossessionS(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "centerPossesionS"
+        self.name = "centerPossessionS"
 
     def calculateValue(self, state: State, action, nextState: State):
         board = nextState.getBoard()
