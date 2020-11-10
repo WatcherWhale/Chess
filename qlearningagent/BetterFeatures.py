@@ -374,18 +374,57 @@ class PawnFork(Feature):
                 r,c = getRowColumn(p)
                 if r < 7 and c > 0 and c < 7:
                     if board.piece_at(getSquareFromRowColumn(r+1,c-1)) is not None and board.piece_at(getSquareFromRowColumn(r+1,c+1)) is not None:
-                        sum += board.piece_at(getSquareFromRowColumn(r+1,c-1)).piece_type > 1 and board.color_at(getSquareFromRowColumn(r+1,c-1)) \
-                        and board.piece_at(getSquareFromRowColumn(r+1,c+1)).piece_type > 1 and board.color_at(getSquareFromRowColumn(r+1,c+1))
+                        sum += board.piece_at(getSquareFromRowColumn(r+1,c-1)).piece_type > 1 and not board.color_at(getSquareFromRowColumn(r+1,c-1)) \
+                        and board.piece_at(getSquareFromRowColumn(r+1,c+1)).piece_type > 1 and not board.color_at(getSquareFromRowColumn(r+1,c+1))
 
         else:
             for p in pawns:
                 r,c = getRowColumn(p)
                 if r > 1  and c > 0 and c < 7:
                     if board.piece_at(getSquareFromRowColumn(r-1,c-1)) is not None and board.piece_at(getSquareFromRowColumn(r-1,c+1)) is not None:
-                        sum += board.piece_at(getSquareFromRowColumn(r-1,c-1)).piece_type > 1 and not board.color_at(getSquareFromRowColumn(r-1,c-1)) \
-                        and board.piece_at(getSquareFromRowColumn(r-1,c+1)).piece_type > 1 and not board.color_at(getSquareFromRowColumn(r-1,c+1))
+                        sum += board.piece_at(getSquareFromRowColumn(r-1,c-1)).piece_type > 1 and board.color_at(getSquareFromRowColumn(r-1,c-1)) \
+                        and board.piece_at(getSquareFromRowColumn(r-1,c+1)).piece_type > 1 and board.color_at(getSquareFromRowColumn(r-1,c+1))
                 
         return sum / 8.0
+
+class KnightFork(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "knightFork"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        board = nextState.getBoard()
+        knights = board.pieces(chess.KNIGHT, state.getPlayer())
+        sum=0
+
+        for k in knights:
+            r,c = getRowColumn(p)
+
+            squares = []
+            squares.append((r+1, c-2))
+            squares.append((r+2, c-1))
+            squares.append((r+2, c+1))
+            squares.append((r+1, c+2))
+            squares.append((r-1, c+2))
+            squares.append((r-2, c+1))
+            squares.append((r-2, c-1))
+            squares.append((r-1, c-2))
+
+            amountSuperior = 0
+
+            for s in squares:
+                if s[0] > 0 and s[0] < 8 and s[1] > 0 and s[1] < 8 and amountSuperior < 2:
+                    if board.piece_at(getSquareFromRowColumn(s[0],s[1])) is not None:
+                        if state.getPlayer():
+                            amountSuperior += board.piece_at(getSquareFromRowColumn(s[0],s[1])).piece_type > 2 and not board.color_at(board.getBoard())
+                        else:
+                            amountSuperior += board.piece_at(getSquareFromRowColumn(s[0],s[1])).piece_type > 2 and board.color_at(board.getBoard())
+
+            if amountSuperior >= 2:
+                sum += 1
+        
+        return sum/2.0
+
 
 
 def calculateKingDistancetoCenter(nextState: State, player):
