@@ -24,7 +24,7 @@ def runEpisode(player: Agent):
     while running:
         move = None
 
-        state = State(board.copy(), turn_white_player)
+        state = State(board.copy(), turn_white_player, player)
 
         if turn_white_player:
             move = chess.Move.from_uci(player.makeMove(state))

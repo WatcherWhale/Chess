@@ -1,10 +1,13 @@
 import chess
 import random
 
+from .Agent import Agent
+
 class State:
-    def __init__(self, board: chess.Board, isWhite: bool):
+    def __init__(self, board: chess.Board, isWhite: bool, agent: Agent):
         self.board = board
         self.white = isWhite
+        self.agent = agent
 
     def getLegalActions(self):
         actions = []
@@ -28,8 +31,11 @@ class State:
     def setPlayer(self, isWhite):
         self.white = isWhite
 
+    def getAgent(self):
+        return self.agent
+
     def copy(self):
-        return State(self.board.copy(), self.white)
+        return State(self.board.copy(), self.white, self.agent)
 
     def newStateFromAction(self, action):
         newState = self.copy()

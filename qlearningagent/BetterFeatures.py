@@ -3,6 +3,7 @@ from chessUtil.Material import calculateMaterialAdvantage, calculateMaterialValu
 from chessUtil.State import State
 from chessUtil.Mobility import queenMobility, knightMobility, kingMobility, bishopMobility, rookMobility
 from chessUtil.PositionParser import getRowColumn, getSquareFromRowColumn
+from ABAgent.ABAgent import ABAgent
 
 import chess
 
@@ -483,3 +484,12 @@ class OpponentRooksOnSeventhRank(Feature):
 
     def calculateValue(self, state: State, action, nextState: State):
         return calculateRooksOnSeventhRankForPlayer(nextState, not state.getPlayer())
+
+class AlphaBeta(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "alphaBeta"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        agent = ABAgent(state.getAgent().getGoTime() / len(state.getLegalActions()), state.getAgent().getDeltaTime() / len(state.getLegalActions(), state.getAgent().getMaxDepth()))
+        return action == agent.makeMove(state)

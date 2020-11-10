@@ -6,7 +6,7 @@ import os.path
 from chessUtil.State import State
 from chessUtil.Agent import Agent
 
-QUIET = False;
+QUIET = False
 
 prevWhiteState = (None, None)
 prevBlackState = (None, None)
@@ -25,7 +25,7 @@ def runEpisode(player: Agent):
     while running and not board.is_game_over():
         counter += 1
         action = None
-        state = State(board.copy(), turn_white_player)
+        state = State(board.copy(), turn_white_player, player)
 
         action = player.makeMove(state)
         if action == None:

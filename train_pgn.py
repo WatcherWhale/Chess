@@ -26,7 +26,7 @@ def runEpisode(player: Agent):
             turnWhite = True
 
             for move in pgn_game.mainline_moves():
-                state = State(board.copy(), turnWhite)
+                state = State(board.copy(), turnWhite, player)
 
                 if not QUIET:
                     print(board)
@@ -34,7 +34,7 @@ def runEpisode(player: Agent):
 
                 board.push(move)
 
-                newState = State(board.copy(), not turnWhite)
+                newState = State(board.copy(), not turnWhite, player)
                 turnWhite = not turnWhite
 
                 if turnWhite:
