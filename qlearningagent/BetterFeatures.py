@@ -51,7 +51,7 @@ class BetterFeatures(Features):
         self.append(QueensAttacked())
         self.append(RooksAttacked())
         self.append(KnightsAttacked())
-        self.append(BishopsAttacked())S
+        self.append(BishopsAttacked())
         
 
 class AmountSelfQueensFeature(Feature):
@@ -599,7 +599,7 @@ class BishopsAttacked(Feature):
             attacked = False
 
             for piece in board.pieces(chess.PAWN, not state.getPlayer()):
-                attacked = board.is_legal(chess.Move(q,chess.PAWN))
+                attacked = board.is_legal(chess.Move(b,chess.PAWN))
 
                 if attacked:
                     sum += 1
