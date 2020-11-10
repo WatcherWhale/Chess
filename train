@@ -34,10 +34,10 @@ def getOpponentAgent(agent):
 
 def getAgent(agent, args):
     if agent == 'qAgent' or agent == 'qagent' or agent == 'q':
-        if os.path.isfile('chess.sav'):
-            qAgent = loadAgentFromFile(args.f)
+        if os.path.isfile(args.file):
+            qAgent = loadAgentFromFile(args.file)
         else:
-            qAgent = QAgent(args.f, 0.5, 0.7, 0.6)
+            qAgent = QAgent(args.file, 0.5, 0.7, 0.01)
 
         if args.e >= 0:
             qAgent.setEpsilon(args.e)
@@ -62,8 +62,8 @@ if __name__ == "__main__":
         train_self.QUIET = True
         train_pgn.QUIET = True
 
-    agent : Agent = getAgent(args.a, args)
-    runEpisode = getOpponentAgent(args.o)
+    agent : Agent = getAgent(args.agent, args)
+    runEpisode = getOpponentAgent(args.opponent)
 
     for _ in range(args.i):
         start = time.time()
