@@ -42,6 +42,13 @@ class BetterFeatures(Features):
 
         self.append(PawnFork())
         
+        self.append(SelfKingDistanceToCenterFeature())
+        self.append(OpponentKingDistanceToCenterFeature())
+        self.append(SelfConnectivity())
+        self.append(OpponentConnectivity())
+        self.append(SelfRooksOnSeventhRank())
+        self.append(OpponentRooksOnSeventhRank())
+        
 
 class AmountSelfQueensFeature(Feature):
     def __init__(self):
@@ -379,3 +386,100 @@ class PawnFork(Feature):
                         and board.piece_at(getSquareFromRowColumn(r-1,c+1)).piece_type > 1 and not board.color_at(getSquareFromRowColumn(r-1,c+1))
                 
         return sum / 8.0
+
+
+def calculateKingDistancetoCenter(nextState: State, player):
+    kingSet = nextState.getBoard().pieces(chess.KING, player)
+    king = kingSet.pop()
+
+    centerSquares = chess.SquareSet()
+    centerSquares.update(chess.E4, chess.D4, chess.E5, chess.D5)
+    minDistance = 99
+    for square in centerSquares:
+        minDistance = min(minDistance, chess.square_distance(king, square))
+
+    return minDistance / 16
+
+
+class SelfKingDistanceToCenterFeature(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "selfkingcenterdistance"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateKingDistancetoCenter(nextState, state.getPlayer())
+
+
+class OpponentKingDistanceToCenterFeature(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "opponentkingcenterdistance"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateKingDistancetoCenter(nextState, not state.getPlayer())
+
+
+class SelfConnectivity(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "selfconnectivity"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateDefendersForPlayer(nextState, action, state.getPlayer())
+
+
+class OpponentConnectivity(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "opponentconnectivity"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateDefendersForPlayer(nextState, action, not state.getPlayer())
+
+
+def calculateDefendersForPlayer(nextState: State, action, player):
+
+    opponentSquareSet = chess.SquareSet()
+    for piece_type in range(1, 7):
+        squares = nextState.getBoard().pieces(piece_type, player)
+        for square in squares:
+            opponentSquareSet.add(square)
+
+    s = 0.0
+    for square in opponentSquareSet:
+        s += len(nextState.getBoard().attackers(player, square))
+
+    return s / 16
+
+
+def calculateRooksOnSeventhRankForPlayer(nextstate, player):
+    if player == chess.WHITE:
+        seven = 7
+    else:
+        seven = 2
+
+    amount = 0
+    rookSet = nextstate.getBoard().pieces(chess.ROOK, player)
+    for rook in rookSet:
+        if chess.square_rank(rook) == seven:
+            amount += 1
+
+    return amount
+
+
+class SelfRooksOnSeventhRank(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "selfrooks7th"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateRooksOnSeventhRankForPlayer(nextState, state.getPlayer())
+
+
+class OpponentRooksOnSeventhRank(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "opponentrooks7th"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateRooksOnSeventhRankForPlayer(nextState, not state.getPlayer())
