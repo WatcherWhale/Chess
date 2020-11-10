@@ -21,8 +21,8 @@ def loadAgentFromFile(file, features: Features = BetterFeatures()):
     return QAgent(file, saveData['epsilon'], saveData['discount'], saveData['learningRate'], features)
 
 class QAgent(Agent):
-    def __init__(self, file, epsilon, discount, learningRate, features: Features = BetterFeatures(), goTime = 5000):
-        Agent.__init__(self, goTime)
+    def __init__(self, file, epsilon, discount, learningRate, features: Features = BetterFeatures(), goTime = 5000, deltaTime = 1000):
+        Agent.__init__(self, goTime, deltaTime)
         self.file = file
         self.epsilon = epsilon
         self.discount = discount
