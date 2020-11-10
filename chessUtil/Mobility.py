@@ -1,29 +1,28 @@
 import chess
 from .PositionParser import getRowColumn, getSquareFromRowColumn
 
+
 def queenMobility(position: chess.Square, board: chess.Board):
     return bishopMobility(position,board) + rookHorizontalMobility(position, board) + rookVerticalMobility(position, board)
+
 
 def kingMobility(position: chess.Square, board: chess.Board):
     row, column = getRowColumn(position)
 
     squares = []
 
-    squares.append((row, column-1))
-    squares.append((row+1, column-1))
-    squares.append((row+1, column))
-    squares.append((row+1, column+1))
-    squares.append((row, column+1))
-    squares.append((row-1, column+1))
-    squares.append((row-1, column))
-    squares.append((row-1, column-1))
-    
+    for r in range(-1, 2):
+        for c in range(-1, 2):
+            squares.append((row+r, column+c))
+    squares.remove((row, column))
+
     sum = 0
 
     for s in squares:
         sum += s[0] > 0 and s[0] < 8 and s[1] > 0 and s[1] < 8 and board.is_legal(chess.Move(position, getSquareFromRowColumn(s[0], s[1])))
-    
+
     return sum
+
 
 def bishopMobility(position: chess.Square, board: chess.Board):
     row, column = getRowColumn(position)
@@ -40,8 +39,9 @@ def bishopMobility(position: chess.Square, board: chess.Board):
 
     for s in squares:
         sum += board.is_legal(chess.Move(position,s))
-    
+
     return sum
+
 
 def knightMobility(position: chess.Square, board: chess.Board):
     row, column = getRowColumn(position)
@@ -64,6 +64,7 @@ def knightMobility(position: chess.Square, board: chess.Board):
 
     return sum
 
+
 def rookHorizontalMobility(position: chess.Square, board: chess.Board):
 
     r, c = getRowColumn(position)
@@ -78,6 +79,7 @@ def rookHorizontalMobility(position: chess.Square, board: chess.Board):
 
     return sum
 
+
 def rookVerticalMobility(position: chess.Square, board: chess.Board):
     r, c = getRowColumn(position)
 
@@ -91,20 +93,24 @@ def rookVerticalMobility(position: chess.Square, board: chess.Board):
 
     return sum
 
+
 def rookMobility(position: chess.Square, board: chess.Board):
     return rookHorizontalMobility(position, board) + rookVerticalMobility(position,board)
+
 
 def pawnMobility(position: chess.Square, board: chess.Board):
     return 0
 
-mobilityFunction = [pawnMobility, knightMobility, bishopMobility, rookMobility, queenMobility, kingMobility]  
+
+mobilityFunction = [pawnMobility, knightMobility, bishopMobility, rookMobility, queenMobility, kingMobility]
+
 
 def totalMobility(board: chess.Board, player):
     mobility = 0
 
     #go over every piece type followed by the amount of pieces of that type and calculate the mobility with the corresponding mobility calculation
 
-    for piece_type in range(1,7):
+    for piece_type in range(1, 7):
         for position in board.pieces(piece_type, player):
             mobility += mobilityFunction[piece_type-1](position, board)
 
