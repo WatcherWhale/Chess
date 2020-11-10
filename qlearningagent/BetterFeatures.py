@@ -48,6 +48,7 @@ class BetterFeatures(Features):
         self.append(OpponentConnectivity())
         self.append(SelfRooksOnSeventhRank())
         self.append(OpponentRooksOnSeventhRank())
+        self.append(QueensAttacked())
         
 
 class AmountSelfQueensFeature(Feature):
@@ -522,3 +523,31 @@ class OpponentRooksOnSeventhRank(Feature):
 
     def calculateValue(self, state: State, action, nextState: State):
         return calculateRooksOnSeventhRankForPlayer(nextState, not state.getPlayer())
+
+class QueensAttacked(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "queensAttacked"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        board = nextState.getBoard()
+        queens = board.pieces(chess.QUEEN, state.getPlayer())
+
+        sum = 0
+
+        for q in queens:
+
+            attacked = False
+
+            for piece_type in range(1,4):
+                for piece in board.pieces(piece_type, not state.getPlayer()):
+                    attacked = board.is_legal(chess.Move(q,piece_type))
+
+                    if attacked:
+                        break
+
+            if attacked:
+                sum += 1
+                break
+
+        return sum
