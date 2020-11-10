@@ -27,7 +27,8 @@ parser.add_argument('--depth', type=int, help='The max search depth', default=10
 parser.add_argument('-win', action='store_true', help='For those beings that think Windows is a good OS')
 parser.add_argument('-q', action='store_true', help='Quiet logging')
 parser.add_argument('-r', '--recursion-limit', type=int, metavar='LIMIT', help='Set the python recursion limit')
-parser.add_argument('-tt', type=float, metavar='SECONDS', help='The max turn time in seconds', default=5000)
+parser.add_argument('-tt', type=float, metavar='SECONDS', help='The max turn time in seconds', default=5.0)
+parser.add_argument('-dt', type=float, metavar='SECONDS', help='The safe keeping value', default=0.1)
 
 def getOpponentAgent(agent):
     if agent == 'self':
@@ -62,8 +63,6 @@ if __name__ == "__main__":
     if args.win:
         train_stockfish.STOCKFISH_BIN = './stockfish-win/stockfish.exe'
 
-    if args.tt:
-        train_stockfish.LIMIT = args.tt
 
     if args.q:
         train_stockfish.QUIET = True
@@ -75,6 +74,13 @@ if __name__ == "__main__":
 
     agent : Agent = getAgent(args.agent, args)
     runEpisode = getOpponentAgent(args.opponent)
+
+    if args.tt:
+        train_stockfish.LIMIT = args.tt
+        agent.setGoTime(args.tt * 1000)
+
+    if args.dt:
+        agent.setDeltaTime(args.dt * 1000)
 
     for _ in range(args.i):
         start = time.time()
