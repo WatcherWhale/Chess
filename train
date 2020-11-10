@@ -10,6 +10,9 @@ import train_stockfish
 import train_pgn
 import os.path
 import time
+import sys
+
+sys.setrecursionlimit(10000)
 
 parser = argparse.ArgumentParser(description='')
 
@@ -23,6 +26,8 @@ parser.add_argument('-i', default=50, type=int, help='Iterations')
 parser.add_argument('--depth', type=int, help='The max search depth', default=100)
 parser.add_argument('-win', action='store_true', help='For those beings that think Windows is a good OS')
 parser.add_argument('-q', action='store_true', help='Quiet logging')
+parser.add_argument('-r', '--recursion-limit', type=int, metavar='LIMIT', help='Set the python recursion limit')
+parser.add_argument('-tt', type=float, metavar='SECONDS', help='The max turn time in seconds', default=5000)
 
 def getOpponentAgent(agent):
     if agent == 'self':
@@ -57,10 +62,16 @@ if __name__ == "__main__":
     if args.win:
         train_stockfish.STOCKFISH_BIN = './stockfish-win/stockfish.exe'
 
+    if args.tt:
+        train_stockfish.LIMIT = args.tt
+
     if args.q:
         train_stockfish.QUIET = True
         train_self.QUIET = True
         train_pgn.QUIET = True
+
+    if args.recursion_limit:
+        sys.setrecursionlimit(args.recursion_limit)
 
     agent : Agent = getAgent(args.agent, args)
     runEpisode = getOpponentAgent(args.opponent)

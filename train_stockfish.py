@@ -9,11 +9,12 @@ from chessUtil.Agent import Agent
 
 STOCKFISH_BIN = '/usr/bin/stockfish'
 QUIET = False
+LIMIT = 5.0
 
 def runEpisode(player: Agent):
     board = chess.Board()
     black_player = chess.engine.SimpleEngine.popen_uci(STOCKFISH_BIN)
-    limit = chess.engine.Limit(time=5.0)
+    limit = chess.engine.Limit(time=LIMIT)
 
     running = True
     turn_white_player = True
