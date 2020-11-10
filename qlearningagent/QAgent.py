@@ -5,13 +5,12 @@ import chess
 
 from chessUtil.State import State
 from .Features import Feature, Features
-from .SimpleFeatures import SimpleFeatures
-from .BetterFeatures import BetterFeatures
+from .ChessFeatures import ChessFeatures
 
 from chessUtil.Agent import Agent
 from chessUtil.Reward import calculateReward
 
-def loadAgentFromFile(file, features: Features = BetterFeatures()):
+def loadAgentFromFile(file, features: Features = ChessFeatures()):
     f = open(file)
     saveData = json.load(f)
     f.close()
@@ -21,7 +20,7 @@ def loadAgentFromFile(file, features: Features = BetterFeatures()):
     return QAgent(file, saveData['epsilon'], saveData['discount'], saveData['learningRate'], features)
 
 class QAgent(Agent):
-    def __init__(self, file, epsilon, discount, learningRate, features: Features = BetterFeatures(), goTime = 5000, deltaTime = 1000):
+    def __init__(self, file, epsilon, discount, learningRate, features: Features = ChessFeatures(), goTime = 5000, deltaTime = 1000):
         Agent.__init__(self, goTime, deltaTime)
         self.file = file
         self.epsilon = epsilon
