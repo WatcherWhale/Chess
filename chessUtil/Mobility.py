@@ -105,6 +105,10 @@ def pawnMobility(position: chess.Square, board: chess.Board):
 mobilityFunction = [pawnMobility, knightMobility, bishopMobility, rookMobility, queenMobility, kingMobility]
 
 
+def mobility(piece_type, position: chess.Square, board: chess.Board):
+    return mobilityFunction[piece_type-1](position, board)
+
+
 def totalMobility(board: chess.Board, player):
     mobility = 0
 
