@@ -55,7 +55,7 @@ def getAgent(agent, args):
         return qAgent
 
     elif agent == 'abAgent' or agent == 'abagent' or agent == 'ab':
-        return ABAgent(maxDepth=args.depth)
+        return ABAgent()
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -81,6 +81,9 @@ if __name__ == "__main__":
 
     if args.dt:
         agent.setDeltaTime(args.dt * 1000)
+
+    if args.depth:
+        agent.setMaxDepth(args.depth)
 
     for _ in range(args.i):
         start = time.time()

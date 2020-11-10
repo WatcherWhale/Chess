@@ -1,10 +1,8 @@
 import chess
 import random
 
-from .Agent import Agent
-
 class State:
-    def __init__(self, board: chess.Board, isWhite: bool, agent: Agent):
+    def __init__(self, board: chess.Board, isWhite: bool, agent):
         self.board = board
         self.white = isWhite
         self.agent = agent
