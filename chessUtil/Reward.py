@@ -8,7 +8,7 @@ def calculateReward(state: State, action, nextState: State):
     reward = 0
 
     if nextState.getBoard().is_checkmate():
-        if nextState.getBoard().turn == nextState.getPlayer():
+        if nextState.getBoard().turn == state.getPlayer():
             return 100
         else:
             return -100

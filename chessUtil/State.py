@@ -34,3 +34,9 @@ class State:
         newState.addMove(action)
         newState.setPlayer(not self.white)
         return newState
+
+    def getPreviousState(self):
+        newState = self.copy()
+        action = newState.getBoard().pop().uci()
+        newState.setPlayer(not self.white)
+        return (newState, action)
