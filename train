@@ -14,7 +14,9 @@ import sys
 
 sys.setrecursionlimit(10000)
 
-parser = argparse.ArgumentParser(description='')
+grandQF = open('grandQ.txt', 'r')
+parser = argparse.ArgumentParser(description=grandQF.read(), formatter_class=argparse.RawTextHelpFormatter)
+grandQF.close()
 
 parser.add_argument('-f', '--file', type=str, default='grandQ.json')
 parser.add_argument('-a', '--agent', type=str, default='qAgent', help="'qAgent' or 'abAgent'")
