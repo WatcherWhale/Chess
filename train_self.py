@@ -39,8 +39,7 @@ def runEpisode(player: Agent):
         if board.is_checkmate():
             running = False
 
-            reward = calculateReward(state, action, state.newStateFromAction(action))
-            player.update(state, action, reward, state.newStateFromAction(action))
+            player.update(state, action, state.newStateFromAction(action))
 
             if turn_white_player:
                 print("Black wins!")
