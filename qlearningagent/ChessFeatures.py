@@ -550,6 +550,7 @@ class RooksOnSeventhRankO(Feature):
     def calculateValue(self, state: State, action, nextState: State):
         return calculateRooksOnSeventhRankForPlayer(nextState, not state.getPlayer())
 
+"""
 class AlphaBeta(Feature):
     def __init__(self):
         Feature.__init__(self)
@@ -557,4 +558,9 @@ class AlphaBeta(Feature):
 
     def calculateValue(self, state: State, action, nextState: State):
         agent = ABAgent(state.getAgent().getGoTime() / len(state.getLegalActions()), state.getAgent().getDeltaTime() / len(state.getLegalActions()), state.getAgent().getMaxDepth())
-        return action == agent.makeMove(state)
+        didMove = action == agent.makeMove(state.copy())
+
+        return didMove
+
+"""
+
