@@ -49,6 +49,9 @@ class BetterFeatures(Features):
         self.append(SelfRooksOnSeventhRank())
         self.append(OpponentRooksOnSeventhRank())
         self.append(QueensAttacked())
+        self.append(RooksAttacked())
+        self.append(KnightsAttacked())
+        self.append(BishopsAttacked())S
         
 
 class AmountSelfQueensFeature(Feature):
