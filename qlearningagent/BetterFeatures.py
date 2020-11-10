@@ -417,9 +417,9 @@ class KnightFork(Feature):
                 if s[0] > 0 and s[0] < 8 and s[1] > 0 and s[1] < 8 and amountSuperior < 2:
                     if board.piece_at(getSquareFromRowColumn(s[0],s[1])) is not None:
                         if state.getPlayer():
-                            amountSuperior += board.piece_at(getSquareFromRowColumn(s[0],s[1])).piece_type > 2 and not board.color_at(board.getBoard())
+                            amountSuperior += board.piece_at(getSquareFromRowColumn(s[0],s[1])).piece_type > 2 and not board.color_at(getSquareFromRowColumn(s[0],s[1]))
                         else:
-                            amountSuperior += board.piece_at(getSquareFromRowColumn(s[0],s[1])).piece_type > 2 and board.color_at(board.getBoard())
+                            amountSuperior += board.piece_at(getSquareFromRowColumn(s[0],s[1])).piece_type > 2 and board.color_at(getSquareFromRowColumn(s[0],s[1]))
 
             if amountSuperior >= 2:
                 sum += 1
@@ -549,5 +549,81 @@ class QueensAttacked(Feature):
             if attacked:
                 sum += 1
                 break
+
+        return sum
+
+class RooksAttacked(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "rooksAttacked"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        board = nextState.getBoard()
+        rooks = board.pieces(chess.ROOK, state.getPlayer())
+
+        sum = 0
+
+        for r in rooks:
+
+            attacked = False
+
+            for piece_type in range(1,3):
+                for piece in board.pieces(piece_type, not state.getPlayer()):
+                    attacked = board.is_legal(chess.Move(r,piece_type))
+
+                    if attacked:
+                        break
+
+            if attacked:
+                sum += 1
+                break
+
+        return sum
+
+class BishopsAttacked(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "bischopsAttacked"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        board = nextState.getBoard()
+        bishops = board.pieces(chess.BISHOP, state.getPlayer())
+
+        sum = 0
+
+        for b in bishops:
+
+            attacked = False
+
+            for piece in board.pieces(chess.PAWN, not state.getPlayer()):
+                attacked = board.is_legal(chess.Move(q,chess.PAWN))
+
+                if attacked:
+                    sum += 1
+                    break
+
+        return sum
+
+class KnightsAttacked(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "knightsAttacked"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        board = nextState.getBoard()
+        knights = board.pieces(chess.KNIGHT, state.getPlayer())
+
+        sum = 0
+
+        for k in knights:
+
+            attacked = False
+
+            for piece in board.pieces(chess.PAWN, not state.getPlayer()):
+                attacked = board.is_legal(chess.Move(k,chess.PAWN))
+
+                if attacked:
+                    sum += 1
+                    break
 
         return sum
