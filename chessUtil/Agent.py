@@ -1,7 +1,7 @@
 from .State import State
 
 class Agent:
-    def __init__(self, goTime, deltaTime = 1000):
+    def __init__(self, goTime = 5000, deltaTime = 1000):
         self.goTime = goTime
         self.deltaTime = deltaTime
 
@@ -11,7 +11,7 @@ class Agent:
     def setDeltaTime(self, deltaTime):
         self.deltaTime = deltaTime
 
-    def update(self, state: State, nextState: State):
+    def update(self, state: State, action, nextState: State):
         pass
 
     def makeMove(self, state: State):

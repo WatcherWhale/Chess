@@ -22,3 +22,5 @@ def utility(state: State):
         value += 2
 
     value += calculateMaterialValue(state, state.getPlayer())
+
+    return value

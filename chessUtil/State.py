@@ -1,4 +1,5 @@
 import chess
+import random
 
 class State:
     def __init__(self, board: chess.Board, isWhite: bool):
@@ -9,6 +10,7 @@ class State:
         actions = []
         for a in self.board.legal_moves:
             actions.append(a.uci())
+        random.shuffle(actions)
         return actions
 
     def addMove(self, move):

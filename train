@@ -13,14 +13,14 @@ import time
 
 parser = argparse.ArgumentParser(description='')
 
-parser.add_argument('-f', '--file', type=str, default='chess.sav')
+parser.add_argument('-f', '--file', type=str, default='grandQ.json')
 parser.add_argument('-a', '--agent', type=str, default='qAgent', help="'qAgent' or 'abAgent'")
 parser.add_argument('-o', '--opponent', type=str, default='self', help="'self', 'stockfish' or 'pgn'")
 parser.add_argument('-e', type=float, help='Epsilon', default=-1)
 parser.add_argument('-d', type=float, help='Discount', default=-1)
 parser.add_argument('-l', type=float,help='LearningRate', default=-1)
 parser.add_argument('-i', default=50, type=int, help='Iterations')
-parser.add_argument('-t', '--threads', default=1, type=int, help='Amount of games played at the same time')
+parser.add_argument('--depth', type=int, help='The max search depth', default=100)
 parser.add_argument('-win', action='store_true', help='For those beings that think Windows is a good OS')
 parser.add_argument('-q', action='store_true', help='Quiet logging')
 
@@ -49,7 +49,7 @@ def getAgent(agent, args):
         return qAgent
 
     elif agent == 'abAgent' or agent == 'abagent' or agent == 'ab':
-        return ABAgent()
+        return ABAgent(maxDepth=args.depth)
 
 if __name__ == "__main__":
     args = parser.parse_args()
