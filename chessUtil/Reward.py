@@ -3,7 +3,11 @@ from .Material import calculateMaterialAdvantage
 
 import chess
 
+
 def calculateReward(state: State, action, nextState: State):
+
+    # state: player moet nog een zet doen
+    # nextState: opponent heeft zet net gedaan
 
     reward = 0
 
@@ -21,11 +25,12 @@ def calculateReward(state: State, action, nextState: State):
     elif state.newStateFromAction(action).getBoard().is_check():
         reward += 2
 
-    #reward += calculateMaterialAdvantage(nextState, nextState.getPlayer())
+    reward += calculateMaterialAdvantage(nextState, nextState.getPlayer())
 
-    #reward += getCastleReward(state, chess.Move.from_uci(action))
+    reward += getCastleReward(state, chess.Move.from_uci(action))
 
     return reward
+
 
 def getCastleReward(state: State, move):
     return state.getBoard().is_castling(move) * 2
