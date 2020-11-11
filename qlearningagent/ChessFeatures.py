@@ -623,7 +623,7 @@ class QueensAttacked(Feature):
 
             for piece_type in range(1,4):
                 for piece in board.pieces(piece_type, not state.getPlayer()):
-                    attacked = board.is_legal(chess.Move(q,piece_type))
+                    attacked = board.is_legal(chess.Move(piece, q))
 
                     if attacked:
                         break
@@ -652,7 +652,7 @@ class RooksAttacked(Feature):
 
             for piece_type in range(1,3):
                 for piece in board.pieces(piece_type, not state.getPlayer()):
-                    attacked = board.is_legal(chess.Move(r,piece_type))
+                    attacked = board.is_legal(chess.Move(piece, r))
 
                     if attacked:
                         break
@@ -680,7 +680,7 @@ class BishopsAttacked(Feature):
             attacked = False
 
             for piece in board.pieces(chess.PAWN, not state.getPlayer()):
-                attacked = board.is_legal(chess.Move(b,chess.PAWN))
+                attacked = board.is_legal(chess.Move(piece, b))
 
                 if attacked:
                     sum += 1
@@ -705,7 +705,7 @@ class KnightsAttacked(Feature):
             attacked = False
 
             for piece in board.pieces(chess.PAWN, not state.getPlayer()):
-                attacked = board.is_legal(chess.Move(k,chess.PAWN))
+                attacked = board.is_legal(chess.Move(piece, k))
 
                 if attacked:
                     sum += 1
