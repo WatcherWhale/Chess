@@ -77,7 +77,7 @@ if __name__ == "__main__":
         train_self.LOUD = True
         train_pgn.LOUD = True
         train_alphabeta.LOUD = True
-    elif args.q:
+    elif args.quiet:
         train_stockfish.QUIET = True
         train_self.QUIET = True
         train_pgn.QUIET = True
