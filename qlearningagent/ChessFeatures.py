@@ -694,4 +694,4 @@ class IsCastling(Feature):
         self.name = "isCastling"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return state.getBoard().is_castling(action)
+        return state.getBoard().is_castling(chess.Move.from_uci(action))
