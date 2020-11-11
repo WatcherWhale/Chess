@@ -190,10 +190,10 @@ class MobilityKnight(Feature):
         return minMobility / 8.0
 
 
-class MobilityBischop(Feature):
+class MobilityBishop(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "mobilityBischop"
+        self.name = "mobilityBishop"
 
     def calculateValue(self, state: State, action, nextState):
         bishops = nextState.getBoard().pieces(chess.BISHOP, state.getPlayer())
@@ -550,7 +550,6 @@ class RooksOnSeventhRankO(Feature):
     def calculateValue(self, state: State, action, nextState: State):
         return calculateRooksOnSeventhRankForPlayer(nextState, not state.getPlayer())
 
-"""
 class AlphaBeta(Feature):
     def __init__(self):
         Feature.__init__(self)
@@ -561,6 +560,3 @@ class AlphaBeta(Feature):
         didMove = action == agent.makeMove(state.copy())
 
         return didMove
-
-"""
-
