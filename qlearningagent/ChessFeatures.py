@@ -14,6 +14,11 @@ import chess
 # Source: https://areeweb.polito.it/didattica/gcia/tesine/Tesine_2016/Mannella/Thesis_Mannen-Learning_to_Play_Chess_Using_Reinforcement_Learning.pdf
 
 
+#################
+# S -> Self     #
+# O -> Opponent #
+#################
+
 class ChessFeatures(Features):
     def __init__(self):
         Features.__init__(self)
@@ -22,15 +27,6 @@ class ChessFeatures(Features):
         for c in classes:
             if issubclass(c[1], Feature) and c[0] != "Feature":
                 self.append(c[1]())
-
-
-
-    ###################
-    # S -> Self       #
-    # O -> Opponent   #
-    ###################
-
-
 
 class AmountQueensS(Feature):
     def __init__(self):
@@ -555,7 +551,6 @@ def calculateRooksOnSeventhRankForPlayer(nextstate: State, player):
 
     return amount
 
-
 class RooksOnSeventhRankS(Feature):
     def __init__(self):
         Feature.__init__(self)
@@ -573,17 +568,118 @@ class RooksOnSeventhRankO(Feature):
     def calculateValue(self, state: State, action, nextState: State):
         return calculateRooksOnSeventhRankForPlayer(nextState, not state.getPlayer())
 
-"""
 class AlphaBeta(Feature):
     def __init__(self):
         Feature.__init__(self)
         self.name = "alphaBeta"
 
     def calculateValue(self, state: State, action, nextState: State):
-        agent = ABAgent(state.getAgent().getGoTime() / len(state.getLegalActions()), state.getAgent().getDeltaTime() / len(state.getLegalActions()), state.getAgent().getMaxDepth())
+        divider = len(state.getLegalActions())
+        agent = ABAgent(state.getAgent().getGoTime() / divider, state.getAgent().getDeltaTime() / divider, state.getAgent().getMaxDepth())
         didMove = action == agent.makeMove(state.copy())
 
         return didMove
 
-"""
+class QueensAttacked(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "queensAttacked"
 
+    def calculateValue(self, state: State, action, nextState: State):
+        board = nextState.getBoard()
+        queens = board.pieces(chess.QUEEN, state.getPlayer())
+
+        sum = 0
+
+        for q in queens:
+
+            attacked = False
+
+            for piece_type in range(1,4):
+                for piece in board.pieces(piece_type, not state.getPlayer()):
+                    attacked = board.is_legal(chess.Move(q,piece_type))
+
+                    if attacked:
+                        break
+
+            if attacked:
+                sum += 1
+                break
+
+        return sum
+
+class RooksAttacked(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "rooksAttacked"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        board = nextState.getBoard()
+        rooks = board.pieces(chess.ROOK, state.getPlayer())
+
+        sum = 0
+
+        for r in rooks:
+
+            attacked = False
+
+            for piece_type in range(1,3):
+                for piece in board.pieces(piece_type, not state.getPlayer()):
+                    attacked = board.is_legal(chess.Move(r,piece_type))
+
+                    if attacked:
+                        break
+
+            if attacked:
+                sum += 1
+                break
+
+        return sum
+
+class BishopsAttacked(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "bishopsAttacked"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        board = nextState.getBoard()
+        bishops = board.pieces(chess.BISHOP, state.getPlayer())
+
+        sum = 0
+
+        for b in bishops:
+
+            attacked = False
+
+            for piece in board.pieces(chess.PAWN, not state.getPlayer()):
+                attacked = board.is_legal(chess.Move(b,chess.PAWN))
+
+                if attacked:
+                    sum += 1
+                    break
+
+        return sum
+
+class KnightsAttacked(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "knightsAttacked"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        board = nextState.getBoard()
+        knights = board.pieces(chess.KNIGHT, state.getPlayer())
+
+        sum = 0
+
+        for k in knights:
+
+            attacked = False
+
+            for piece in board.pieces(chess.PAWN, not state.getPlayer()):
+                attacked = board.is_legal(chess.Move(k,chess.PAWN))
+
+                if attacked:
+                    sum += 1
+                    break
+
+        return sum
