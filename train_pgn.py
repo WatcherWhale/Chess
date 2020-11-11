@@ -5,6 +5,7 @@ from chessUtil.State import State
 from chessUtil.Agent import Agent
 
 QUIET = True
+LOUD = False
 
 def updateAgent(player, prevState, currentState):
     player.update(prevState[0], prevState[1], currentState)

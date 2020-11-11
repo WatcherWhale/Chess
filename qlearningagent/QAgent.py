@@ -10,6 +10,7 @@ from .ChessFeatures import ChessFeatures
 from chessUtil.Agent import Agent
 from chessUtil.Reward import calculateReward
 
+
 def loadAgentFromFile(file, features: Features = ChessFeatures()):
     f = open(file)
     saveData = json.load(f)

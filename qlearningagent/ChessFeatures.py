@@ -4,7 +4,7 @@ import sys
 from .Features import Features, Feature
 from chessUtil.Material import calculateMaterialAdvantage, calculateMaterialValue
 from chessUtil.State import State
-from chessUtil.Mobility import queenMobility, knightMobility, kingMobility, bishopMobility, rookMobility
+from chessUtil.Mobility import queenMobility, knightMobility, kingMobility, bishopMobility, rookMobility, mobility
 from chessUtil.PositionParser import getRowColumn, getSquareFromRowColumn
 from ABAgent.ABAgent import ABAgent
 
@@ -26,8 +26,8 @@ class ChessFeatures(Features):
 
 
     ###################
-    # S -> Self
-    # O -> Opponent
+    # S -> Self       #
+    # O -> Opponent   #
     ###################
 
 
@@ -140,79 +140,102 @@ class AmountBalancePieces(Feature):
         return calculateMaterialAdvantage(nextState, state.getPlayer())
 
 
+def calculateMobility(nextState: State, player, piece_type, divider):
+    pieces = nextState.getBoard().pieces(piece_type, player)
+
+    if len(pieces) == 0:
+        return 0
+
+    minMobility = 64
+
+    for piece in pieces:
+        minMobility = min(minMobility, mobility(piece_type, piece, nextState.getBoard()))
+
+    return minMobility / divider
+
+
 class MobilityQueenS(Feature):
     def __init__(self):
         Feature.__init__(self)
         self.name = "mobilityQueenS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        queens = nextState.getBoard().pieces(chess.QUEEN, state.getPlayer())
+        return calculateMobility(nextState, state.getPlayer(), chess.QUEEN, 26.0)
 
-        if len(queens) == 0:
-            return 0
 
-        minMobility = 64
+class MobilityQueenO(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "mobilityQueenO"
 
-        for queen in queens:
-            minMobility = min(minMobility, queenMobility(queen, nextState.getBoard()))
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateMobility(nextState, not state.getPlayer(), chess.QUEEN, 26.0)
 
-        return minMobility / 26.0
+
+def calculateMobilityKing(nextState, player):
+    minMobility = kingMobility(nextState.getBoard().pieces(chess.KING, player).pop(), nextState.getBoard())
+
+    return minMobility / 8.0
 
 
 class MobilityKingS(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "mobilityKing"
+        self.name = "mobilityKingS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        minMobility = kingMobility(nextState.getBoard().pieces(chess.KING, state.getPlayer()).pop(),
-                                   nextState.getBoard())
-
-        return minMobility / 8.0
+        return calculateMobilityKing(nextState, state.getPlayer())
 
 
-class MobilityKnight(Feature):
+class MobilityKingO(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "mobilityKnight"
+        self.name = "mobilityKingO"
 
     def calculateValue(self, state: State, action, nextState: State):
-        knights = nextState.getBoard().pieces(chess.KNIGHT, state.getPlayer())
-
-        if len(knights) == 0:
-            return 0
-
-        minMobility = 64
-
-        for knight in knights:
-            minMobility = min(minMobility, knightMobility(knight, nextState.getBoard()))
-
-        return minMobility / 8.0
+        return calculateMobilityKing(nextState, not state.getPlayer())
 
 
-class MobilityBishop(Feature):
+class MobilityKnightS(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "mobilityBishop"
+        self.name = "mobilityKnightS"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateMobility(nextState, state.getPlayer(), chess.KNIGHT, 8.0)
+
+
+class MobilityKnightO(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "mobilityKnightO"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateMobility(nextState, not state.getPlayer(), chess.KNIGHT, 8.0)
+
+
+class MobilityBishopS(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "mobilityBishopS"
 
     def calculateValue(self, state: State, action, nextState):
-        bishops = nextState.getBoard().pieces(chess.BISHOP, state.getPlayer())
-
-        if len(bishops) == 0:
-            return 0
-
-        minMobility = 64
-
-        for bishop in bishops:
-            minMobility = min(minMobility, bishopMobility(bishop, nextState.getBoard()))
-
-        return minMobility / 13.0
+        return calculateMobility(nextState, state.getPlayer(), chess.BISHOP, 13.0)
 
 
-class CenterPossesionS(Feature):
+class MobilityBishopO(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "centerPossesionS"
+        self.name = "mobilityBishopO"
+
+    def calculateValue(self, state: State, action, nextState):
+        return calculateMobility(nextState, not state.getPlayer(), chess.BISHOP, 13.0)
+
+
+class CenterPossessionS(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "centerPossessionS"
 
     def calculateValue(self, state: State, action, nextState: State):
         board = nextState.getBoard()
@@ -532,7 +555,6 @@ def calculateRooksOnSeventhRankForPlayer(nextstate: State, player):
 
     return amount
 
-
 class RooksOnSeventhRankS(Feature):
     def __init__(self):
         Feature.__init__(self)
@@ -556,7 +578,8 @@ class AlphaBeta(Feature):
         self.name = "alphaBeta"
 
     def calculateValue(self, state: State, action, nextState: State):
-        agent = ABAgent(state.getAgent().getGoTime() / len(state.getLegalActions()), state.getAgent().getDeltaTime() / len(state.getLegalActions()), state.getAgent().getMaxDepth())
+        divider = len(state.getLegalActions())
+        agent = ABAgent(state.getAgent().getGoTime() / divider, state.getAgent().getDeltaTime() / divider, state.getAgent().getMaxDepth())
         didMove = action == agent.makeMove(state.copy())
 
         return didMove
