@@ -9,6 +9,10 @@ from chessUtil.Agent import Agent
 QUIET = False
 LOUD = False
 MAX_MOVES = 130
+STALEMATES = 0
+BLACK_WINS = 0
+WHITE_WINS = 0
+FORCEFULLY_STOPPED = 0
 
 prevWhiteState = (None, None)
 prevBlackState = (None, None)
@@ -17,6 +21,11 @@ def runEpisode(player: Agent):
 
     global prevWhiteState
     global prevBlackState
+
+    global STALEMATES
+    global BLACK_WINS
+    global WHITE_WINS
+    global FORCEFULLY_STOPPED
 
     board = chess.Board()
 
@@ -49,13 +58,17 @@ def runEpisode(player: Agent):
 
             if turn_white_player:
                 print("Black wins!")
+                BLACK_WINS += 1
+
             else:
                 print("White wins!")
+                WHITE_WINS += 1
 
         if board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves() or board.is_fivefold_repetition():
 
             running = False
             print("Stalemate")
+            STALEMATES += 1
 
             player.update(state, action, state.newStateFromAction(action))
 
@@ -75,6 +88,7 @@ def runEpisode(player: Agent):
 
         if counter >= MAX_MOVES * 2:
             print('Forcefully stopped')
+            FORCEFULLY_STOPPED += 1
             running = False
 
     print(board.result())

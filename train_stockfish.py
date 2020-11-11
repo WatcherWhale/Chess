@@ -13,7 +13,18 @@ LOUD = False
 LIMIT = 5.0
 MAX_MOVES = 130
 
+STALEMATES = 0
+STOCKFISH_WINS = 0
+GRANDQ_WINS = 0
+
+
 def runEpisode(player: Agent):
+
+    global STALEMATES
+    global STOCKFISH_WINS
+    global GRANDQ_WINS
+
+
     board = chess.Board()
     black_player = chess.engine.SimpleEngine.popen_uci(STOCKFISH_BIN)
     limit = chess.engine.Limit(time=LIMIT)
@@ -49,12 +60,15 @@ def runEpisode(player: Agent):
 
             if turn_white_player:
                 print("Stockfish wins!")
+                STOCKFISH_WINS += 1
             else:
                 print("GrandQ wins!")
+                GRANDQ_WINS += 1
 
         if board.is_stalemate():
             running = False
             print("Stalemate")
+            STALEMATES += 1
 
         action = move.uci()
         if not turn_white_player:
