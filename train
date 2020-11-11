@@ -33,6 +33,7 @@ parser.add_argument('--loud', action='store_true', help='Loud logging')
 parser.add_argument('-r', '--recursion-limit', type=int, metavar='LIMIT', help='Set the python recursion limit')
 parser.add_argument('-tt', type=float, metavar='SECONDS', help='The max turn time in seconds', default=0.1)
 parser.add_argument('-dt', type=float, metavar='SECONDS', help='The safe keeping value', default=0)
+parser.add_argument('-mm', '--max-moves', type=int, metavar='MOVES', help='The amount of max moves until a game is forcefully stopped', default=130)
 
 
 def getOpponentAgent(agent):
@@ -65,8 +66,7 @@ def getAgent(agent, args):
     elif agent == 'abAgent' or agent == 'abagent' or agent == 'ab':
         return ABAgent()
 
-
-if __name__ == "__main__":
+def main():
     args = parser.parse_args()
 
     if args.win:
@@ -86,6 +86,11 @@ if __name__ == "__main__":
     if args.recursion_limit:
         sys.setrecursionlimit(args.recursion_limit)
 
+    if args.max_moves:
+        train_alphabeta.MAX_MOVES = args.max_moves
+        train_self.MAX_MOVES = args.max_moves
+        train_stockfish.MAX_MOVES = args.max_moves
+
     agent: Agent = getAgent(args.agent, args)
     runEpisode = getOpponentAgent(args.opponent)
 
@@ -104,3 +109,9 @@ if __name__ == "__main__":
         runEpisode(agent)
         agent.save()
         print("Episode " + str(e + 1) + " took {}s".format(time.time() - start))
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("Training has stopped")

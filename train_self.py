@@ -8,6 +8,7 @@ from chessUtil.Agent import Agent
 
 QUIET = False
 LOUD = False
+MAX_MOVES = 130
 
 prevWhiteState = (None, None)
 prevBlackState = (None, None)
@@ -71,6 +72,10 @@ def runEpisode(player: Agent):
 
         if not running:
             player.update(state, action, state.newStateFromAction(action))
+
+        if counter >= MAX_MOVES * 2:
+            print('Forcefully stopped')
+            running = False
 
     print(board.result())
 

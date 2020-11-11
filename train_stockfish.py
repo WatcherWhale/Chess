@@ -11,6 +11,7 @@ STOCKFISH_BIN = '/usr/bin/stockfish'
 QUIET = False
 LOUD = False
 LIMIT = 5.0
+MAX_MOVES = 130
 
 def runEpisode(player: Agent):
     board = chess.Board()
@@ -21,9 +22,11 @@ def runEpisode(player: Agent):
     turn_white_player = True
 
     prevState = (None, None)
+    moves = 0
 
     while running:
         move = None
+        moves += 1
 
         state = State(board.copy(), turn_white_player, player)
 
@@ -61,6 +64,10 @@ def runEpisode(player: Agent):
             player.update(state, action, state.newStateFromAction(action))
         else:
             prevState = (state, action)
+
+        if moves >= MAX_MOVES * 2:
+            print('Forcefully stopped')
+            running = False
 
     black_player.quit()
 

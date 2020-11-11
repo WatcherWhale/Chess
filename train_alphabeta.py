@@ -7,6 +7,7 @@ from ABAgent.ABAgent import ABAgent
 
 LOUD = False
 QUIET = False
+MAX_MOVES = 130
 
 def runEpisode(player: Agent):
     board = chess.Board()
@@ -16,6 +17,8 @@ def runEpisode(player: Agent):
     turn_white_player = True
 
     prevState = (None, None)
+
+    moves = 0
 
     while running:
         move = None
@@ -55,3 +58,9 @@ def runEpisode(player: Agent):
             player.update(state, action, state.newStateFromAction(action))
         else:
             prevState = (state, action)
+
+        moves += 1
+
+        if moves >= MAX_MOVES * 2:
+            print('Forcefully stopped')
+            running = False

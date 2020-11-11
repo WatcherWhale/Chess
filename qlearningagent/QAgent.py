@@ -95,7 +95,7 @@ class QAgent(Agent):
         self.features.updateWeights(state, action, self.learningRate * diff)
 
     def getGreedyAgent(self):
-        return QAgent(self.file, 0, self.discount, self.learningRate, self.features)
+        return QAgent(self.file, 0, 0, self.features)
 
     def save(self):
         saveData = {
