@@ -1,21 +1,16 @@
-#!/usr/bin/python3
 import chess
-import chess.engine
-
-import os.path
 
 from chessUtil.State import State
 from chessUtil.Agent import Agent
 
-STOCKFISH_BIN = '/usr/bin/stockfish'
-QUIET = False
+from ABAgent.ABAgent import ABAgent
+
 LOUD = False
-LIMIT = 5.0
+QUIET = False
 
 def runEpisode(player: Agent):
     board = chess.Board()
-    black_player = chess.engine.SimpleEngine.popen_uci(STOCKFISH_BIN)
-    limit = chess.engine.Limit(time=LIMIT)
+    black_player = ABAgent(0.1, 0, 5)
 
     running = True
     turn_white_player = True
@@ -24,16 +19,14 @@ def runEpisode(player: Agent):
 
     while running:
         move = None
-
         state = State(board.copy(), turn_white_player, player)
 
         if turn_white_player:
             move = chess.Move.from_uci(player.makeMove(state))
-            turn_white_player = False
-
         else:
-            move = black_player.play(board, limit).move
-            turn_white_player = True
+            move = chess.Move.from_uci(black_player.makeMove(state))
+
+        turn_white_player = not turn_white_player
 
         board.push(move)
 
@@ -45,7 +38,7 @@ def runEpisode(player: Agent):
             running = False
 
             if turn_white_player:
-                print("Stockfish wins!")
+                print("Alpha Beta wins")
             else:
                 print("GrandQ wins!")
 
@@ -54,6 +47,7 @@ def runEpisode(player: Agent):
             print("Stalemate")
 
         action = move.uci()
+
         if not turn_white_player:
             if prevState[0] is not None:
                 player.update(prevState[0], prevState[1], state.newStateFromAction(action))
@@ -61,10 +55,3 @@ def runEpisode(player: Agent):
             player.update(state, action, state.newStateFromAction(action))
         else:
             prevState = (state, action)
-
-    black_player.quit()
-    player.save()
-
-    if not QUIET:
-        print(board)
-        print("###########################")
