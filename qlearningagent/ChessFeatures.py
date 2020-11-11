@@ -415,26 +415,17 @@ class PawnForkS(Feature):
             for p in pawns:
                 r, c = getRowColumn(p)
                 if r < 7 and c > 0 and c < 7:
-                    if board.piece_at(getSquareFromRowColumn(r + 1, c - 1)) is not None and board.piece_at(
-                            getSquareFromRowColumn(r + 1, c + 1)) is not None:
-                        sum += board.piece_at(
-                            getSquareFromRowColumn(r + 1, c - 1)).piece_type > 1 and not board.color_at(
-                            getSquareFromRowColumn(r + 1, c - 1)) \
-                               and board.piece_at(
-                            getSquareFromRowColumn(r + 1, c + 1)).piece_type > 1 and not board.color_at(
-                            getSquareFromRowColumn(r + 1, c + 1))
+                    if board.piece_at(getSquareFromRowColumn(r + 1, c - 1)) is not None and board.piece_at(getSquareFromRowColumn(r + 1, c + 1)) is not None:
+                        sum += board.piece_at(getSquareFromRowColumn(r + 1, c - 1)).piece_type > 1 and not board.color_at(getSquareFromRowColumn(r + 1, c - 1)) \
+                            and board.piece_at(getSquareFromRowColumn(r + 1, c + 1)).piece_type > 1 and not board.color_at(getSquareFromRowColumn(r + 1, c + 1))
 
         else:
             for p in pawns:
                 r, c = getRowColumn(p)
                 if r > 1 and c > 0 and c < 7:
-                    if board.piece_at(getSquareFromRowColumn(r - 1, c - 1)) is not None and board.piece_at(
-                            getSquareFromRowColumn(r - 1, c + 1)) is not None:
-                        sum += board.piece_at(getSquareFromRowColumn(r - 1, c - 1)).piece_type > 1 and board.color_at(
-                            getSquareFromRowColumn(r - 1, c - 1)) \
-                               and board.piece_at(
-                            getSquareFromRowColumn(r - 1, c + 1)).piece_type > 1 and board.color_at(
-                            getSquareFromRowColumn(r - 1, c + 1))
+                    if board.piece_at(getSquareFromRowColumn(r - 1, c - 1)) is not None and board.piece_at(getSquareFromRowColumn(r - 1, c + 1)) is not None:
+                        sum += board.piece_at(getSquareFromRowColumn(r - 1, c - 1)).piece_type > 1 and board.color_at(getSquareFromRowColumn(r - 1, c - 1)) \
+                        and board.piece_at(getSquareFromRowColumn(r - 1, c + 1)).piece_type > 1 and board.color_at(getSquareFromRowColumn(r - 1, c + 1))
 
         return sum / 8.0
 
@@ -614,7 +605,7 @@ class QueensAttacked(Feature):
     def calculateValue(self, state: State, action, nextState: State):
         board = nextState.getBoard()
         queens = board.pieces(chess.QUEEN, state.getPlayer())
-
+        enemyBoard = board.mirror()
         sum = 0
 
         for q in queens:
@@ -622,8 +613,8 @@ class QueensAttacked(Feature):
             attacked = False
 
             for piece_type in range(1,4):
-                for piece in board.pieces(piece_type, not state.getPlayer()):
-                    attacked = board.is_legal(chess.Move(q,piece_type))
+                for piece in board.pieces(piece_type, state.getPlayer()):
+                    attacked = enemyBoard.is_legal(chess.Move(q,piece_type))
 
                     if attacked:
                         break
@@ -632,7 +623,7 @@ class QueensAttacked(Feature):
                 sum += 1
                 break
 
-        return sum
+        return sum 
 
 
 class RooksAttacked(Feature):
@@ -643,7 +634,7 @@ class RooksAttacked(Feature):
     def calculateValue(self, state: State, action, nextState: State):
         board = nextState.getBoard()
         rooks = board.pieces(chess.ROOK, state.getPlayer())
-
+        enemyBoard = board.mirror()
         sum = 0
 
         for r in rooks:
@@ -651,8 +642,8 @@ class RooksAttacked(Feature):
             attacked = False
 
             for piece_type in range(1,3):
-                for piece in board.pieces(piece_type, not state.getPlayer()):
-                    attacked = board.is_legal(chess.Move(r,piece_type))
+                for piece in board.pieces(piece_type, state.getPlayer()):
+                    attacked = enemyBoard.is_legal(chess.Move(r,piece_type))
 
                     if attacked:
                         break
@@ -672,15 +663,15 @@ class BishopsAttacked(Feature):
     def calculateValue(self, state: State, action, nextState: State):
         board = nextState.getBoard()
         bishops = board.pieces(chess.BISHOP, state.getPlayer())
-
+        enemyBoard = board.mirror()
         sum = 0
 
         for b in bishops:
 
             attacked = False
 
-            for piece in board.pieces(chess.PAWN, not state.getPlayer()):
-                attacked = board.is_legal(chess.Move(b,chess.PAWN))
+            for piece in board.pieces(chess.PAWN, state.getPlayer()):
+                attacked = enemyBoard.is_legal(chess.Move(b,chess.PAWN))
 
                 if attacked:
                     sum += 1
@@ -697,15 +688,15 @@ class KnightsAttacked(Feature):
     def calculateValue(self, state: State, action, nextState: State):
         board = nextState.getBoard()
         knights = board.pieces(chess.KNIGHT, state.getPlayer())
-
+        enemyBoard = board.mirror()
         sum = 0
 
         for k in knights:
 
             attacked = False
 
-            for piece in board.pieces(chess.PAWN, not state.getPlayer()):
-                attacked = board.is_legal(chess.Move(k,chess.PAWN))
+            for piece in board.pieces(chess.PAWN, state.getPlayer()):
+                attacked = enemyBoard.is_legal(chess.Move(k,chess.PAWN))
 
                 if attacked:
                     sum += 1
