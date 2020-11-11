@@ -4,7 +4,7 @@ import sys
 from .Features import Features, Feature
 from chessUtil.Material import calculateMaterialAdvantage, calculateMaterialValue
 from chessUtil.State import State
-from chessUtil.Mobility import queenMobility, knightMobility, kingMobility, bishopMobility, rookMobility, mobility
+from chessUtil.Mobility import mobilityFunction
 from chessUtil.PositionParser import getRowColumn, getSquareFromRowColumn
 from ABAgent.ABAgent import ABAgent
 
@@ -136,18 +136,21 @@ class AmountBalancePieces(Feature):
         return calculateMaterialAdvantage(nextState, state.getPlayer())
 
 
-def calculateMobility(nextState: State, player, piece_type, divider):
-    pieces = nextState.getBoard().pieces(piece_type, player)
+def calculateMobility(nextState: State, player, piece_type, mirror):
+    board = nextState.getBoard()
+    pieces = board.pieces(piece_type, player)
 
     if len(pieces) == 0:
         return 0
 
-    minMobility = 64
+    sum =0
+    if mirror:
+        board = board.mirror()
 
     for piece in pieces:
-        minMobility = min(minMobility, mobility(piece_type, piece, nextState.getBoard()))
+        sum += mobilityFunction[piece_type-1](piece, board)
 
-    return minMobility / divider
+    return sum
 
 
 class MobilityQueenS(Feature):
@@ -156,7 +159,7 @@ class MobilityQueenS(Feature):
         self.name = "mobilityQueenS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateMobility(nextState, state.getPlayer(), chess.QUEEN, 26.0)
+        return calculateMobility(nextState, state.getPlayer(), chess.QUEEN, True) / 26.0
 
 
 class MobilityQueenO(Feature):
@@ -165,13 +168,7 @@ class MobilityQueenO(Feature):
         self.name = "mobilityQueenO"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateMobility(nextState, not state.getPlayer(), chess.QUEEN, 26.0)
-
-
-def calculateMobilityKing(nextState, player):
-    minMobility = kingMobility(nextState.getBoard().pieces(chess.KING, player).pop(), nextState.getBoard())
-
-    return minMobility / 8.0
+        return calculateMobility(nextState, not state.getPlayer(), chess.QUEEN, False) / 26.0
 
 
 class MobilityKingS(Feature):
@@ -180,7 +177,7 @@ class MobilityKingS(Feature):
         self.name = "mobilityKingS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateMobilityKing(nextState, state.getPlayer())
+        return calculateMobility(nextState, state.getPlayer(), chess.KING, True) / 8.0
 
 
 class MobilityKingO(Feature):
@@ -189,7 +186,7 @@ class MobilityKingO(Feature):
         self.name = "mobilityKingO"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateMobilityKing(nextState, not state.getPlayer())
+        return calculateMobility(nextState, not state.getPlayer(), chess.KING, False) / 8.0
 
 
 class MobilityKnightS(Feature):
@@ -198,7 +195,7 @@ class MobilityKnightS(Feature):
         self.name = "mobilityKnightS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateMobility(nextState, state.getPlayer(), chess.KNIGHT, 8.0)
+        return calculateMobility(nextState, state.getPlayer(), chess.KNIGHT, True) / 8.0
 
 
 class MobilityKnightO(Feature):
@@ -207,7 +204,7 @@ class MobilityKnightO(Feature):
         self.name = "mobilityKnightO"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateMobility(nextState, not state.getPlayer(), chess.KNIGHT, 8.0)
+        return calculateMobility(nextState, not state.getPlayer(), chess.KNIGHT, False) / 8.0
 
 
 class MobilityBishopS(Feature):
@@ -216,7 +213,7 @@ class MobilityBishopS(Feature):
         self.name = "mobilityBishopS"
 
     def calculateValue(self, state: State, action, nextState):
-        return calculateMobility(nextState, state.getPlayer(), chess.BISHOP, 13.0)
+        return calculateMobility(nextState, state.getPlayer(), chess.BISHOP, True) / 13.0
 
 
 class MobilityBishopO(Feature):
@@ -225,7 +222,7 @@ class MobilityBishopO(Feature):
         self.name = "mobilityBishopO"
 
     def calculateValue(self, state: State, action, nextState):
-        return calculateMobility(nextState, not state.getPlayer(), chess.BISHOP, 13.0)
+        return calculateMobility(nextState, not state.getPlayer(), chess.BISHOP, False) / 13.0
 
 
 class CenterPossessionS(Feature):
