@@ -5,6 +5,7 @@ from chessUtil.State import State
 from chessUtil.Agent import Agent
 
 QUIET = True
+LOUD = False
 
 def updateAgent(player, prevState, currentState):
     player.update(prevState[0], prevState[1], currentState)
@@ -26,7 +27,7 @@ def runEpisode(player: Agent):
             turnWhite = True
 
             for move in pgn_game.mainline_moves():
-                state = State(board.copy(), turnWhite)
+                state = State(board.copy(), turnWhite, player)
 
                 if not QUIET:
                     print(board)
@@ -34,7 +35,7 @@ def runEpisode(player: Agent):
 
                 board.push(move)
 
-                newState = State(board.copy(), not turnWhite)
+                newState = State(board.copy(), not turnWhite, player)
                 turnWhite = not turnWhite
 
                 if turnWhite:

@@ -9,11 +9,13 @@ from chessUtil.Agent import Agent
 
 STOCKFISH_BIN = '/usr/bin/stockfish'
 QUIET = False
+LOUD = False
+LIMIT = 5.0
 
 def runEpisode(player: Agent):
     board = chess.Board()
     black_player = chess.engine.SimpleEngine.popen_uci(STOCKFISH_BIN)
-    limit = chess.engine.Limit(time=5.0)
+    limit = chess.engine.Limit(time=LIMIT)
 
     running = True
     turn_white_player = True
@@ -23,7 +25,7 @@ def runEpisode(player: Agent):
     while running:
         move = None
 
-        state = State(board.copy(), turn_white_player)
+        state = State(board.copy(), turn_white_player, player)
 
         if turn_white_player:
             move = chess.Move.from_uci(player.makeMove(state))
@@ -35,9 +37,9 @@ def runEpisode(player: Agent):
 
         board.push(move)
 
-        if not QUIET:
+        if LOUD:
             print(board)
-            print("###########################")
+            print("###################")
 
         if board.is_checkmate():
             running = False
@@ -58,6 +60,9 @@ def runEpisode(player: Agent):
         else:
             prevState = (state, action)
 
-
     black_player.quit()
     player.save()
+
+    if not QUIET:
+        print(board)
+        print("###########################")

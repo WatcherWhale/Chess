@@ -18,7 +18,7 @@ class Features(list):
         nextState = state.newStateFromAction(action)
 
         fs = np.array([f.calculateValue(state, action, nextState) for f in self])
-        fs = 1/(1 + np.exp(-fs))
+        fs = 2/(1 + np.exp(-fs)) - 1
 
         return np.sum(np.multiply(self.weights, fs))
 
@@ -26,7 +26,7 @@ class Features(list):
         nextState = state.newStateFromAction(action)
 
         fs = np.array([f.calculateValue(state, action, nextState) for f in self])
-        fs = 1/(1 + np.exp(-fs))
+        fs = 2/(1 + np.exp(-fs)) - 1
 
         self.weights = self.weights + learningDifference * fs
 

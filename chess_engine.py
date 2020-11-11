@@ -54,7 +54,7 @@ def main():
                 if input_val[1] == "movetime":
                     goTime = float(input_val[2])
 
-                action = player.computeAction(State(board, board.turn))
+                action = player.computeAction(State(board, board.turn, player))
                 print("bestmove {}".format(action))
 
             else:

@@ -10,19 +10,29 @@ import train_stockfish
 import train_pgn
 import os.path
 import time
+import sys
 
-parser = argparse.ArgumentParser(description='')
+sys.setrecursionlimit(10000)
+
+grandQF = open('grandQ.txt', 'r')
+parser = argparse.ArgumentParser(description=grandQF.read(), formatter_class=argparse.RawTextHelpFormatter)
+grandQF.close()
 
 parser.add_argument('-f', '--file', type=str, default='grandQ.json')
 parser.add_argument('-a', '--agent', type=str, default='qAgent', help="'qAgent' or 'abAgent'")
 parser.add_argument('-o', '--opponent', type=str, default='self', help="'self', 'stockfish' or 'pgn'")
 parser.add_argument('-e', type=float, help='Epsilon', default=-1)
 parser.add_argument('-d', type=float, help='Discount', default=-1)
-parser.add_argument('-l', type=float,help='LearningRate', default=-1)
+parser.add_argument('-l', type=float, help='LearningRate', default=-1)
 parser.add_argument('-i', default=50, type=int, help='Iterations')
-parser.add_argument('--depth', type=int, help='The max search depth', default=100)
+parser.add_argument('--depth', type=int, help='The max search depth', default=3)
 parser.add_argument('-win', action='store_true', help='For those beings that think Windows is a good OS')
 parser.add_argument('-q', action='store_true', help='Quiet logging')
+parser.add_argument('-loud', action='store_true', help='Loud logging')
+parser.add_argument('-r', '--recursion-limit', type=int, metavar='LIMIT', help='Set the python recursion limit')
+parser.add_argument('-tt', type=float, metavar='SECONDS', help='The max turn time in seconds', default=0.1)
+parser.add_argument('-dt', type=float, metavar='SECONDS', help='The safe keeping value', default=0.1)
+
 
 def getOpponentAgent(agent):
     if agent == 'self':
@@ -31,6 +41,7 @@ def getOpponentAgent(agent):
         return train_stockfish.runEpisode
     elif agent == 'pgn':
         return train_pgn.runEpisode
+
 
 def getAgent(agent, args):
     if agent == 'qAgent' or agent == 'qagent' or agent == 'q':
@@ -49,7 +60,8 @@ def getAgent(agent, args):
         return qAgent
 
     elif agent == 'abAgent' or agent == 'abagent' or agent == 'ab':
-        return ABAgent(maxDepth=args.depth)
+        return ABAgent()
+
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -57,15 +69,32 @@ if __name__ == "__main__":
     if args.win:
         train_stockfish.STOCKFISH_BIN = './stockfish-win/stockfish.exe'
 
-    if args.q:
+    if args.loud:
+        train_stockfish.LOUD = True
+        train_self.LOUD = True
+        train_pgn.LOUD = True
+    elif args.q:
         train_stockfish.QUIET = True
         train_self.QUIET = True
         train_pgn.QUIET = True
 
-    agent : Agent = getAgent(args.agent, args)
+    if args.recursion_limit:
+        sys.setrecursionlimit(args.recursion_limit)
+
+    agent: Agent = getAgent(args.agent, args)
     runEpisode = getOpponentAgent(args.opponent)
 
-    for _ in range(args.i):
+    if args.tt:
+        train_stockfish.LIMIT = args.tt
+        agent.setGoTime(args.tt * 1000)
+
+    if args.dt:
+        agent.setDeltaTime(args.dt * 1000)
+
+    if args.depth:
+        agent.setMaxDepth(args.depth)
+
+    for e in range(args.i):
         start = time.time()
         runEpisode(agent)
-        print("Last episode took {}s".format(time.time() - start))
+        print("Episode " + str(e + 1) + " took {}s".format(time.time() - start))

@@ -5,13 +5,13 @@ import chess
 
 from chessUtil.State import State
 from .Features import Feature, Features
-from .SimpleFeatures import SimpleFeatures
-from .BetterFeatures import BetterFeatures
+from .ChessFeatures import ChessFeatures
 
 from chessUtil.Agent import Agent
 from chessUtil.Reward import calculateReward
 
-def loadAgentFromFile(file, features: Features = BetterFeatures()):
+
+def loadAgentFromFile(file, features: Features = ChessFeatures()):
     f = open(file)
     saveData = json.load(f)
     f.close()
@@ -21,8 +21,8 @@ def loadAgentFromFile(file, features: Features = BetterFeatures()):
     return QAgent(file, saveData['epsilon'], saveData['discount'], saveData['learningRate'], features)
 
 class QAgent(Agent):
-    def __init__(self, file, epsilon, discount, learningRate, features: Features = BetterFeatures(), goTime = 5000, deltaTime = 1000):
-        Agent.__init__(self, goTime, deltaTime)
+    def __init__(self, file, epsilon, discount, learningRate, features: Features = ChessFeatures(), goTime = 5000, deltaTime = 1000, maxDepth = 2):
+        Agent.__init__(self, goTime, deltaTime, maxDepth)
         self.file = file
         self.epsilon = epsilon
         self.discount = discount
@@ -45,15 +45,18 @@ class QAgent(Agent):
         actions = state.getLegalActions()
         posActions = []
         qVals = []
-        maxValue = self.maxQValue(state)
 
         if len(actions) == 0 or state.isTerminalState():
             return None
 
-        for action in actions:
-            qVal = self.getQValue(state, action)
-            qVals.append(qVal)
-            if maxValue == qVal:
+        for a in actions:
+            qVals.append((a, self.getQValue(state, a)))
+
+        maxValue = max(qVals, key=lambda x: x[1])[1]
+
+
+        for action, qVal in qVals:
+            if maxValue <= qVal:
                 posActions.append(action)
 
         if len(posActions) == 0:
@@ -68,20 +71,13 @@ class QAgent(Agent):
             choice = self.computeAction(state)
 
         if choice == None:
-            print(state.getLegalActions())
+            print('None action detected')
             exit(1)
 
         return choice
 
-
     def getQValue(self, state: State, action):
         return self.features.calculateFeatures(state, action)
-
-    def update(self, state: State, action, nextState: State):
-        reward = calculateReward(state, action, nextState)
-        diff = (reward + self.discount * self.maxQValue(nextState)) - self.getQValue(state, action)
-        self.features.updateWeights(state, action, self.learningRate * diff)
-
 
     def maxQValue(self, state: State):
         if len(state.getLegalActions()) == 0:
@@ -92,6 +88,11 @@ class QAgent(Agent):
             vals.append(self.getQValue(state, action))
 
         return max(vals)
+
+    def update(self, state: State, action, nextState: State):
+        reward = calculateReward(state, action, nextState)
+        diff = (reward + self.discount * self.maxQValue(nextState)) - self.getQValue(state, action)
+        self.features.updateWeights(state, action, self.learningRate * diff)
 
     def getGreedyAgent(self):
         return QAgent(self.file, 0, self.discount, self.learningRate, self.features)
