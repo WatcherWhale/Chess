@@ -119,12 +119,20 @@ def main():
         if args.opponent == 'stockfish':
             print('Stockfish won ' + str(train_stockfish.STOCKFISH_WINS) + ' times.')
             print('We won ' + str(train_stockfish.GRANDQ_WINS) + ' times.')
+            print('Stalemate ' + str(train_stockfish.STALEMATES) + ' times.')
+
         elif args.opponent == 'self':
             print('Black won ' + str(train_self.BLACK_WINS) + ' times.')
             print('White won ' + str(train_self.WHITE_WINS) + ' times.')
+            print('Stalemate ' + str(train_self.STALEMATES) + ' times.')
+            print('Forcefully stopped: ' + str(train_self.FORCEFULLY_STOPPED) + ' times.')
 
-        print('Stalemate ' + str(train_self.STALEMATES) + ' times.')
-        print('Forcefully stopped: ' + str(train_self.FORCEFULLY_STOPPED) + ' times.')
+        elif args.opponent == 'alphaBeta' or args.opponent == 'ab':
+            print('AlphaBeta won ' + str(train_alphabeta.AB_WINS) + ' times.')
+            print('We won ' + str(train_alphabeta.GRANDQ_WINS) + ' times.')
+            print('Stalemate ' + str(train_alphabeta.STALEMATES) + ' times.')
+            print('Forcefully stopped: ' + str(train_alphabeta.FORCEFULLY_STOPPED) + ' times.')
+
         print('===============================================')
 
 

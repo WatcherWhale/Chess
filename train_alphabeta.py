@@ -9,7 +9,19 @@ LOUD = False
 QUIET = False
 MAX_MOVES = 130
 
+STALEMATES = 0
+AB_WINS = 0
+GRANDQ_WINS = 0
+FORCEFULLY_STOPPED = 0
+
+
 def runEpisode(player: Agent):
+
+    global STALEMATES
+    global AB_WINS
+    global GRANDQ_WINS
+    global FORCEFULLY_STOPPED
+
     board = chess.Board()
     black_player = ABAgent(0.1, 0, 5)
 
@@ -42,12 +54,15 @@ def runEpisode(player: Agent):
 
             if turn_white_player:
                 print("Alpha Beta wins")
+                AB_WINS += 1
             else:
                 print("GrandQ wins!")
+                GRANDQ_WINS += 1
 
         if board.is_stalemate():
             running = False
             print("Stalemate")
+            STALEMATES += 1
 
         action = move.uci()
 
@@ -63,4 +78,5 @@ def runEpisode(player: Agent):
 
         if moves >= MAX_MOVES * 2:
             print('Forcefully stopped')
+            FORCEFULLY_STOPPED += 1
             running = False
