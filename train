@@ -119,7 +119,7 @@ def main():
         if args.opponent == 'stockfish':
             print('Stockfish won ' + str(train_stockfish.STOCKFISH_WINS) + ' times.')
             print('We won ' + str(train_stockfish.GRANDQ_WINS) + ' times.')
-        else:
+        elif args.opponent == 'self':
             print('Black won ' + str(train_self.BLACK_WINS) + ' times.')
             print('White won ' + str(train_self.WHITE_WINS) + ' times.')
 
