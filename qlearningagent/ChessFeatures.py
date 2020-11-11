@@ -548,6 +548,7 @@ def calculateRooksOnSeventhRankForPlayer(nextstate: State, player):
 
     return amount
 
+
 class RooksOnSeventhRankS(Feature):
     def __init__(self):
         Feature.__init__(self)
@@ -565,6 +566,7 @@ class RooksOnSeventhRankO(Feature):
     def calculateValue(self, state: State, action, nextState: State):
         return calculateRooksOnSeventhRankForPlayer(nextState, not state.getPlayer())
 
+
 class AlphaBeta(Feature):
     def __init__(self):
         Feature.__init__(self)
@@ -576,6 +578,7 @@ class AlphaBeta(Feature):
         didMove = action == agent.makeMove(state.copy())
 
         return didMove
+
 
 class QueensAttacked(Feature):
     def __init__(self):
@@ -605,6 +608,7 @@ class QueensAttacked(Feature):
 
         return sum
 
+
 class RooksAttacked(Feature):
     def __init__(self):
         Feature.__init__(self)
@@ -633,6 +637,7 @@ class RooksAttacked(Feature):
 
         return sum
 
+
 class BishopsAttacked(Feature):
     def __init__(self):
         Feature.__init__(self)
@@ -657,6 +662,7 @@ class BishopsAttacked(Feature):
 
         return sum
 
+
 class KnightsAttacked(Feature):
     def __init__(self):
         Feature.__init__(self)
@@ -680,3 +686,12 @@ class KnightsAttacked(Feature):
                     break
 
         return sum
+
+
+class IsCastling(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "isCastling"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return state.getBoard().is_castling(action)
