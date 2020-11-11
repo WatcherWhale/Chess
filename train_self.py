@@ -72,7 +72,6 @@ def runEpisode(player: Agent):
         if not running:
             player.update(state, action, state.newStateFromAction(action))
 
-    player.save()
     print(board.result())
 
     if not QUIET:

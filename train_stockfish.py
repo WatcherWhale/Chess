@@ -63,7 +63,6 @@ def runEpisode(player: Agent):
             prevState = (state, action)
 
     black_player.quit()
-    player.save()
 
     if not QUIET:
         print(board)

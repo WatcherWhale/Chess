@@ -102,4 +102,5 @@ if __name__ == "__main__":
     for e in range(args.i):
         start = time.time()
         runEpisode(agent)
+        agent.save()
         print("Episode " + str(e + 1) + " took {}s".format(time.time() - start))

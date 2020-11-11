@@ -50,5 +50,3 @@ def runEpisode(player: Agent):
 
         else:
             running = False
-
-        player.save()
