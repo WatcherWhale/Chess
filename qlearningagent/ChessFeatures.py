@@ -225,40 +225,66 @@ class MobilityBishopO(Feature):
         return calculateMobility(nextState, not state.getPlayer(), chess.BISHOP, False) / 13.0
 
 
-class CenterPossessionS(Feature):
+def calculateCenterControl(nextState: State, player: bool):
+    board = nextState.getBoard()
+    sum = 0
+
+    for s in [chess.D4, chess.E4, chess.D5, chess.E5]:
+        piece = board.piece_at(s)
+        sum += piece is not None and piece.color == player and piece.piece_type == chess.PAWN
+
+    return sum / 4.0
+
+
+class CenterControlS(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "centerPossessionS"
+        self.name = "centerControlS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        board = nextState.getBoard()
-        sum = 0
+        return calculateCenterControl(nextState, state.getPlayer())
 
-        for s in [chess.D4, chess.E4, chess.D5, chess.E5]:
-            piece = board.piece_at(s)
-            sum += piece is not None and piece.color == state.getPlayer() and piece.piece_type == chess.PAWN
 
-        return sum / 4.0
+class CenterControlO(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "centerControlO"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateCenterControl(nextState, not state.getPlayer())
+
+
+def calculateIsolationPawn(nextState: State, player: bool):
+    board = nextState.getBoard()
+    sum = 0
+
+    pawns = board.pieces(chess.PAWN, player)
+
+    for p1 in pawns:
+        for p2 in pawns:
+            if chess.square_distance(p1, p2) == 1:
+                sum += 1
+                break
+
+    return (8 - sum) / 8.0
 
 
 class IsolationPawnS(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "isolationS"
+        self.name = "isolationPawnS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        board = nextState.getBoard()
-        sum = 0
+        return calculateIsolationPawn(nextState, state.getPlayer())
 
-        pawns = board.pieces(chess.PAWN, state.getPlayer())
 
-        for p1 in pawns:
-            for p2 in pawns:
-                if chess.square_distance(p1, p2) == 1:
-                    sum += 1
-                    break
+class IsolationPawnO(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "isolationPawnO"
 
-        return (8 - sum) / 8.0
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateIsolationPawn(nextState, state.getPlayer())
 
 
 class LightFirstRankS(Feature):
@@ -296,10 +322,10 @@ class KingAttacked(Feature):
         return nextState.getBoard().is_check()
 
 
-class HorizontalConnectedRooksS(Feature):
+class ConnectedRooksHorizontalS(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "horizontalConnectedRooksS"
+        self.name = "connectedRooksHorizontalS"
 
     def calculateValue(self, state: State, action, nextState: State):
 
@@ -335,10 +361,10 @@ class HorizontalConnectedRooksS(Feature):
         return False
 
 
-class VerticalConnectedRooksS(Feature):
+class ConnectedRooksVerticalS(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "verticalConnectedRooksS"
+        self.name = "connectedRooksVerticalS"
 
     def calculateValue(self, state: State, action, nextState: State):
 
@@ -534,14 +560,14 @@ class ConnectivityO(Feature):
         return calculateAttackers(not state.getPlayer(), not state.getPlayer(), nextState)
 
 
-def calculateRooksOnSeventhRankForPlayer(nextstate: State, player):
+def calculateRooksOnSeventhRankForPlayer(nextState: State, player):
     if player == chess.WHITE:
         seven = 7
     else:
         seven = 2
 
     amount = 0
-    rookSet = nextstate.getBoard().pieces(chess.ROOK, player)
+    rookSet = nextState.getBoard().pieces(chess.ROOK, player)
     for rook in rookSet:
         if chess.square_rank(rook) == seven:
             amount += 1
