@@ -14,6 +14,11 @@ import chess
 # Source: https://areeweb.polito.it/didattica/gcia/tesine/Tesine_2016/Mannella/Thesis_Mannen-Learning_to_Play_Chess_Using_Reinforcement_Learning.pdf
 
 
+#################
+# S -> Self     #
+# O -> Opponent #
+#################
+
 class ChessFeatures(Features):
     def __init__(self):
         Features.__init__(self)
@@ -22,15 +27,6 @@ class ChessFeatures(Features):
         for c in classes:
             if issubclass(c[1], Feature) and c[0] != "Feature":
                 self.append(c[1]())
-
-
-
-    ###################
-    # S -> Self       #
-    # O -> Opponent   #
-    ###################
-
-
 
 class AmountQueensS(Feature):
     def __init__(self):
