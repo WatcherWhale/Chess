@@ -287,30 +287,43 @@ class IsolationPawnO(Feature):
         return calculateIsolationPawn(nextState, state.getPlayer())
 
 
+def calculateLightFirstRank(nextState: State, player: bool):
+    sum = 0
+
+    board = nextState.getBoard()
+
+    # if player is white check squares B1, C1, F1 and G1
+    # if player is black check squares B8, C8, F8 and G8
+    if player:
+        sum += ((board.piece_type_at(chess.B1) == 2) and board.color_at(chess.B1)) + (
+                (board.piece_type_at(chess.G1) == 2) and board.color_at(chess.G1))
+        sum += ((board.piece_type_at(chess.C1) == 3) and board.color_at(chess.C1)) + (
+                (board.piece_type_at(chess.F1) == 3) and board.color_at(chess.F1))
+    else:
+        sum += ((board.piece_type_at(chess.B8) == 2) and (not board.color_at(chess.B1))) + (
+                (board.piece_type_at(chess.G8) == 2) and (not board.color_at(chess.G8)))
+        sum += ((board.piece_type_at(chess.C8) == 3) and (not board.color_at(chess.C8))) + (
+                (board.piece_type_at(chess.F8) == 3) and (not board.color_at(chess.F8)))
+
+    return sum / 4.0
+
+
 class LightFirstRankS(Feature):
     def __init__(self):
         Feature.__init__(self)
         self.name = "lightOnFirstRankS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        sum = 0
+        return calculateLightFirstRank(nextState, state.getPlayer())
 
-        board = nextState.getBoard()
 
-        # if player is white check squares B1, C1, F1 and G1
-        # if player is black check squares B8, C8, F8 and G8
-        if state.getPlayer():
-            sum += ((board.piece_type_at(chess.B1) == 2) and board.color_at(chess.B1)) + (
-                    (board.piece_type_at(chess.G1) == 2) and board.color_at(chess.G1))
-            sum += ((board.piece_type_at(chess.C1) == 3) and board.color_at(chess.C1)) + (
-                    (board.piece_type_at(chess.F1) == 3) and board.color_at(chess.F1))
-        else:
-            sum += ((board.piece_type_at(chess.B8) == 2) and (not board.color_at(chess.B1))) + (
-                    (board.piece_type_at(chess.G8) == 2) and (not board.color_at(chess.G8)))
-            sum += ((board.piece_type_at(chess.C8) == 3) and (not board.color_at(chess.C8))) + (
-                    (board.piece_type_at(chess.F8) == 3) and (not board.color_at(chess.F8)))
+class LightFirstRankO(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "lightOnFirstRankO"
 
-        return sum / 4.0
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateLightFirstRank(nextState, not state.getPlayer())
 
 
 class KingAttacked(Feature):

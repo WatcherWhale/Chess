@@ -15,7 +15,7 @@ class ABAgent(Agent):
         actions = []
         alpha = -math.inf
         beta = math.inf
-        value = -math.inf;
+        value = -math.inf
 
         for action in state.getLegalActions():
             nextState = state.newStateFromAction(action)
