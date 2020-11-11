@@ -69,6 +69,9 @@ def runEpisode(player: Agent):
 
             prevBlackState = (state, action)
 
+        if not running:
+            player.update(state, action, state.newStateFromAction(action))
+
     player.save()
     print(board.result())
 

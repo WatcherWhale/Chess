@@ -8,6 +8,7 @@ import argparse
 import train_self
 import train_stockfish
 import train_pgn
+import train_alphabeta
 import os.path
 import time
 import sys
@@ -20,15 +21,15 @@ grandQF.close()
 
 parser.add_argument('-f', '--file', type=str, default='grandQ.json')
 parser.add_argument('-a', '--agent', type=str, default='qAgent', help="'qAgent' or 'abAgent'")
-parser.add_argument('-o', '--opponent', type=str, default='self', help="'self', 'stockfish' or 'pgn'")
+parser.add_argument('-o', '--opponent', type=str, default='self', help="'self', 'stockfish', 'pgn' or 'alphaBeta'")
 parser.add_argument('-e', type=float, help='Epsilon', default=-1)
 parser.add_argument('-d', type=float, help='Discount', default=-1)
 parser.add_argument('-l', type=float, help='LearningRate', default=-1)
 parser.add_argument('-i', default=50, type=int, help='Iterations')
 parser.add_argument('--depth', type=int, help='The max search depth', default=100)
 parser.add_argument('-win', action='store_true', help='For those beings that think Windows is a good OS')
-parser.add_argument('-q', action='store_true', help='Quiet logging')
-parser.add_argument('-loud', action='store_true', help='Loud logging')
+parser.add_argument('-q', '--quiet', action='store_true', help='Quiet logging')
+parser.add_argument('--loud', action='store_true', help='Loud logging')
 parser.add_argument('-r', '--recursion-limit', type=int, metavar='LIMIT', help='Set the python recursion limit')
 parser.add_argument('-tt', type=float, metavar='SECONDS', help='The max turn time in seconds', default=5.0)
 parser.add_argument('-dt', type=float, metavar='SECONDS', help='The safe keeping value', default=0.1)
@@ -41,6 +42,8 @@ def getOpponentAgent(agent):
         return train_stockfish.runEpisode
     elif agent == 'pgn':
         return train_pgn.runEpisode
+    elif agent == 'alphaBeta' or agent == 'alphabeta' or agent == 'ab':
+        return train_alphabeta.runEpisode
 
 
 def getAgent(agent, args):
@@ -73,10 +76,12 @@ if __name__ == "__main__":
         train_stockfish.LOUD = True
         train_self.LOUD = True
         train_pgn.LOUD = True
+        train_alphabeta.LOUD = True
     elif args.q:
         train_stockfish.QUIET = True
         train_self.QUIET = True
         train_pgn.QUIET = True
+        train_alphabeta.QUIET = True
 
     if args.recursion_limit:
         sys.setrecursionlimit(args.recursion_limit)
