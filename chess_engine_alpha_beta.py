@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import chess
-from qlearningagent.QAgent import QAgent, loadAgentFromFile
+from ABAgent.ABAgent import ABAgent
 from chessUtil.State import State
 
 # https://ucichessengine.wordpress.com/2011/03/16/description-of-uci-protocol/
@@ -31,8 +31,7 @@ def uci(name, author):
 
 def main():
     board = chess.Board()
-    player = loadAgentFromFile("grandQ.json")
-    player = player.getGreedyAgent()
+    player = ABAgent(maxDepth=10)
 
     running = True
 
@@ -75,7 +74,7 @@ def main():
         elif len(input_val) > 0:
 
             if input_val[0] == "uci":
-                uci(name="GrandQ", author="Mathias Maes, Willem van der Elst, Tijs Van Alphen")
+                uci(name="GrandAlphabet", author="Mathias Maes, Willem van der Elst, Tijs Van Alphen")
 
             elif input_val[0] == "quit":
                 running = False
