@@ -344,21 +344,27 @@ def calculateConnectedRooks(nextState: State, player: bool, isVertical: bool):
     if len(rooks) < 2:
         return False
 
+    # more than 2 rooks is possible
     pairs = list(itertools.combinations(rooks, 2))
 
-    sameRowPairs = []
+    filteredPairs = []
     for pair in pairs:
         if getRowColumn(pair[0])[isVertical] == getRowColumn(pair[1])[isVertical]:
-            sameRowPairs.append(pair)
+            filteredPairs.append(pair)
 
-    for r1, r2 in sameRowPairs:
-        squares = chess.SquareSet().between(r1, r2)
+    if filteredPairs:
+        # filteredPairs is not empty
+        isConnected = True
+        for r1, r2 in filteredPairs:
+            squares = chess.SquareSet().between(r1, r2)
 
-        for s in squares:
-            if nextState.getBoard().piece_at(s) is not None:
-                return False
+            for s in squares:
+                if nextState.getBoard().piece_at(s) is not None:
+                    isConnected = False
+            if isConnected:
+                return True
 
-    return True
+    return False
 
 
 class ConnectedRooksHorizontalS(Feature):
