@@ -1,5 +1,6 @@
 import inspect
 import sys
+import itertools
 
 from .Features import Features, Feature
 from chessUtil.Material import calculateMaterialAdvantage, calculateMaterialValue
@@ -27,6 +28,7 @@ class ChessFeatures(Features):
         for c in classes:
             if issubclass(c[1], Feature) and c[0] != "Feature":
                 self.append(c[1]())
+
 
 class AmountQueensS(Feature):
     def __init__(self):
@@ -335,43 +337,46 @@ class KingAttacked(Feature):
         return nextState.getBoard().is_check()
 
 
+def calculateConnectedRooks(nextState: State, player: bool, isVertical: bool):
+
+    rooks = nextState.getBoard().pieces(chess.ROOK, player)
+
+    if len(rooks) < 2:
+        return False
+
+    pairs = list(itertools.combinations(rooks, 2))
+
+    sameRowPairs = []
+    for pair in pairs:
+        if getRowColumn(pair[0])[isVertical] == getRowColumn(pair[1])[isVertical]:
+            sameRowPairs.append(pair)
+
+    for r1, r2 in sameRowPairs:
+        squares = chess.SquareSet().between(r1, r2)
+
+        for s in squares:
+            if nextState.getBoard().piece_at(s) is not None:
+                return False
+
+    return True
+
+
 class ConnectedRooksHorizontalS(Feature):
     def __init__(self):
         Feature.__init__(self)
         self.name = "connectedRooksHorizontalS"
 
     def calculateValue(self, state: State, action, nextState: State):
+        return calculateConnectedRooks(nextState, state.getPlayer(), False)
 
-        rooks = nextState.getBoard().pieces(chess.ROOK, state.getPlayer())
 
-        if len(rooks) < 2:
-            return False
+class ConnectedRooksHorizontalO(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "connectedRooksHorizontalO"
 
-        pairs = []
-
-        for r1 in rooks:
-            for r2 in rooks:
-                if r1 == r2:
-                    continue
-
-                if (r2, r1) in pairs:
-                    continue
-
-                if getRowColumn(r1)[0] == getRowColumn(r2)[0]:
-                    pairs.append((r1, r2))
-
-        for r1, r2 in pairs:
-            squares = chess.SquareSet().ray(r1, r2)
-            notConnected = False
-
-            for s in squares:
-                if nextState.getBoard().piece_at(s) is not None:
-                    notConnected = True
-                    break
-            if notConnected == False:
-                return True
-
-        return False
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateConnectedRooks(nextState, not state.getPlayer(), False)
 
 
 class ConnectedRooksVerticalS(Feature):
@@ -380,37 +385,16 @@ class ConnectedRooksVerticalS(Feature):
         self.name = "connectedRooksVerticalS"
 
     def calculateValue(self, state: State, action, nextState: State):
+        return calculateConnectedRooks(nextState, state.getPlayer(), True)
 
-        rooks = nextState.getBoard().pieces(chess.ROOK, state.getPlayer())
 
-        if len(rooks) < 2:
-            return False
+class ConnectedRooksVerticalO(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "connectedRooksVerticalO"
 
-        pairs = []
-
-        for r1 in rooks:
-            for r2 in rooks:
-                if r1 == r2:
-                    continue
-
-                if (r2, r1) in pairs:
-                    continue
-
-                if getRowColumn(r1)[1] == getRowColumn(r2)[1]:
-                    pairs.append((r1, r2))
-
-        for r1, r2 in pairs:
-            squares = chess.SquareSet().ray(r1, r2)
-            notConnected = False
-
-            for s in squares:
-                if nextState.getBoard().piece_at(s) is not None:
-                    notConnected = True
-                    break
-            if notConnected == False:
-                return True
-
-        return False
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateConnectedRooks(nextState, not state.getPlayer(), True)
 
 
 class PawnForkS(Feature):

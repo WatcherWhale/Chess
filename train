@@ -69,6 +69,11 @@ def getAgent(agent, args):
     elif agent == 'abAgent' or agent == 'abagent' or agent == 'ab':
         return ABAgent()
 
+
+totalDuration = 0
+episodes = 0
+
+
 def main():
     args = parser.parse_args()
 
@@ -107,20 +112,25 @@ def main():
     if args.depth:
         agent.setMaxDepth(args.depth)
 
-    for e in range(args.i):
+    global totalDuration
+    global episodes
+
+    for episodes in range(int(args.i)):
         start = time.time()
         runEpisode(agent)
         agent.save()
-        print("Episode " + str(e + 1) + " took {}s".format(time.time() - start))
+        ep_duration = time.time() - start
+        print("Episode " + str(episodes + 1) + " took {}s".format(ep_duration))
+        totalDuration += ep_duration
 
-    if args.i > 1:
+    if int(args.i) > 1:
         printOverview(args)
 
 
 def printOverview(args):
     print('')
     print('===============================================')
-    print('In ' + str(args.i) + ' games:')
+    print('In', episodes, 'games:')
 
     if args.opponent == 'stockfish':
         print('Stockfish won ' + str(train_stockfish.STOCKFISH_WINS) + ' times.')
@@ -139,6 +149,7 @@ def printOverview(args):
         print('Stalemate ' + str(train_alphabeta.STALEMATES) + ' times.')
         print('Forcefully stopped: ' + str(train_alphabeta.FORCEFULLY_STOPPED) + ' times.')
 
+    print('Average time: ', totalDuration/episodes, 'seconds.')
     print('===============================================')
 
 
@@ -147,7 +158,7 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         args = parser.parse_args()
-        args.i = '?'
-        printOverview(args)
+        if episodes > 0:
+            printOverview(args)
         print("Training has stopped")
 
