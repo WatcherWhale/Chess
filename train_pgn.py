@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import chess.pgn
 
+import progressbar
+
 from chessUtil.State import State
 from chessUtil.Agent import Agent
 
@@ -26,7 +28,12 @@ def runEpisode(player: Agent):
 
             turnWhite = True
 
+            moves = 0
             for move in pgn_game.mainline_moves():
+                moves += 1
+
+
+            for move in progressbar.progressbar(pgn_game.mainline_moves(), max_value=moves):
                 state = State(board.copy(), turnWhite, player)
 
                 if not QUIET:

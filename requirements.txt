@@ -2,3 +2,4 @@ chess
 stockfish
 argparse
 numpy
+progressbar2

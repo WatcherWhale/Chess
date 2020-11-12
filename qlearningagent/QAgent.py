@@ -18,7 +18,7 @@ def loadAgentFromFile(file, features: Features = ChessFeatures()):
 
     features.fromDict(saveData['weights'])
 
-    return QAgent(file, saveData['epsilon'], saveData['discount'], saveData['learningRate'], features)
+    return QAgent(file, saveData['epsilon'], saveData['discount'], saveData['learningRate'], features, maxDepth=saveData['maxDepth'])
 
 class QAgent(Agent):
     def __init__(self, file, epsilon, discount, learningRate, features: Features = ChessFeatures(), goTime = 5000, deltaTime = 1000, maxDepth = 2):
@@ -102,6 +102,7 @@ class QAgent(Agent):
             'epsilon': self.epsilon,
             'discount': self.discount,
             'learningRate': self.learningRate,
+            'maxDepth': self.maxDepth,
             'weights': self.features.toDict()
         }
 
