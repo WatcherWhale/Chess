@@ -4,14 +4,14 @@ import json
 import chess
 
 from chessUtil.State import State
-from .Features import Feature, Features
-from .ChessFeatures import ChessFeatures
+from chessUtil.Features import Feature, Features
+from chessUtil.AlphaBetaFeatures import AlphaBetaFeatures
 
 from chessUtil.Agent import Agent
 from chessUtil.Reward import calculateReward
 
 
-def loadAgentFromFile(file, features: Features = ChessFeatures()):
+def loadAgentFromFile(file, features: Features = AlphaBetaFeatures()):
     f = open(file)
     saveData = json.load(f)
     f.close()
@@ -21,7 +21,7 @@ def loadAgentFromFile(file, features: Features = ChessFeatures()):
     return QAgent(file, saveData['epsilon'], saveData['discount'], saveData['learningRate'], features, maxDepth=saveData['maxDepth'])
 
 class QAgent(Agent):
-    def __init__(self, file, epsilon, discount, learningRate, features: Features = ChessFeatures(), goTime = 5000, deltaTime = 1000, maxDepth = 2):
+    def __init__(self, file, epsilon, discount, learningRate, features: Features = AlphaBetaFeatures(), goTime = 5000, deltaTime = 1000, maxDepth = 2):
         Agent.__init__(self, goTime, deltaTime, maxDepth)
         self.file = file
         self.epsilon = epsilon
