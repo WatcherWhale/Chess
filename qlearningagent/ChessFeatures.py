@@ -565,9 +565,9 @@ class ConnectivityO(Feature):
 
 def calculateRooksOnSeventhRankForPlayer(nextState: State, player):
     if player == chess.WHITE:
-        seven = 7
+        seven = 6
     else:
-        seven = 2
+        seven = 1
 
     amount = 0
     rookSet = nextState.getBoard().pieces(chess.ROOK, player)
