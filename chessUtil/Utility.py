@@ -3,11 +3,9 @@ import chess
 from .State import State
 from .Material import calculateMaterialValue
 from .Mobility import totalMobility
-from .ChessFeatures import ChessFeatures
+from .Features import Features
 
-features = ChessFeatures()
-
-def utility(state: State):
+def utility(state: State, features: Features):
     value = 0
 
     if state.getBoard().is_checkmate():
@@ -29,4 +27,4 @@ def utility(state: State):
 
     value += totalMobility(state.getBoard(), state.getPlayer())
 
-    return value + features.utility(state)
+    return value + features.calculateFeatures(prevState, action)

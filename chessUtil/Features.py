@@ -43,14 +43,6 @@ class Features(list):
             f.setWeight(dict[f.getName()])
             self.weights[self.index(f)] = dict[f.getName()]
 
-    def utility(self, state: State):
-        u = 0
-        for f in self:
-            if f.getName()[-1] is not 'O':
-                pS, pA = state.getPreviousState()
-                u += f.calculateValue(pS, pA, state)
-        return u
-
 class Feature:
     def __init__(self):
         self.name = "feature"
