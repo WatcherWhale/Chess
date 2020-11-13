@@ -424,28 +424,28 @@ def calculatePawnFork(nextState: State, player: bool):
     return sum / 8.0
 
 
-class PawnForkS(Feature):
+class ForkPawnS(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "pawnForkS"
+        self.name = "forkPawnS"
 
     def calculateValue(self, state: State, action, nextState: State):
         return calculatePawnFork(nextState, state.getPlayer())
 
 
-class PawnForkO(Feature):
+class ForkPawnO(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "pawnForkO"
+        self.name = "forkPawnO"
 
     def calculateValue(self, state: State, action, nextState: State):
         return calculatePawnFork(nextState, not state.getPlayer())
 
 
-class KnightForkS(Feature):
+class ForkKnightS(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "knightForkS"
+        self.name = "forkKnightS"
 
     def calculateValue(self, state: State, action, nextState: State):
         board = nextState.getBoard()
