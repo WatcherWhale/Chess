@@ -286,7 +286,7 @@ class IsolationPawnO(Feature):
         self.name = "isolationPawnO"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateIsolationPawn(nextState, state.getPlayer())
+        return calculateIsolationPawn(nextState, not state.getPlayer())
 
 
 def calculateLightFirstRank(nextState: State, player: bool):
