@@ -1,4 +1,5 @@
 import chess
+import progressbar
 
 from chessUtil.State import State
 from chessUtil.Agent import Agent
@@ -31,6 +32,8 @@ def runEpisode(player: Agent):
     prevState = (None, None)
 
     moves = 0
+
+    bar = progressbar.ProgressBar(max_value=MAX_MOVES * 2)
 
     while running:
         move = None
@@ -75,6 +78,7 @@ def runEpisode(player: Agent):
             prevState = (state, action)
 
         moves += 1
+        bar.update(moves)
 
         if moves >= MAX_MOVES * 2:
             print('Forcefully stopped')

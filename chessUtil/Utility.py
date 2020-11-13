@@ -3,6 +3,9 @@ import chess
 from .State import State
 from .Material import calculateMaterialValue
 from .Mobility import totalMobility
+from .ChessFeatures import ChessFeatures
+
+features = ChessFeatures()
 
 def utility(state: State):
     value = 0
@@ -26,4 +29,4 @@ def utility(state: State):
 
     value += totalMobility(state.getBoard(), state.getPlayer())
 
-    return value
+    return value + features.utility(state)

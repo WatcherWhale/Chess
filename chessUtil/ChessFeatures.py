@@ -7,7 +7,6 @@ from chessUtil.Material import calculateMaterialAdvantage, calculateMaterialValu
 from chessUtil.State import State
 from chessUtil.Mobility import mobilityFunction
 from chessUtil.PositionParser import getRowColumn, getSquareFromRowColumn
-from ABAgent.ABAgent import ABAgent
 
 import chess
 

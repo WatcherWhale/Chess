@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import chess
+import progressbar
 import os.path
 
 #from searchagent.search_agent import SearchAgent
@@ -33,6 +34,7 @@ def runEpisode(player: Agent):
     turn_white_player = True
     counter = 0
 
+    bar = progressbar.ProgressBar(max_value=MAX_MOVES * 2)
     while running and not board.is_game_over():
         counter += 1
         action = None
@@ -90,6 +92,8 @@ def runEpisode(player: Agent):
             print('Forcefully stopped')
             FORCEFULLY_STOPPED += 1
             running = False
+
+        bar.update(counter)
 
     print(board.result())
 

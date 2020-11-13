@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import chess
-from qlearningagent.QAgent import QAgent, loadAgentFromFile
+from QAgent.QAgent import QAgent, loadAgentFromFile
 from chessUtil.State import State
 
 # https://ucichessengine.wordpress.com/2011/03/16/description-of-uci-protocol/
