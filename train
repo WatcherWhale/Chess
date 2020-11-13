@@ -115,7 +115,7 @@ def main():
     global totalDuration
     global episodes
 
-    for episodes in range(int(args.i)):
+    for episodes in range(int(args.i) + 1):
         start = time.time()
         runEpisode(agent)
         agent.save()
@@ -130,7 +130,7 @@ def main():
 def printOverview(args):
     print('')
     print('===============================================')
-    print('In', episodes + 1, 'games:')
+    print('In', episodes, 'games:')
 
     if args.opponent == 'stockfish':
         print('Stockfish won ' + str(train_stockfish.STOCKFISH_WINS) + ' times.')
