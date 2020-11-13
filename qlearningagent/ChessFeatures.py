@@ -403,34 +403,43 @@ class ConnectedRooksVerticalO(Feature):
         return calculateConnectedRooks(nextState, not state.getPlayer(), True)
 
 
+def calculatePawnFork(nextState: State, player: bool):
+
+    board = nextState.getBoard()
+    pawns = board.pieces(chess.PAWN, player)
+    sum = 0
+
+    for p in pawns:
+        r, c = getRowColumn(p)
+
+        if 0 < c < 7:
+
+            forked_piece1 = board.piece_at(getSquareFromRowColumn(r + 1, c - 1))
+            forked_piece2 = board.piece_at(getSquareFromRowColumn(r + 1, c + 1))
+
+            if forked_piece1 is not None and forked_piece2 is not None and forked_piece1.piece_type > 1 and forked_piece2.piece_type > 1 \
+                    and forked_piece1.color is not player and forked_piece2.color is not player:
+                sum += 1
+
+    return sum / 8.0
+
+
 class PawnForkS(Feature):
     def __init__(self):
         Feature.__init__(self)
         self.name = "pawnForkS"
 
     def calculateValue(self, state: State, action, nextState: State):
+        return calculatePawnFork(nextState, state.getPlayer())
 
-        board = nextState.getBoard()
-        pawns = board.pieces(chess.PAWN, state.getPlayer())
-        sum = 0
 
-        if state.getPlayer():
-            for p in pawns:
-                r, c = getRowColumn(p)
-                if r < 7 and c > 0 and c < 7:
-                    if board.piece_at(getSquareFromRowColumn(r + 1, c - 1)) is not None and board.piece_at(getSquareFromRowColumn(r + 1, c + 1)) is not None:
-                        sum += board.piece_at(getSquareFromRowColumn(r + 1, c - 1)).piece_type > 1 and not board.color_at(getSquareFromRowColumn(r + 1, c - 1)) \
-                            and board.piece_at(getSquareFromRowColumn(r + 1, c + 1)).piece_type > 1 and not board.color_at(getSquareFromRowColumn(r + 1, c + 1))
+class PawnForkO(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "pawnForkO"
 
-        else:
-            for p in pawns:
-                r, c = getRowColumn(p)
-                if r > 1 and c > 0 and c < 7:
-                    if board.piece_at(getSquareFromRowColumn(r - 1, c - 1)) is not None and board.piece_at(getSquareFromRowColumn(r - 1, c + 1)) is not None:
-                        sum += board.piece_at(getSquareFromRowColumn(r - 1, c - 1)).piece_type > 1 and board.color_at(getSquareFromRowColumn(r - 1, c - 1)) \
-                            and board.piece_at(getSquareFromRowColumn(r - 1, c + 1)).piece_type > 1 and board.color_at(getSquareFromRowColumn(r - 1, c + 1))
-
-        return sum / 8.0
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculatePawnFork(nextState, not state.getPlayer())
 
 
 class KnightForkS(Feature):
