@@ -145,7 +145,7 @@ def calculateMobility(nextState: State, player, piece_type, mirror):
     if len(pieces) == 0:
         return 0
 
-    sum =0
+    sum = 0
     if mirror:
         board = board.mirror()
 
@@ -442,44 +442,55 @@ class ForkPawnO(Feature):
         return calculatePawnFork(nextState, not state.getPlayer())
 
 
+def calculateForkKnights(nextState: State, player: bool):
+
+    board = nextState.getBoard()
+    knights = board.pieces(chess.KNIGHT, player)
+    sum = 0
+
+    for k in knights:
+        r, c = getRowColumn(k)
+
+        rowColumns = []
+        rowColumns.append((r + 1, c - 2))
+        rowColumns.append((r + 2, c - 1))
+        rowColumns.append((r + 2, c + 1))
+        rowColumns.append((r + 1, c + 2))
+        rowColumns.append((r - 1, c + 2))
+        rowColumns.append((r - 2, c + 1))
+        rowColumns.append((r - 2, c - 1))
+        rowColumns.append((r - 1, c - 2))
+
+        amountSuperior = 0
+
+        for rowColumn in rowColumns:
+            square = getSquareFromRowColumn(rowColumn[0], rowColumn[1])
+            if 0 <= rowColumn[0] < 8 and 0 <= rowColumn[1] < 8 and amountSuperior < 2:
+                if board.piece_at(getSquareFromRowColumn(rowColumn[0], rowColumn[1])) is not None and board.color_at(square) is not player:
+                    amountSuperior += board.piece_at(square).piece_type > 2
+
+        if amountSuperior >= 2:
+            sum += 1
+
+    return sum / 2.0
+
+
 class ForkKnightS(Feature):
     def __init__(self):
         Feature.__init__(self)
         self.name = "forkKnightS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        board = nextState.getBoard()
-        knights = board.pieces(chess.KNIGHT, state.getPlayer())
-        sum = 0
+        return calculateForkKnights(nextState, state.getPlayer())
 
-        for k in knights:
-            r, c = getRowColumn(k)
 
-            rowColumns = []
-            rowColumns.append((r + 1, c - 2))
-            rowColumns.append((r + 2, c - 1))
-            rowColumns.append((r + 2, c + 1))
-            rowColumns.append((r + 1, c + 2))
-            rowColumns.append((r - 1, c + 2))
-            rowColumns.append((r - 2, c + 1))
-            rowColumns.append((r - 2, c - 1))
-            rowColumns.append((r - 1, c - 2))
+class ForkKnightO(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "forkKnightO"
 
-            amountSuperior = 0
-
-            for rowColumn in rowColumns:
-                square = getSquareFromRowColumn(rowColumn[0], rowColumn[1])
-                if rowColumn[0] > 0 and rowColumn[0] < 8 and rowColumn[1] > 0 and rowColumn[1] < 8 and amountSuperior < 2:
-                    if board.piece_at(getSquareFromRowColumn(rowColumn[0], rowColumn[1])) is not None:
-                        if state.getPlayer():
-                            amountSuperior += board.piece_at(square).piece_type > 2 and not board.color_at(square)
-                        else:
-                            amountSuperior += board.piece_at(square).piece_type > 2 and board.color_at(square)
-
-            if amountSuperior >= 2:
-                sum += 1
-
-        return sum / 2.0
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateForkKnights(nextState, not state.getPlayer())
 
 
 def calculateKingDistanceToCenter(nextState: State, player):
