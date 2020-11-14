@@ -9,22 +9,29 @@ from ABAgent.ABAgent import ABAgent
 class AlphaBetaFeatures(ChessFeatures):
     def __init__(self):
         ChessFeatures.__init__(self)
-        self.append(AlphaBeta(self))
+        self.append(AlphaBeta(ChessFeatures()))
+        self.ab = self[-1]
 
-    def copySafe(self):
-        cf = ChessFeatures()
-        cf.fromDict(self.toDict())
-        return cf
+    def calculateFeatures(self, state: State, action):
+        index = self.index(self.ab)
+        self.ab.agent.features.weights = np.delete(self.weights, index)
+        return ChessFeatures.calculateFeatures(self, state, action)
 
 class AlphaBeta(Feature):
     def __init__(self, features: Features):
         Feature.__init__(self)
         self.name = "alphaBeta"
-        self.features = features
+        self.agent = ABAgent()
+        self.agent.features = features
+        self.lastState = None
+        self.lastAction = None
 
     def calculateValue(self, state: State, action, nextState: State):
-        divider = len(state.getLegalActions())
-        agent = ABAgent(state.getAgent().getGoTime() / divider, state.getAgent().getDeltaTime() / divider,\
-                        state.getAgent().getMaxDepth(), self.features.copySafe())
+        if self.lastState != state:
+            self.lastState = state
+            self.agent.setGoTime(state.getAgent().getGoTime())
+            self.agent.setDeltaTime(state.getAgent().getDeltaTime())
+            self.agent.setMaxDepth(state.getAgent().maxDepth)
+            self.lastAction = self.agent.makeMove(state)
 
-        return action == agent.makeMove(state.copy())
+        return action == self.lastAction

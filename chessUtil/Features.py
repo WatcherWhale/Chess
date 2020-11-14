@@ -1,6 +1,8 @@
 import chess
 import numpy as np
 
+import time
+
 from chessUtil.State import State
 
 class Features(list):

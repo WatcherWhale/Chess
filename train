@@ -107,10 +107,10 @@ def main():
 
     if args.tt:
         train_stockfish.LIMIT = args.tt
-        agent.setGoTime(args.tt * 1000)
+        agent.setGoTime(args.tt)
 
     if args.dt:
-        agent.setDeltaTime(args.dt * 1000)
+        agent.setDeltaTime(args.dt)
 
     if args.depth:
         agent.setMaxDepth(args.depth)

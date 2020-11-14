@@ -1,7 +1,7 @@
 from .State import State
 
 class Agent:
-    def __init__(self, goTime = 5000, deltaTime = 1000, maxDepth = 2):
+    def __init__(self, goTime = 5, deltaTime = 1, maxDepth = 2):
         self.goTime = goTime
         self.deltaTime = deltaTime
         self.maxDepth = maxDepth
