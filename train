@@ -35,6 +35,7 @@ parser.add_argument('-tt', type=float, metavar='SECONDS', help='The max turn tim
 parser.add_argument('-dt', type=float, metavar='SECONDS', help='The safe keeping value', default=0)
 parser.add_argument('-mm', '--max-moves', type=int, metavar='MOVES', help='The amount of max moves until a game is forcefully stopped', default=130)
 parser.add_argument('--greedy', action='store_true')
+parser.add_argument('--skill', type=int, help='The Skill Level of stockfish.', default=4)
 
 def getOpponentAgent(agent):
     if agent == 'self':
@@ -98,6 +99,8 @@ def main():
         train_alphabeta.MAX_MOVES = args.max_moves
         train_self.MAX_MOVES = args.max_moves
         train_stockfish.MAX_MOVES = args.max_moves
+
+    train_stockfish.SKILL = args.skill
 
     agent: Agent = getAgent(args.agent, args)
     runEpisode = getOpponentAgent(args.opponent)

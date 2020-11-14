@@ -13,6 +13,7 @@ QUIET = False
 LOUD = False
 LIMIT = 5.0
 MAX_MOVES = 130
+SKILL = 4
 
 STALEMATES = 0
 STOCKFISH_WINS = 0
@@ -28,6 +29,7 @@ def runEpisode(player: Agent):
 
     board = chess.Board()
     black_player = chess.engine.SimpleEngine.popen_uci(STOCKFISH_BIN)
+    black_player.configure({"Skill Level": SKILL})
     limit = chess.engine.Limit(time=LIMIT)
 
     running = True
