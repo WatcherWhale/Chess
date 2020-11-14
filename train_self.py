@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import chess
+import progressbar
 import os.path
 
 #from searchagent.search_agent import SearchAgent
@@ -33,7 +34,9 @@ def runEpisode(player: Agent):
     turn_white_player = True
     counter = 0
 
+    bar = progressbar.ProgressBar(max_value=MAX_MOVES * 2)
     while running and not board.is_game_over():
+        bar.update(counter)
         counter += 1
         action = None
         state = State(board.copy(), turn_white_player, player)
@@ -48,6 +51,7 @@ def runEpisode(player: Agent):
         board.push(chess.Move.from_uci(action))
 
         if LOUD:
+            print('\n')
             print(board)
             print("###################")
 
@@ -57,17 +61,17 @@ def runEpisode(player: Agent):
             player.update(state, action, state.newStateFromAction(action))
 
             if turn_white_player:
-                print("Black wins!")
+                print("\nBlack wins!")
                 BLACK_WINS += 1
 
             else:
-                print("White wins!")
+                print("\nWhite wins!")
                 WHITE_WINS += 1
 
         if board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves() or board.is_fivefold_repetition():
 
             running = False
-            print("Stalemate")
+            print("\nStalemate")
             STALEMATES += 1
 
             player.update(state, action, state.newStateFromAction(action))
@@ -87,7 +91,8 @@ def runEpisode(player: Agent):
             player.update(state, action, state.newStateFromAction(action))
 
         if counter >= MAX_MOVES * 2:
-            print('Forcefully stopped')
+            bar.update(MAX_MOVES * 2)
+            print('\nForcefully stopped')
             FORCEFULLY_STOPPED += 1
             running = False
 

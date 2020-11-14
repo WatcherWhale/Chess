@@ -1,4 +1,5 @@
 import chess
+import progressbar
 
 from chessUtil.State import State
 from chessUtil.Agent import Agent
@@ -32,7 +33,10 @@ def runEpisode(player: Agent):
 
     moves = 0
 
+    bar = progressbar.ProgressBar(max_value=MAX_MOVES * 2)
+
     while running:
+        bar.update(moves)
         move = None
         state = State(board.copy(), turn_white_player, player)
 
@@ -46,6 +50,7 @@ def runEpisode(player: Agent):
         board.push(move)
 
         if LOUD:
+            print('\n')
             print(board)
             print("###################")
 
@@ -53,15 +58,15 @@ def runEpisode(player: Agent):
             running = False
 
             if turn_white_player:
-                print("Alpha Beta wins")
+                print("\nAlpha Beta wins")
                 AB_WINS += 1
             else:
-                print("GrandQ wins!")
+                print("\nGrandQ wins!")
                 GRANDQ_WINS += 1
 
         if board.is_stalemate():
             running = False
-            print("Stalemate")
+            print("\nStalemate")
             STALEMATES += 1
 
         action = move.uci()
@@ -77,6 +82,7 @@ def runEpisode(player: Agent):
         moves += 1
 
         if moves >= MAX_MOVES * 2:
-            print('Forcefully stopped')
+            bar.update(MAX_MOVES * 2)
+            print('\nForcefully stopped')
             FORCEFULLY_STOPPED += 1
             running = False

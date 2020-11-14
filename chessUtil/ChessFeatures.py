@@ -7,7 +7,6 @@ from chessUtil.Material import calculateMaterialAdvantage, calculateMaterialValu
 from chessUtil.State import State
 from chessUtil.Mobility import mobilityFunction
 from chessUtil.PositionParser import getRowColumn, getSquareFromRowColumn
-from ABAgent.ABAgent import ABAgent
 
 import chess
 
@@ -605,19 +604,6 @@ class RooksOnSeventhRankO(Feature):
 
     def calculateValue(self, state: State, action, nextState: State):
         return calculateRooksOnSeventhRankForPlayer(nextState, not state.getPlayer())
-
-
-class AlphaBeta(Feature):
-    def __init__(self):
-        Feature.__init__(self)
-        self.name = "alphaBeta"
-
-    def calculateValue(self, state: State, action, nextState: State):
-        divider = len(state.getLegalActions())
-        agent = ABAgent(state.getAgent().getGoTime() / divider, state.getAgent().getDeltaTime() / divider, state.getAgent().getMaxDepth())
-        didMove = action == agent.makeMove(state.copy())
-
-        return didMove
 
 
 class QueensAttacked(Feature):
