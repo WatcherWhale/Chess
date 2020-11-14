@@ -1,6 +1,7 @@
 import inspect
 import sys
 import itertools
+import numpy as np
 
 from .Features import Features, Feature
 from chessUtil.Material import calculateMaterialAdvantage, calculateMaterialValue
@@ -717,3 +718,35 @@ class IsCastling(Feature):
 
     def calculateValue(self, state: State, action, nextState: State):
         return state.getBoard().is_castling(chess.Move.from_uci(action))
+
+
+class DoubledPawns(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "doubledPawns"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        board = nextState.getBoard()
+
+        columns = np.zeros(8)
+
+        for p in board.pieces(chess.PAWN, state.getPlayer()):
+            r, c = getRowColumn(p)
+            columns[c] += 1
+
+        mask = columns > 1
+        return np.sum(np.multiply(mask, columns))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
