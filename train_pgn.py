@@ -36,7 +36,7 @@ def runEpisode(player: Agent):
             for move in progressbar.progressbar(pgn_game.mainline_moves(), max_value=moves):
                 state = State(board.copy(), turnWhite, player)
 
-                if not QUIET:
+                if LOUD:
                     print(board)
                     print("###################")
 
@@ -54,6 +54,6 @@ def runEpisode(player: Agent):
                         updateAgent(player, prevBlack, newState)
 
                     prevWhite = (state, move.uci())
-
+            player.save()
         else:
             running = False

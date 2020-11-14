@@ -39,6 +39,7 @@ def runEpisode(player: Agent):
     bar = progressbar.ProgressBar(max_value=MAX_MOVES * 2)
 
     while running:
+        bar.update(moves)
         move = None
         moves += 1
 
@@ -62,15 +63,15 @@ def runEpisode(player: Agent):
             running = False
 
             if turn_white_player:
-                print("Stockfish wins!")
+                print("\nStockfish wins!")
                 STOCKFISH_WINS += 1
             else:
-                print("GrandQ wins!")
+                print("\nGrandQ wins!")
                 GRANDQ_WINS += 1
 
         if board.is_stalemate():
             running = False
-            print("Stalemate")
+            print("\nStalemate")
             STALEMATES += 1
 
         action = move.uci()
@@ -82,10 +83,9 @@ def runEpisode(player: Agent):
         else:
             prevState = (state, action)
 
-        bar.update(moves)
-
         if moves >= MAX_MOVES * 2:
-            print('Forcefully stopped')
+            bar.update(MAX_MOVES * 2)
+            print('\nForcefully stopped')
             running = False
 
     black_player.quit()
