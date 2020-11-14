@@ -9,23 +9,8 @@ def uci(name, author):
     print("""id name {}
         id author {}
 
-        option name Debug Log File type string default
-        option name Contempt type spin default 0 min -100 max 100
-        option name Threads type spin default 1 min 1 max 128
-        option name Hash type spin default 16 min 1 max 1048576
-        option name Clear Hash type button
-        option name Ponder type check default false
-        option name MultiPV type spin default 1 min 1 max 500
-        option name Skill Level type spin default 20 min 0 max 20
-        option name Move Overhead type spin default 30 min 0 max 5000
-        option name Minimum Thinking Time type spin default 20 min 0 max 5000
-        option name Slow Mover type spin default 89 min 10 max 1000
-        option name nodestime type spin default 0 min 0 max 10000
-        option name UCI_Chess960 type check default false
-        option name SyzygyPath type string default <empty>
-        option name SyzygyProbeDepth type spin default 1 min 1 max 100
-        option name Syzygy50MoveRule type check default true
-        option name SyzygyProbeLimit type spin default 6 min 0 max 6
+        option name DeltaTime type spin default 100 min 0 max 2000
+        option name MaxDepth type spin default 10 min 1 max 200
         uciok""".format(name, author))
 
 
@@ -53,10 +38,16 @@ def main():
                 if input_val[1] == "movetime":
                     goTime = float(input_val[2])
 
-                player.setGoTime(goTime)
+                player.setGoTime(goTime / 1000)
 
                 action = player.makeMove(State(board, board.turn, player))
                 print("bestmove {}".format(action))
+
+            elif input_val[0] == "setoption":
+                if input_val[2] == "DeltaTime":
+                    player.setDeltaTime(float(input_val[-1])/1000)
+                elif input_val[2] == "MaxDepth":
+                    player.setMaxDepth(int(input_val[-1]))
 
             else:
                 print("error command: {}".format(input_val))
