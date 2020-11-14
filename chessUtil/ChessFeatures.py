@@ -7,7 +7,7 @@ from .Features import Features, Feature
 from chessUtil.Material import calculateMaterialAdvantage, calculateMaterialValue
 from chessUtil.State import State
 from chessUtil.Mobility import mobilityFunction
-from chessUtil.PositionParser import getRowColumn, getSquareFromRowColumn
+from chessUtil.PositionParser import getRowColumn, getSquareFromRowColumn, scoreMatrix
 
 import chess
 
@@ -738,15 +738,20 @@ class DoubledPawns(Feature):
         return np.sum(np.multiply(mask, columns))
 
 
+class PositionScoreBalance(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "positionScoreBalance"
 
+    def calculateValue(self, state: State, action, nextState: State):
+        board = nextState.getBoard()
+        score = 0
 
+        for piece_type in range(1,7):
+            for p in board.pieces(piece_type, state.getPlayer()):
+                score += scoreMatrix[piece_type - 1][p]
 
+            for p in board.pieces(piece_type, not state.getPlayer()):
+                score -= scoreMatrix[piece_type - 1][p]
 
-
-
-
-
-
-
-
-
+        return score

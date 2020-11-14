@@ -15,6 +15,8 @@ def getFeatures():
         f = fs[i]
         if f.getName()[-1] != "O":
             fs.weights[i] = 1
+        else:
+            fs.weights[i] = -1
     return fs
 
 class ABAgent(Agent):
