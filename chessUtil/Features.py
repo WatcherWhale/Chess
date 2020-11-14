@@ -45,6 +45,19 @@ class Features(list):
             f.setWeight(dict[f.getName()])
             self.weights[self.index(f)] = dict[f.getName()]
 
+    def nextWeightsForCSV(self):
+        csv = ""
+        for f in self:
+            csv = csv + str(self.weights[self.index(f)]) + ";"
+
+        return csv
+
+    def getNames(self):
+        names = ""
+        for f in self:
+            names = names + f.getName() + ";"
+        return names
+
 class Feature:
     def __init__(self):
         self.name = "feature"

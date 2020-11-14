@@ -1,5 +1,6 @@
 import random
 import json
+import os
 
 import chess
 
@@ -19,6 +20,7 @@ def loadAgentFromFile(file, features: Features = AlphaBetaFeatures()):
     features.fromDict(saveData['weights'])
 
     return QAgent(file, saveData['epsilon'], saveData['discount'], saveData['learningRate'], features, maxDepth=saveData['maxDepth'])
+
 
 class QAgent(Agent):
     def __init__(self, file, epsilon, discount, learningRate, features: Features = AlphaBetaFeatures(), goTime = 5000, deltaTime = 1000, maxDepth = 2):
@@ -106,7 +108,16 @@ class QAgent(Agent):
             'weights': self.features.toDict()
         }
 
+        if not os.path.isfile(self.file):
+            wh = open("WeightHistory.csv", 'w')
+            wh.write(self.features.getNames() + "\n")
+            wh.close()
+
         jsonData = json.dumps(saveData)
         f = open(self.file, 'w')
         f.write(jsonData)
         f.close()
+
+        wh = open("WeightHistory.csv", 'a')
+        wh.write(self.features.nextWeightsForCSV() + "\n")
+
