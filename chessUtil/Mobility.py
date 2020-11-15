@@ -19,7 +19,7 @@ def kingMobility(position: chess.Square, board: chess.Board):
     sum = 0
 
     for s in squares:
-        sum += s[0] > 0 and s[0] < 8 and s[1] > 0 and s[1] < 8 and board.is_legal(chess.Move(position, getSquareFromRowColumn(s[0], s[1])))
+        sum += 0 <= s[0] < 8 and 0 <= s[1] < 8 and board.is_legal(chess.Move(position, getSquareFromRowColumn(s[0], s[1])))
 
     return sum
 
@@ -38,7 +38,7 @@ def bishopMobility(position: chess.Square, board: chess.Board):
     sum = 0
 
     for s in squares:
-        sum += board.is_legal(chess.Move(position,s))
+        sum += board.is_legal(chess.Move(position, s))
 
     return sum
 
@@ -60,7 +60,7 @@ def knightMobility(position: chess.Square, board: chess.Board):
     sum = 0
 
     for s in squares:
-        sum += s[0] > 0 and s[0] < 8 and s[1] > 0 and s[1] < 8 and board.is_legal(chess.Move(position, getSquareFromRowColumn(s[0], s[1])))
+        sum += 0 <= s[0] < 8 and 0 <= s[1] < 8 and board.is_legal(chess.Move(position, getSquareFromRowColumn(s[0], s[1])))
 
     return sum
 
@@ -106,7 +106,7 @@ mobilityFunction = [pawnMobility, knightMobility, bishopMobility, rookMobility, 
 def totalMobility(board: chess.Board, player):
     mobility = 0
 
-    #go over every piece type followed by the amount of pieces of that type and calculate the mobility with the corresponding mobility calculation
+    # go over every piece type followed by the amount of pieces of that type and calculate the mobility with the corresponding mobility calculation
 
     for piece_type in range(1, 7):
         for position in board.pieces(piece_type, player):

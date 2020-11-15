@@ -138,16 +138,20 @@ class AmountBalancePieces(Feature):
         return calculateMaterialAdvantage(nextState, state.getPlayer())
 
 
-def calculateMobility(nextState: State, player, piece_type, mirror):
-    board = nextState.getBoard()
-    pieces = board.pieces(piece_type, player)
+def calculateMobility(nextState: State, piece_type, mirror):
+    board = nextState.getBoard().copy()
+    player = nextState.getPlayer()
+
+    if mirror:
+        board.turn = not board.turn
+        pieces = board.pieces(piece_type, not player)
+    else:
+        pieces = board.pieces(piece_type, player)
 
     if len(pieces) == 0:
         return 0
 
     sum = 0
-    if mirror:
-        board = board.mirror()
 
     for piece in pieces:
         sum += mobilityFunction[piece_type-1](piece, board)
@@ -161,7 +165,7 @@ class MobilityQueenS(Feature):
         self.name = "mobilityQueenS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateMobility(nextState, state.getPlayer(), chess.QUEEN, True) / 26.0
+        return calculateMobility(nextState, chess.QUEEN, True) / 26.0
 
 
 class MobilityQueenO(Feature):
@@ -170,7 +174,7 @@ class MobilityQueenO(Feature):
         self.name = "mobilityQueenO"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateMobility(nextState, not state.getPlayer(), chess.QUEEN, False) / 26.0
+        return calculateMobility(nextState, chess.QUEEN, False) / 26.0
 
 
 class MobilityKingS(Feature):
@@ -179,7 +183,7 @@ class MobilityKingS(Feature):
         self.name = "mobilityKingS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateMobility(nextState, state.getPlayer(), chess.KING, True) / 8.0
+        return calculateMobility(nextState, chess.KING, True) / 8.0
 
 
 class MobilityKingO(Feature):
@@ -188,7 +192,7 @@ class MobilityKingO(Feature):
         self.name = "mobilityKingO"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateMobility(nextState, not state.getPlayer(), chess.KING, False) / 8.0
+        return calculateMobility(nextState, chess.KING, False) / 8.0
 
 
 class MobilityKnightS(Feature):
@@ -197,7 +201,7 @@ class MobilityKnightS(Feature):
         self.name = "mobilityKnightS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateMobility(nextState, state.getPlayer(), chess.KNIGHT, True) / 8.0
+        return calculateMobility(nextState, chess.KNIGHT, True) / 8.0
 
 
 class MobilityKnightO(Feature):
@@ -206,7 +210,7 @@ class MobilityKnightO(Feature):
         self.name = "mobilityKnightO"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateMobility(nextState, not state.getPlayer(), chess.KNIGHT, False) / 8.0
+        return calculateMobility(nextState, chess.KNIGHT, False) / 8.0
 
 
 class MobilityBishopS(Feature):
@@ -215,7 +219,7 @@ class MobilityBishopS(Feature):
         self.name = "mobilityBishopS"
 
     def calculateValue(self, state: State, action, nextState):
-        return calculateMobility(nextState, state.getPlayer(), chess.BISHOP, True) / 13.0
+        return calculateMobility(nextState, chess.BISHOP, True) / 13.0
 
 
 class MobilityBishopO(Feature):
@@ -224,7 +228,7 @@ class MobilityBishopO(Feature):
         self.name = "mobilityBishopO"
 
     def calculateValue(self, state: State, action, nextState):
-        return calculateMobility(nextState, not state.getPlayer(), chess.BISHOP, False) / 13.0
+        return calculateMobility(nextState, chess.BISHOP, False) / 13.0
 
 
 def calculateCenterControl(nextState: State, player: bool):
