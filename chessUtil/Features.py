@@ -5,6 +5,8 @@ import time
 
 from chessUtil.State import State
 
+ENABLE_TIMING = False
+
 class Features(list):
 
     def __init__(self):
@@ -19,7 +21,18 @@ class Features(list):
     def calculateFeatures(self, state: State, action):
         nextState = state.newStateFromAction(action)
 
-        fs = np.array([f.calculateValue(state, action, nextState) for f in self])
+        fs = np.zeros(len(self))
+        if ENABLE_TIMING:
+            for f in range(len(self)):
+                start = time.time()
+                fs[f] = self[f].calculateValue(state, action, nextState)
+                stop = time.time()
+
+                if stop-start >= 0.03:
+                    print(self[f].getName())
+        else:
+            fs = np.array([f.calculateValue(state, action, nextState) for f in self])
+
         fs = 2/(1 + np.exp(-fs)) - 1
 
         return np.sum(np.multiply(self.weights, fs))

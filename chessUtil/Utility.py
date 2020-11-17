@@ -25,9 +25,15 @@ def utility(state: State, features: Features):
         value += 2
 
     value += calculateMaterialValue(state, state.getPlayer())
-
     value += totalMobility(state.getBoard(), state.getPlayer())
 
+    for piece_type in range(1,7):
+        for p in state.getBoard().pieces(piece_type, state.getPlayer()):
+            value += scoreMatrix[piece_type - 1][p] / 10.0
+        for p in state.getBoard().pieces(piece_type, not state.getPlayer()):
+            value -= scoreMatrix[piece_type - 1][63 - p]
+
+    """
     for i in range(0, 64):
         piece = state.getBoard().piece_at(i)
         if piece is not None:
@@ -35,5 +41,6 @@ def utility(state: State, features: Features):
                 value += scoreMatrix[piece.piece_type - 1][i] / 10.0
             else:
                 value -= scoreMatrix[piece.piece_type - 1][63 - i] / 10.0
+    """
 
     return value + features.calculateFeatures(prevState, action)
