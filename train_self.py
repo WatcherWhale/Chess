@@ -89,9 +89,12 @@ def runEpisode(player: Agent):
 
         if not running:
             player.update(state, action, state.newStateFromAction(action))
+            bar.finish('\n', True)
+            bar.__del__()
 
         if counter >= MAX_MOVES * 2:
             bar.update(MAX_MOVES * 2)
+            bar.__del__()
             print('\nForcefully stopped')
             FORCEFULLY_STOPPED += 1
             running = False

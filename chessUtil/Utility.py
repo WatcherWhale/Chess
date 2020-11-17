@@ -47,4 +47,3 @@ def utility(state: State, features: Features):
             value -= scoreMatrix[piece_type - 1][63 - p]
 
     return value # + features.calculateFeatures(prevState, action)
-
