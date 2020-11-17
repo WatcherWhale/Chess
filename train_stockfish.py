@@ -82,6 +82,7 @@ def runEpisode(player: Agent):
                 player.update(prevState[0], prevState[1], state.newStateFromAction(action))
         elif not running:
             player.update(state, action, state.newStateFromAction(action))
+            bar.__del__()
         else:
             prevState = (state, action)
 

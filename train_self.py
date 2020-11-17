@@ -89,6 +89,7 @@ def runEpisode(player: Agent):
 
         if not running:
             player.update(state, action, state.newStateFromAction(action))
+            bar.__del__()
 
         if counter >= MAX_MOVES * 2:
             bar.update(MAX_MOVES * 2)

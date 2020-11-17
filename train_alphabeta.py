@@ -57,6 +57,7 @@ def runEpisode(player: Agent):
         if board.is_checkmate():
             running = False
 
+
             if turn_white_player:
                 print("\nAlpha Beta wins")
                 AB_WINS += 1
@@ -76,6 +77,7 @@ def runEpisode(player: Agent):
                 player.update(prevState[0], prevState[1], state.newStateFromAction(action))
         elif not running:
             player.update(state, action, state.newStateFromAction(action))
+            bar.__del__()
         else:
             prevState = (state, action)
 
