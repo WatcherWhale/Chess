@@ -16,8 +16,8 @@ def uci(name, author):
 
 def main():
     board = chess.Board()
-    player = loadAgentFromFile("grandQ.json")
-    player = player.getGreedyAgent()
+    player=loadAgentFromFile("grandQ.json")
+    #player =player.getGreedyAgent()
     player.setDeltaTime(1)
 
     running = True
