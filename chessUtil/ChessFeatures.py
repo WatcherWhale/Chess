@@ -138,11 +138,11 @@ class AmountBalancePieces(Feature):
         return calculateMaterialAdvantage(nextState, state.getPlayer())
 
 
-def calculateMobility(nextState: State, piece_type, mirror):
+def calculateMobility(nextState: State, piece_type, self):
     board = nextState.getBoard().copy()
     player = nextState.getPlayer()
 
-    if mirror:
+    if self:
         board.turn = not board.turn
         pieces = board.pieces(piece_type, not player)
     else:
@@ -611,108 +611,111 @@ class RooksOnSeventhRankO(Feature):
         return calculateRooksOnSeventhRankForPlayer(nextState, not state.getPlayer())
 
 
-class QueensAttacked(Feature):
-    def __init__(self):
-        Feature.__init__(self)
-        self.name = "queensAttacked"
+def calculateAttacked(nextState: State, x, attacked_piece_type, inferior_pieces_range, self: bool):
+    board = nextState.getBoard().copy()
+    player = nextState.getPlayer()
 
-    def calculateValue(self, state: State, action, nextState: State):
-        board = nextState.getBoard()
-        queens = board.pieces(chess.QUEEN, state.getPlayer())
-        sum = 0
+    if not self:
+        board.turn = not board.turn
+        player = not player
 
-        for q in queens:
+    attacked_pieces = board.pieces(attacked_piece_type, not player)
 
-            attacked = False
+    sum = 0
+    for ap in attacked_pieces:
 
-            for piece_type in range(1,4):
-                for piece in board.pieces(piece_type, not state.getPlayer()):
-                    attacked = board.is_legal(chess.Move(piece, q))
+        attacked = False
 
-                    if attacked:
-                        break
+        if inferior_pieces_range is not None:
+            for piece_type in inferior_pieces_range:
 
-            if attacked:
-                sum += 1
-                break
-
-        return sum
-
-
-class RooksAttacked(Feature):
-    def __init__(self):
-        Feature.__init__(self)
-        self.name = "rooksAttacked"
-
-    def calculateValue(self, state: State, action, nextState: State):
-        board = nextState.getBoard()
-        rooks = board.pieces(chess.ROOK, state.getPlayer())
-        sum = 0
-
-        for r in rooks:
-
-            attacked = False
-
-            for piece_type in range(1,3):
-                for piece in board.pieces(piece_type, not state.getPlayer()):
-                    attacked = board.is_legal(chess.Move(piece, r))
-
-                    if attacked:
-                        break
-
-            if attacked:
-                sum += 1
-                break
-
-        return sum
-
-
-class BishopsAttacked(Feature):
-    def __init__(self):
-        Feature.__init__(self)
-        self.name = "bishopsAttacked"
-
-    def calculateValue(self, state: State, action, nextState: State):
-        board = nextState.getBoard()
-        bishops = board.pieces(chess.BISHOP, state.getPlayer())
-        sum = 0
-
-        for b in bishops:
-
-            attacked = False
-
-            for piece in board.pieces(chess.PAWN, not state.getPlayer()):
-                attacked = board.is_legal(chess.Move(piece, b))
+                for piece in board.pieces(piece_type, player):
+                    attacked = board.is_legal(chess.Move(piece, ap))
 
                 if attacked:
-                    sum += 1
                     break
 
-        return sum
+        else:
+            for piece in board.pieces(chess.PAWN, player):
+                attacked = board.is_legal(chess.Move(piece, ap))
+
+        if attacked:
+            sum += 1
+            break
+
+    return sum
 
 
-class KnightsAttacked(Feature):
+class AttackedQueensS(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "knightsAttacked"
+        self.name = "attackedQueensS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        board = nextState.getBoard()
-        knights = board.pieces(chess.KNIGHT, state.getPlayer())
-        sum = 0
+        return calculateAttacked(nextState, state.getPlayer(), chess.QUEEN, range(1, 5), True)
 
-        for k in knights:
 
-            attacked = False
+class AttackedRooksS(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "attackedRooksS"
 
-            for piece in board.pieces(chess.PAWN, not state.getPlayer()):
-                attacked = board.is_legal(chess.Move(piece, k))
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateAttacked(nextState, state.getPlayer(), chess.ROOK, range(1, 4), True)
 
-                if attacked:
-                    sum += 1
-                    break
 
-        return sum
+class AttackedBishopsS(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "attackedBishopsS"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateAttacked(nextState, state.getPlayer(), chess.BISHOP, None, True)
+
+
+class AttackedKnightsS(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "attackedKnightS"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateAttacked(nextState, state.getPlayer(), chess.KNIGHT, None, True)
+
+
+class AttackedQueensO(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "attackedQueensO"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateAttacked(nextState, not state.getPlayer(), chess.QUEEN, range(1, 5), False)
+
+
+class AttackedRooksO(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "attackedRooksO"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateAttacked(nextState, not state.getPlayer(), chess.ROOK, range(1, 4), False)
+
+
+class AttackedBishopsO(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "attackedBishopsO"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateAttacked(nextState, not state.getPlayer(), chess.BISHOP, None, False)
+
+
+class AttackedKnightsO(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "attackedKnightO"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateAttacked(nextState, not state.getPlayer(), chess.KNIGHT, None, False)
 
 
 class IsCastling(Feature):
