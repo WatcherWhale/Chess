@@ -6,6 +6,8 @@ from chessUtil.Agent import Agent
 
 from ABAgent.ABAgent import ABAgent
 
+from tom.search_agent import SearchAgent
+
 LOUD = False
 QUIET = False
 MAX_MOVES = 130
@@ -25,6 +27,7 @@ def runEpisode(player: Agent):
 
     board = chess.Board()
     black_player = ABAgent(0.1, 0, 5)
+    tom_player = SearchAgent()
 
     running = True
     turn_white_player = True
@@ -43,7 +46,8 @@ def runEpisode(player: Agent):
         if turn_white_player:
             move = chess.Move.from_uci(player.makeMove(state))
         else:
-            move = chess.Move.from_uci(black_player.makeMove(state))
+            #move = chess.Move.from_uci(black_player.makeMove(state))
+            move = tom_player.ab_minimax_r(state.getBoard())
 
         turn_white_player = not turn_white_player
 
@@ -58,7 +62,7 @@ def runEpisode(player: Agent):
             running = False
 
             if turn_white_player:
-                print("\nAlpha Beta wins")
+                print("\nTom wins")
                 AB_WINS += 1
             else:
                 print("\nGrandQ wins!")

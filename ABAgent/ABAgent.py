@@ -1,6 +1,7 @@
 import chess
 import math
 import time
+import random
 
 import numpy as np
 
@@ -33,15 +34,19 @@ class ABAgent(Agent):
 
         for action in state.getLegalActions():
             nextState = state.newStateFromAction(action)
-            value = max(value, self.abIteration(nextState, False, alpha, beta, startTime, 1))
-            if value >= beta:
-                return action
+            value = self.abIteration(nextState, False, alpha, beta, startTime, 1)
 
             alpha = max(alpha, value)
 
             actions.append((action, value))
 
-        return max(actions, key=lambda x: x[1])[0]
+
+        bestActions = []
+        for ac, val in actions:
+            if val >= alpha:
+                bestActions.append(ac)
+
+        return random.choice(bestActions)
 
     def abIteration(self, state: State, maxTurn, alpha, beta, startTime, depth):
 
