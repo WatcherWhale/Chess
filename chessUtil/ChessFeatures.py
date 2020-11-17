@@ -727,22 +727,34 @@ class IsCastling(Feature):
         return state.getBoard().is_castling(chess.Move.from_uci(action))
 
 
-class DoubledPawns(Feature):
+def calculateDoubledPawns(nextState: State, player: bool):
+    board = nextState.getBoard()
+
+    columns = np.zeros(8)
+
+    for p in board.pieces(chess.PAWN, player):
+        r, c = getRowColumn(p)
+        columns[c] += 1
+
+    return sum(columns > 1)
+
+
+class DoubledPawnsS(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "doubledPawns"
+        self.name = "doubledPawnsS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        board = nextState.getBoard()
+        return calculateDoubledPawns(nextState, state.getPlayer())
 
-        columns = np.zeros(8)
 
-        for p in board.pieces(chess.PAWN, state.getPlayer()):
-            r, c = getRowColumn(p)
-            columns[c] += 1
+class DoubledPawnsO(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "doubledPawnsO"
 
-        mask = columns > 1
-        return np.sum(np.multiply(mask, columns))
+    def calculateValue(self, state: State, action, nextState: State):
+        return calculateDoubledPawns(nextState, not state.getPlayer())
 
 
 class PositionScoreBalance(Feature):
@@ -754,7 +766,7 @@ class PositionScoreBalance(Feature):
         board = nextState.getBoard()
         score = 0
 
-        for piece_type in range(1,7):
+        for piece_type in range(1, 7):
             for p in board.pieces(piece_type, state.getPlayer()):
                 score += scoreMatrix[piece_type - 1][p]
 
