@@ -45,6 +45,7 @@ def runEpisode(player: Agent):
         else:
             move = chess.Move.from_uci(black_player.makeMove(state))
 
+
         turn_white_player = not turn_white_player
 
         board.push(move)
