@@ -97,6 +97,9 @@ ipython_config.py
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
 __pypackages__/
 
+grandQ.json
+WeightHistory.csv
+
 # Celery stuff
 celerybeat-schedule
 celerybeat.pid
@@ -122,6 +125,7 @@ venv.bak/
 
 # mkdocs documentation
 /site
+
 
 # mypy
 .mypy_cache/

@@ -1,8 +1,2 @@
-Verslag.aux
-./Verslag.fls
-./Verslag.log
-./Verslag.out
-./Verslag.pdf
-./Verslag.toc
-./Verslag.synctex.gz
-./Verslag.fdb_latexmk
+Verslag.*
+!Verslag.tex

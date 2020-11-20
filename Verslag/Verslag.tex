@@ -2,12 +2,13 @@
 
 \usepackage[dutch]{babel}
 \usepackage{titlesec}
+\usepackage{tikz}
 
 \facultyacronym{TI}
 
-\title{Chess AI-Agent}
-\subtitle{5-Artificiële Intelligentie}
-\author{Mathias Maes, Tijs Van Alphen \\en Willem Van der Elst}
+\title{\sffamily Chess AI-Agent}
+\subtitle{\sffamily5-Artificiële Intelligentie}
+\author{\sffamily Mathias Maes, Tijs Van Alphen \\en Willem Van der Elst}
 
 \programme{BA}{IW}{EI}
 
@@ -15,10 +16,15 @@
 
 \publisher{}
 
-\titleformat{\chapter}{\normalfont\huge\bfseries}{\thechapter.}{10pt}{\huge\bfseries}
+\titleformat{\chapter}{\sffamily\huge\bfseries}{\thechapter.}{10pt}{\sffamily\huge\bfseries}
+\titleformat{\section}{\sffamily\LARGE\bfseries}{\thesection.}{10pt}{\sffamily\LARGE\bfseries}
+\titleformat{\subsection}{\sffamily\Large\bfseries}{\thesubsection.}{10pt}{\sffamily\Large\bfseries}
+\titleformat{\subsubsection}{}{}{10pt}{\sffamily\large\bfseries}
+
 
 \begin{document}
 
+\sffamily
 \maketitle
 
 \tableofcontents
@@ -37,17 +43,65 @@ Uiteindelijk ging de keuze naar beide agents. We hadden namelijk een thesis\cite
 
 \section{Generalization}
 
-De eerste agent die we moesten maken was de Q-Learner deze is generalized omdat zoals bij de minpunten stonde van general search algoritmes. 
+De eerste agent die we moesten maken was de Q-Learner deze is generalized omdat zoals bij de minpunten stonden van general search algoritmes, is het bijna onmogelijk om elke staat te bezoeken. Daarom dat we niet gewoon Q-Learning gaan doen maar generalized Q-Learning.
 
 \section{Features}
+
+We hebben een hoop features gedefinieerd deze zijn voornamelijk gebaseerd op de paper\cite{rl} die we gevonden hebben. De bedoeling van deze features is om een state zo goed mogelijk te definiëren. Je kan hieronder een beschrijving vinden van elks van onze 55 features.
+
+We berekenen onze features als volt:
+
+$$
+Q(s,a) = \sum_{i} w_{i} \cdot \sigma \left( f_i(s, a)\right)
+$$
+
+De $\sigma(x)$ die we in de berekening zien wordt als volgt gedefinieerd:
+
+$$
+\sigma(x) = \frac{2}{1 + e^{-x}} - 1
+$$
+
+Dit is een aangepaste versie van de bekende sigmoid\cite{WSF} functie. Onze versie zorgt in tegenstelling tot de originele er voor dat waardes in het interval $\left]-1,1\right[$ vallen.\\
+Hier zie je de grafiek van de functie:
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[scale=2]
+        \draw[->] (-2, 0) -- (2, 0) node[right] {$x$};
+        \draw[->] (0, -1.2) -- (0, 1.2) node[above] {$y$};
+
+        \draw[dashed] (-2, 0.5) -- (2, 0.5);
+        \node (A) at (-2, 0.6) {\tiny $1$};
+
+        \draw[dashed] (-2, -0.5) -- (2, -0.5);
+        \node (B) at (-2, -0.6) {\tiny $-1$};
+
+        \draw[scale=0.5, domain=-3.9:3.9, smooth, variable=\x, blue] plot ({\x}, { 2/(1 + exp(-\x)) - 1 });
+        \node[blue] (C) at (0.4, 0.32) {$\sigma$};
+    \end{tikzpicture}
+    \caption{$\sigma(x)$} \label{fig:sigmoid}
+\end{figure}
+
+
+\subsection{Material}
+\subsection{Mobility}
+\subsection{Attackers}
+\subsection{Forks}
+\subsection{Control}
+\subsubsection{Center Control}
+\subsubsection{Board Control}
+
+\section{Reward}
 
 \chapter{Alpha-Beta Pruning}
 
 \section{Utility}
 
+Evaluation\cite{chessprogramming}
+
 \chapter{It's morphing time}
 
-\bibliography{sources} 
+\bibliography{sources}
 \bibliographystyle{ieeetr}
 
 \end{document}
