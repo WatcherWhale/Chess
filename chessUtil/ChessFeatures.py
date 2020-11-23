@@ -611,7 +611,7 @@ class RooksOnSeventhRankO(Feature):
         return calculateRooksOnSeventhRankForPlayer(nextState, not state.getPlayer())
 
 
-def calculateAttacked(nextState: State, x, attacked_piece_type, inferior_pieces_range, self: bool):
+def calculateAttacked(nextState: State, attacked_piece_type, inferior_pieces_range, self: bool):
     board = nextState.getBoard().copy()
     player = nextState.getPlayer()
 
@@ -652,7 +652,7 @@ class AttackedQueensS(Feature):
         self.name = "attackedQueensS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateAttacked(nextState, state.getPlayer(), chess.QUEEN, range(1, 5), True)
+        return calculateAttacked(nextState, chess.QUEEN, range(1, 5), True)
 
 
 class AttackedRooksS(Feature):
@@ -661,7 +661,7 @@ class AttackedRooksS(Feature):
         self.name = "attackedRooksS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateAttacked(nextState, state.getPlayer(), chess.ROOK, range(1, 4), True)
+        return calculateAttacked(nextState, chess.ROOK, range(1, 4), True)
 
 
 class AttackedBishopsS(Feature):
@@ -670,7 +670,7 @@ class AttackedBishopsS(Feature):
         self.name = "attackedBishopsS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateAttacked(nextState, state.getPlayer(), chess.BISHOP, None, True)
+        return calculateAttacked(nextState, chess.BISHOP, None, True)
 
 
 class AttackedKnightsS(Feature):
@@ -679,7 +679,7 @@ class AttackedKnightsS(Feature):
         self.name = "attackedKnightS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateAttacked(nextState, state.getPlayer(), chess.KNIGHT, None, True)
+        return calculateAttacked(nextState, chess.KNIGHT, None, True)
 
 
 class AttackedQueensO(Feature):
@@ -688,7 +688,7 @@ class AttackedQueensO(Feature):
         self.name = "attackedQueensO"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateAttacked(nextState, not state.getPlayer(), chess.QUEEN, range(1, 5), False)
+        return calculateAttacked(nextState, chess.QUEEN, range(1, 5), False)
 
 
 class AttackedRooksO(Feature):
@@ -697,7 +697,7 @@ class AttackedRooksO(Feature):
         self.name = "attackedRooksO"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateAttacked(nextState, not state.getPlayer(), chess.ROOK, range(1, 4), False)
+        return calculateAttacked(nextState, chess.ROOK, range(1, 4), False)
 
 
 class AttackedBishopsO(Feature):
@@ -706,7 +706,7 @@ class AttackedBishopsO(Feature):
         self.name = "attackedBishopsO"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateAttacked(nextState, not state.getPlayer(), chess.BISHOP, None, False)
+        return calculateAttacked(nextState, chess.BISHOP, None, False)
 
 
 class AttackedKnightsO(Feature):
@@ -715,7 +715,7 @@ class AttackedKnightsO(Feature):
         self.name = "attackedKnightO"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateAttacked(nextState, not state.getPlayer(), chess.KNIGHT, None, False)
+        return calculateAttacked(nextState, chess.KNIGHT, None, False)
 
 
 class IsCastling(Feature):
@@ -755,6 +755,53 @@ class DoubledPawnsO(Feature):
 
     def calculateValue(self, state: State, action, nextState: State):
         return calculateDoubledPawns(nextState, not state.getPlayer())
+
+
+class BoardControl(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "boardControl"
+
+    def calculateValue(self, state: State, action, nextState: State):
+
+        board = nextState.getBoard()
+        player = chess.WHITE
+
+        emptySquareSet = chess.SquareSet()
+
+        for i in range(0, 64):
+            piece = board.piece_at(i)
+            if piece is None:
+                emptySquareSet.add(i)
+
+        controlS = 0.0
+        controlO = 0.0
+        smallestSquareAttacker = np.zeros((64,), dtype=int)
+
+        for square in emptySquareSet:
+            attackersPlayer = nextState.getBoard().attackers(player, square)
+            attackersNotPlayer = nextState.getBoard().attackers(not player, square)
+            smallestType = 7
+            smallestPiece = None
+
+            for a in itertools.chain(attackersPlayer, attackersNotPlayer):
+                piece_type = board.piece_type_at(a)
+                if smallestType > piece_type:
+                    smallestType = piece_type
+                    smallestPiece = a
+                if smallestPiece == piece_type:
+                    smallestPiece = None
+                    if smallestType == 1:
+                        continue
+
+            if smallestPiece:
+                if board.color_at(smallestPiece) == player:
+                    controlS += 1
+                else:
+                    controlO += 1
+
+        print(board)
+        return controlS/controlO
 
 
 class PositionScoreBalance(Feature):
