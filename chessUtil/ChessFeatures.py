@@ -800,7 +800,7 @@ class BoardControl(Feature):
                 else:
                     controlO += 1
 
-        print(board)
+        #print(board)
         return controlS/controlO
 
 
