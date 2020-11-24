@@ -118,13 +118,23 @@ def main():
     global totalDuration
     global episodes
 
-    for episodes in range(int(args.i)):
-        start = time.time()
-        runEpisode(agent)
-        agent.save()
-        ep_duration = time.time() - start
-        print("Episode " + str(episodes + 1) + " took {}s".format(ep_duration))
-        totalDuration += ep_duration
+    if args.i <= 0:
+        while True:
+            start = time.time()
+            runEpisode(agent)
+            agent.save()
+            ep_duration = time.time() - start
+            print("Episode " + str(episodes + 1) + " took {}s".format(ep_duration))
+            totalDuration += ep_duration
+            episodes += 1
+    else:
+        for episodes in range(int(args.i)):
+            start = time.time()
+            runEpisode(agent)
+            agent.save()
+            ep_duration = time.time() - start
+            print("Episode " + str(episodes + 1) + " took {}s".format(ep_duration))
+            totalDuration += ep_duration
 
     if int(args.i) > 1:
         printOverview(args)
