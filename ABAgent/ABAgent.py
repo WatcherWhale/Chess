@@ -31,27 +31,25 @@ class ABAgent(Agent):
         alpha = -math.inf
         beta = math.inf
         value = -math.inf
+        best_value = -math.inf
+        best_action = state.getLegalActions()[0]
 
         for action in state.getLegalActions():
             nextState = state.newStateFromAction(action)
-            value = self.abIteration(nextState, False, alpha, beta, startTime, 1)
+            value = max(best_value,self.abIteration(nextState, False, alpha, beta, startTime, 1))
 
-            alpha = max(alpha, value)
+            if value > best_value:
+                best_value = value
+                best_action = action
 
-            actions.append((action, value))
-
-
-        bestActions = []
-        for ac, val in actions:
-            if val >= alpha:
-                bestActions.append(ac)
-
-        return random.choice(bestActions)
+        return best_action
+                
 
     def abIteration(self, state: State, maxTurn, alpha, beta, startTime, depth):
 
         if state.isTerminalState() or self.isTerminalTime(startTime) or depth >= self.maxDepth:
-            return utility(state, self.features)
+            return -utility(state, self.features)
+
 
         if maxTurn:
             value = -math.inf
@@ -59,10 +57,9 @@ class ABAgent(Agent):
                 nextState = state.newStateFromAction(action)
                 value = max(value, self.abIteration(nextState, not maxTurn, alpha, beta, startTime, depth + 1))
 
-                if value >= beta:
+                alpha = max(alpha,value)
+                if alpha >= beta:
                     return value
-
-                alpha = max(alpha, value)
 
             return value
         else:
@@ -72,11 +69,10 @@ class ABAgent(Agent):
                 nextState = state.newStateFromAction(action)
 
                 value = min(value, self.abIteration(nextState, not maxTurn, alpha, beta, startTime, depth + 1))
-
-                if value <= alpha:
-                    return value
-
                 beta = min(beta, value)
+
+                if beta <= alpha:
+                    return value
 
             return value
 
