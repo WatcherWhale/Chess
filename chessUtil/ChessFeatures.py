@@ -3,8 +3,9 @@ import sys
 import itertools
 import numpy as np
 
+
 from .Features import Features, Feature
-from chessUtil.Material import calculateMaterialAdvantage, calculateMaterialValue
+from chessUtil.Material import calculateMaterialAdvantage, calculateMaterialValue, getMaterialValue
 from chessUtil.State import State
 from chessUtil.Mobility import mobilityFunction
 from chessUtil.PositionParser import getRowColumn, getSquareFromRowColumn, scoreMatrix
@@ -776,23 +777,24 @@ class BoardControl(Feature):
 
         controlS = 0.0
         controlO = 0.0
-        smallestSquareAttacker = np.zeros((64,), dtype=int)
 
         for square in emptySquareSet:
             attackersPlayer = nextState.getBoard().attackers(player, square)
             attackersNotPlayer = nextState.getBoard().attackers(not player, square)
-            smallestType = 7
+
+            smallestValue = 10
             smallestPiece = None
 
             for a in itertools.chain(attackersPlayer, attackersNotPlayer):
-                piece_type = board.piece_type_at(a)
-                if smallestType > piece_type:
-                    smallestType = piece_type
+                a_value = getMaterialValue(board.piece_type_at(a))
+                if smallestValue > a_value:
+                    smallestValue = a_value
                     smallestPiece = a
-                if smallestPiece == piece_type:
-                    smallestPiece = None
-                    if smallestType == 1:
-                        continue
+                if smallestPiece and smallestValue == a_value and board.color_at(smallestPiece) is not board.color_at(a):
+                    smallestPiece = None    # Both teams can access the empty square with same value pieces
+                    if smallestValue == 1:
+                        print(board)
+                        break
 
             if smallestPiece:
                 if board.color_at(smallestPiece) == player:
@@ -800,8 +802,7 @@ class BoardControl(Feature):
                 else:
                     controlO += 1
 
-        #print(board)
-        return controlS/controlO
+        return (controlS - controlO)/64
 
 
 class PositionScoreBalance(Feature):

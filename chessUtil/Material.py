@@ -14,7 +14,7 @@ def calculateMaterialAdvantage(state: State, player):
     return calculateMaterialValue(state, player) - calculateMaterialValue(state, not player)
 
 def getMaterialValue(piece_type):
-    if piece_type is chess.PAWN or piece_type is chess.KING:
+    if piece_type is chess.PAWN:
         return 1
     elif piece_type is chess.KNIGHT or piece_type is chess.BISHOP:
         return 3
@@ -22,5 +22,7 @@ def getMaterialValue(piece_type):
         return 5
     elif piece_type is chess.QUEEN:
         return 9
+    elif piece_type is chess.KING:
+        return 10
 
     return 0
