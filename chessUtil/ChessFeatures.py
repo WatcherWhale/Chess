@@ -793,7 +793,6 @@ class BoardControl(Feature):
                 if smallestPiece and smallestValue == a_value and board.color_at(smallestPiece) is not board.color_at(a):
                     smallestPiece = None    # Both teams can access the empty square with same value pieces
                     if smallestValue == 1:
-                        print(board)
                         break
 
             if smallestPiece:
