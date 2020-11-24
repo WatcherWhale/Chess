@@ -33,6 +33,7 @@ class QAgent(Agent):
         self.discount = discount
         self.learningRate = learningRate
         self.features = features
+        self.it = 0
 
     def setEpsilon(self, epsilon):
         self.epsilon = epsilon
@@ -136,6 +137,7 @@ class QAgent(Agent):
         f.write(jsonData)
         f.close()
 
-        wh = open("WeightHistory.csv", 'a')
-        wh.write(self.features.nextWeightsForCSV() + "\n")
+        if self.it % 100:
+            wh = open("WeightHistory.csv", 'a')
+            wh.write(self.features.nextWeightsForCSV() + "\n")
 
