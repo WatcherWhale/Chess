@@ -498,35 +498,23 @@ class ForkKnightO(Feature):
         return calculateForkKnights(nextState, not state.getPlayer())
 
 
-def calculateKingDistanceToCenter(nextState: State, player):
-    kingSet = nextState.getBoard().pieces(chess.KING, player)
-    king = kingSet.pop()
-
-    centerSquares = chess.SquareSet()
-    centerSquares.update(chess.E4, chess.D4, chess.E5, chess.D5)
-    minDistance = 99
-    for square in centerSquares:
-        minDistance = min(minDistance, chess.square_distance(king, square))
-
-    return minDistance / 16
-
-
+# DistanceToCenterKingO can't be changed by current player so isn't useful.
 class DistanceToCenterKingS(Feature):
     def __init__(self):
         Feature.__init__(self)
         self.name = "distanceToCenterKingS"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateKingDistanceToCenter(nextState, state.getPlayer())
+        kingSet = nextState.getBoard().pieces(chess.KING, state.getPlayer())
+        king = kingSet.pop()
 
+        centerSquares = chess.SquareSet()
+        centerSquares.update(chess.E4, chess.D4, chess.E5, chess.D5)
+        minDistance = 99
+        for square in centerSquares:
+            minDistance = min(minDistance, chess.square_distance(king, square))
 
-class DistanceToCenterKingO(Feature):
-    def __init__(self):
-        Feature.__init__(self)
-        self.name = "distanceToCenterKingO"
-
-    def calculateValue(self, state: State, action, nextState: State):
-        return calculateKingDistanceToCenter(nextState, not state.getPlayer())
+        return minDistance / 16
 
 
 def calculateAttackers(attackingPlayer, attackedPlayer, nextState):
