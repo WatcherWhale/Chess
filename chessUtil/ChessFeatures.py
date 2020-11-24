@@ -766,7 +766,7 @@ class BoardControl(Feature):
     def calculateValue(self, state: State, action, nextState: State):
 
         board = nextState.getBoard()
-        player = chess.WHITE
+        player = state.getPlayer()
 
         emptySquareSet = chess.SquareSet()
 
