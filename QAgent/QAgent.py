@@ -2,6 +2,9 @@ import random
 import json
 import os
 
+import queue
+from threading import Thread
+
 import chess
 
 from chessUtil.State import State
@@ -46,18 +49,16 @@ class QAgent(Agent):
     def computeAction(self, state: State ):
         actions = state.getLegalActions()
         posActions = []
-        qVals = []
 
         if len(actions) == 0 or state.isTerminalState():
             return None
 
-        for a in actions:
-            qVals.append((a, self.getQValue(state, a)))
+        results = self.thread(state)
 
-        maxValue = max(qVals, key=lambda x: x[1])[1]
+        maxValue = max(results, key=lambda x: x[1])[1]
 
 
-        for action, qVal in qVals:
+        for action, qVal in results:
             if maxValue <= qVal:
                 posActions.append(action)
 
@@ -78,6 +79,25 @@ class QAgent(Agent):
 
         return choice
 
+
+    def thread(self, state: State):
+        que = queue.Queue()
+        pool = list()
+
+        for action in state.getLegalActions():
+            t = Thread(target=lambda state, action, q: q.put((action, self.getQValue(state, action))), args=(state, action, que))
+            t.start()
+            pool.append(t)
+
+        for t in pool:
+            t.join()
+
+        results = list()
+        while not que.empty():
+            results.append(que.get())
+
+        return results
+
     def getQValue(self, state: State, action):
         return self.features.calculateFeatures(state, action)
 
@@ -85,11 +105,9 @@ class QAgent(Agent):
         if len(state.getLegalActions()) == 0:
             return 0.0
 
-        vals = []
-        for action in state.getLegalActions():
-            vals.append(self.getQValue(state, action))
+        results = self.thread(state)
+        return max(results, key=lambda x: x[1])[1]
 
-        return max(vals)
 
     def update(self, state: State, action, nextState: State):
         reward = calculateReward(state, action, nextState)
