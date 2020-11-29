@@ -31,11 +31,26 @@
 
 \chapter{Keuze}
 
-Om onze keuze te maken hadden we een lijst opgesteld met positieve en negatieve punten opgesteld.
+Het type AI was een belangrijke keuze van dit project. Het moest haalbaar zijn om te implementeren binnen de beperkte tijdsperiode en we moesten onze eigen niet-supercomputers gebruiken om te treinen. Een lijst  met de voor- en nadelen van de verschillende opties werd opgesteld.
 
-[VOEG + en - punten toe]
 
-Uit deze lijst hadden we 2 keuzes die voor ons er ver bovenuit staken Q-Learning en Minimax.
+\textbf{Search}:\\
+No time to study the whole tree (too much states)
+
+\textbf{Multi-Agent search} (Minimax, Alpha-Beta pruning):\\
+Method used by multiple sources, but we have no experience with it. 
+
+\textbf{Reinforcement learning} (Generalised Q learning):\\
+We've already used this and therefore we already understand it and can implement it quickly.\\
+Once trained, it will act optimally. The training however, needs a lot of time to learn and the choice of features isn't that obvious.
+
+\textbf{Neural network/ Deep learning:}
+- No data labels
+- Never Done
+- No clue of in/output
+
+
+Q-Learning leek ons het interessantst, maar Minimax was haalbaarder en zou sowieso een goed resultaat leveren. We besloten om beide methodes uit te werken. 
 
 Uiteindelijk ging de keuze naar beide agents. We hadden namelijk een thesis\cite{rl} gevonden die een minimax agent gebruikte als feature voor een generalized Q-Learner.
 
@@ -61,7 +76,6 @@ $$
 \sigma(x) = \frac{2}{1 + e^{-x}} - 1
 $$
 
-
 Dit is een aangepaste versie van de bekende sigmoid\cite{WSF} functie. Onze versie zorgt in tegenstelling tot de originele er voor dat waardes in het interval $\left]-1,1\right[$ vallen.\\
 Hier zie je de grafiek van de functie:
 
@@ -84,6 +98,14 @@ Hier zie je de grafiek van de functie:
 \end{figure}
 
 
+\subsection{Material}
+\subsection{Mobility}
+\subsection{Attackers}
+\subsection{Forks}
+\subsection{Control}
+\subsubsection{Center Control}
+\subsubsection{Board Control}
+
 \section{Reward}
 
 \chapter{Alpha-Beta Pruning}
@@ -93,8 +115,6 @@ Hier zie je de grafiek van de functie:
 Evaluation\cite{chessprogramming}
 
 \chapter{It's morphing time}
-
-% python3 train -o stockfish --skill 0 --depth 10 -tt 5 -dt 0 -e 0.3 -d 0.6 -l 0.01 -q -i -1
 
 \bibliography{sources}
 \bibliographystyle{ieeetr}

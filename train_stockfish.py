@@ -30,6 +30,7 @@ def runEpisode(player: Agent):
     board = chess.Board()
     black_player = chess.engine.SimpleEngine.popen_uci(STOCKFISH_BIN)
     black_player.configure({"Skill Level": SKILL})
+    black_player.configure({"Slow Mover": 10})
     limit = chess.engine.Limit(time=LIMIT)
 
     running = True
