@@ -193,8 +193,25 @@ Deze feature wordt ook weer voor zowel de eigen speler als de tegenspeler gecre√
 
 \section{Reward}
 
+Onze reward functieswordt als volgt gedefinieerd:
 
-Evaluation\cite{chessprogramming}
+$$
+R(S, a, NS) = 
+\begin{cases}
+    100 &\mbox{Willem vul aan}\\
+    -30 &\mbox{Willem vul aan}\\
+    -100 &\mbox{Willem vul aan}\\
+     C_O(S, a) - C_S(NS) + c(S) + \Delta M &\mbox{Willem vul aan}
+\end{cases}
+$$
+
+\begin{conditions}
+    C_O & of de opponent in schaak staat\\
+    C_S & of de agent in schaak staat\\
+    c &   of er gecastled is\\
+    \Delta M & het materiaal verschil op het bord
+\end{conditions}
+
 
 \chapter{Optimalisaties}
 
