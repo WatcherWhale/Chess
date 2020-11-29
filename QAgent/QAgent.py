@@ -78,6 +78,8 @@ class QAgent(Agent):
             print('None action detected')
             exit(1)
 
+
+
         return choice
 
 
