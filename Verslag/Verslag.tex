@@ -3,6 +3,13 @@
 \usepackage[dutch]{babel}
 \usepackage{titlesec}
 \usepackage{tikz}
+\usepackage{pythonhighlight}
+
+\definecolor{code}{HTML}{ecf0f1}
+\definecolor{codetext}{HTML}{d9534f}
+\newcommand{\codeword}[1]{
+    \colorbox{code}{\texttt{\textcolor{codetext}{#1}}}
+}
 
 \facultyacronym{TI}
 
@@ -100,6 +107,8 @@ We hebben een hoop optimalisaties moeten toevoegen aan onze Q-Learner om hem zo 
 
 We hebben multi-threading toegevoegd aan onze q-learner zo berekent hij de q-waarde van elke actie in een aparte thread. We hebben bewust niet gekozen om elke feature apart omdat dit onze timing issues verergerde in plaat van verbeterde.
 
+We hebben door multi-threading onze iteratie tijd met 20\% weten dalen.
+
 Hier zie je de resultaten van het processor gebruik:
 
 \begin{figure}[h]
@@ -116,9 +125,24 @@ Hier zie je de resultaten van het processor gebruik:
     \label{fig:multithreaded}
 \end{figure}
 
+\section{Caching}
 
-% python3 train -o stockfish --skill 0 --depth 10 -tt 5 -dt 0 -e 0.3 -d 0.6 -l 0.01 -q -i -1
-% python3 train -o ab --skill 0 --depth 10 -tt 5 -dt 0 -e 0.2 -d 0.4 -l 0.01 -q -i -1
+We gebruiken ook veel plaatsen caching zodat we niet 2 keer hetzelfde moeten uitrekenen. De meest bijzondere cache is deze voor onze alpha-beta feature, deze moet per bord state maar 1 keer uitvoeren waardoor we de alpha-beta langer kunnen laten zoeken en een hoop tijd besparen.
+Det tijd die we hierdoor besparen per iteratie kan soms tot een minuut of 2 oplopen.
+
+\chapter{Resultaten}
+\section{GrandQ vs. Stockfish (0-544)}
+
+Command:\\
+\codeword{python3 train -o stockfish --skill 0 --depth 10 -tt 5 -dt 0 -e 0.3 -d 0.6 -l 0.01 -q -i -1}
+
+\section{GrandQ vs. Alpha-Beta (544 - 5732)}
+
+Command:\\
+\codeword{python3 train -o ab --depth 10 -tt 5 -dt 0 -e 0.3 -d 0.6 -l 0.01 -q -i -1}
+
+Command na ongveer 1500 episodes:\\
+\codeword{python3 train -o ab --depth 10 -tt 5 -dt 0 -e 0.2 -d 0.4 -l 0.01 -q -i -1}
 
 \bibliography{sources}
 \bibliographystyle{ieeetr}
