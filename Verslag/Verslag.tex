@@ -70,15 +70,15 @@ Q-Learning leek ons het interessantst, maar Minimax is haalbaarder en zou sowies
 \section{Utility}
 \label{utility}
 
-Onze utility is grotendeels gebaseerd op de features van onze Q-Learner die later in dit verslag behandelt worden.
-Op dit moment volstaat het om een simpele versie van onze utility te aanschouwen:
+Onze utility maakt gebruik van veel kenmerken van de features van onze Q-Learner dus gaan we dit later behandelen.
+Je kan op het moment onze utility als volgt begrijpen:
 
 $$
 u(S) = 
 \begin{cases}
-    100 &\mbox{Bij schaakmat en gewonnen}\\
-    -30 &\mbox{Als het eindigt bij een stalemate}\\
-    -100 &\mbox{Bij schaakmat en verloren}\\
+    100 &\mbox{Als je gewonnen hebt}\\
+    -30 &\mbox{Als er een stalemate gespeeld is}\\
+    -100 &\mbox{Als je verloren hebt}\\
     c + C + \Delta M + \Delta m + s + f_q &\mbox{Bij overige situaties}
 \end{cases}
 $$
@@ -92,7 +92,7 @@ $$
     f_q & Een gewogen(geleerd of niet-geleerd) aantal features
 \end{conditions}
 
-Hoe deze kleine sub-functies bepaald worden wordt later nog besproken in \reference{features}.
+Hoe deze kleine sub-functies bepaald worden wordt later nog besproken in het stuk \reference{features}.
 
 \chapter{Q-Learning Agent}
 
@@ -173,7 +173,7 @@ Dit wordt gebruikt voor de mobility features. Hierbij gaan we voor elke type sch
 
 De feature \codeword{MobilityRookS()} zal voor elke Rook (toren) van de eigen speler (S in de functie staat voor self) berekenen op hoeveel vakjes die kan komen en bij elkaar optellen.
 
-Voor het berekenen van de vakjes gaan kijken of een een legal move zou zijn als we dat stuk naar een vakje zouden zetten, wanneer dit een false teruggeeft betekend het dat we niet naar dat vakje kunnen omdat er al een ander van je schaakstukken op staat. Hier hebben we wat problemen ondervonden voor de opponent omdat we enkel onze eigen stukken kunnen verplaatsen. Onze oplossing hiervoor was een copy van het bord maken gevolgd door een board turn, op deze manier speel je dan zogezegd even als de opponent op het gekopieerde bord.
+Voor het berekenen van de vakjes gaan kijken of een een legal move zou zijn als we dat stuk naar een vakje zouden zetten, wanneer dit een false teruggeeft betekend het dat we niet naar dat vakje kunnen omdat er al een ander van je schaakstukken op staat. Hier hebben we wat problemen ondervonden voor de opponent omdat we enkel onze eigen stukken kunnen verplaatsen. Onze oplossing hiervoor was een copy van het bord maken gevolgd door een board turn, op deze manier speel je dan zogezegd even als de opponent op het gekopieerde bord. 
 
 \subsection{Attackers}
 Deze attacked features laten weten hoeveel van je schaakstukken van een bepaald type kunnen worden aangevallen door schaakstukken van de opponent met een inferieure waarde. 
@@ -188,29 +188,13 @@ Voor de opponent te berekenen hebben we het probleem zoals bij moblility op deze
 Center control is een feature die ons verteld hoeveel pawn je hebt staan op de vakjes D4, E4, D5, E5. Deze 4 vakjes zijn het belangrijkste van het bord, omdat deze vakjes het grootste trafiek hebben van het bord.
 
 Deze feature wordt ook weer voor zowel de eigen speler als de tegenspeler gecreëerd.
+
 \subsubsection{Board Control}
 
 \section{Reward}
 
-Onze reward functieswordt als volgt gedefinieerd:
 
-$$
-R(S, a, NS) = 
-\begin{cases}
-    100 &\mbox{Willem vul aan}\\
-    -30 &\mbox{Willem vul aan}\\
-    -100 &\mbox{Willem vul aan}\\
-     C_O(S, a) - C_S(NS) + c(S) + \Delta M &\mbox{Willem vul aan}
-\end{cases}
-$$
-
-\begin{conditions}
-    C_O & of de opponent in schaak staat\\
-    C_S & of de agent in schaak staat\\
-    c &   of er gecastled is\\
-    \Delta M & het materiaal verschil op het bord
-\end{conditions}
-
+Evaluation\cite{chessprogramming}
 
 \chapter{Optimalisaties}
 
