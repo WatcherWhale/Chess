@@ -235,12 +235,38 @@ We gebruiken ook veel plaatsen caching zodat we niet 2 keer hetzelfde moeten uit
 Det tijd die we hierdoor besparen per iteratie kan soms tot een minuut of 2 oplopen.
 
 \chapter{Resultaten}
+
+Hier vind je al onze resultaten van het uitbundig trainen. We hebben deze in de loop van 5 dagen op een cloud server laten trainen. 1 dag tegen stockfish en de overige 4 dagen tegen onze alpha-beta agent.
+
+Je kan ook altijd onderaan de commando's vinden die we gebruikt hebben bij het trainen van onze agent.
+
 \section{GrandQ vs. Stockfish (0-544)}
+
+In de eerste leer sessie hebben we onze Q-agent tegen stockfish laten trainen zoals verwacht heeft onze agent nooit kunnen winnen, maar heeft wel hieruit nuttige info kunnen leren.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{images/stockfish.png}
+    \caption{Weight history vs. Stockfish}
+    \label{fig:stockfish}
+\end {figure}
 
 Command:\\
 \codeword{python3 train -o stockfish --skill 0 --depth 10 -tt 5 -dt 0 -e 0.3 -d 0.6 -l 0.01 -q -i -1}
+\pagebreak
 
 \section{GrandQ vs. Alpha-Beta (544 - 5732)}
+
+Daarna hebben we nog 2 leersessies tegen onze alpha-beta agent laten spelen. De eerste leersessie was met dezelfde alpha en discount als tegen stockfish. Bij de 2 de leersessie hadden we deze verlaagd om de agent zich meer greedy te doen gedragen.
+
+Onze agent wint $34\%$ van de spelletjes na volledig getrained te zijn, speelt gelijk voor $21\%$ van de spelletjes en $45\%$ van de tijd spelen onze agents een onbepaald spel. Deze staat is als de trainer het spel vroegtijdig stopt dit gebeurt na 130 zetten voor elke speler. Dit is om te voorkomen dat de agents zichzelf in een loop spelen en zo het trainen verschikkelijk doen vertragen.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{images/ab.png}
+    \caption{Weight history vs. Alpha-Beta}
+    \label{fig:ab}
+\end {figure}
 
 Command:\\
 \codeword{python3 train -o ab --depth 10 -tt 5 -dt 0 -e 0.3 -d 0.6 -l 0.01 -q -i -1}
