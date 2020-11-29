@@ -45,6 +45,7 @@
 \tableofcontents
 
 \chapter{Keuze}
+\label{keuze}
 
 Het type AI was een belangrijke keuze van dit project. Het moest haalbaar zijn om te implementeren binnen de beperkte tijdsperiode en we moesten onze eigen niet-supercomputers gebruiken om te treinen. Een lijst  met de voor- en nadelen van de verschillende opties werd opgesteld.\\[2 \baselineskip]
 
@@ -70,15 +71,16 @@ Q-Learning leek ons het interessantst, maar Minimax is haalbaarder en zou sowies
 \section{Utility}
 \label{utility}
 
-Onze utility maakt gebruik van veel kenmerken van de features van onze Q-Learner dus gaan we dit later behandelen.
-Je kan op het moment onze utility als volgt begrijpen:
+Onze utility is grotendeels gebaseerd op de rewards van onze Q-Learner die later in dit verslag behandelt worden.
+Op dit moment volstaat het om een simpele versie van onze utility te aanschouwen:
+
 
 $$
 u(S) = 
 \begin{cases}
-    100 &\mbox{Als je gewonnen hebt}\\
-    -30 &\mbox{Als er een stalemate gespeeld is}\\
-    -100 &\mbox{Als je verloren hebt}\\
+ 100 &\mbox{Bij schaakmat en gewonnen}\\
+    -30 &\mbox{Als het eindigt bij een stalemate}\\
+    -100 &\mbox{Bij schaakmat en verloren}\\
     c + C + \Delta M + \Delta m + s + f_q &\mbox{Bij overige situaties}
 \end{cases}
 $$
@@ -92,18 +94,18 @@ $$
     f_q & Een gewogen(geleerd of niet-geleerd) aantal features
 \end{conditions}
 
-Hoe deze kleine sub-functies bepaald worden wordt later nog besproken in het stuk \reference{features}.
+Deze kleine sub-functies worden later nog besproken in \reference{features}.
 
 \chapter{Q-Learning Agent}
 
 \section{Generalization}
 
-De eerste agent die we moesten maken was de Q-agent deze is generalized omdat zoals bij de minpunten stonden van general search algoritmes, is het bijna onmogelijk om elke staat te bezoeken. Daarom dat we niet gewoon Q-learning gaan doen maar generalized Q-learning.
+De eerste agent die we maakten, was de Q-agent. Deze is generalized omdat, zoals besproken in \reference{keuze}, het praktisch onmogelijk is om elke staat te bezoeken. Daarom dat we niet 'gewoon' Q-learning kunnen gebruiken, maar wel generalized Q-learning.
 
 \section{Features}
 \label{features}
 
-We hebben een hoop features gedefinieerd deze zijn voornamelijk gebaseerd op de paper\cite{rl} die we gevonden hebben. De bedoeling van deze features is om een state zo goed mogelijk te definiëren. Je kan hieronder een beschrijving vinden van elks van onze 55 features.
+We hebben een hoop features gedefinieerd. Deze zijn voornamelijk gebaseerd op features uit de paper\cite{rl}. De bedoeling van deze features is om een state zo goed mogelijk te definiëren. Je kan hieronder een beschrijving vinden van elks van onze 55 features.
 
 We berekenen onze features als volt:
 
@@ -141,7 +143,7 @@ Hier zie je de grafiek van de functie:
 
 
 \subsection{Material}
-We definiëren elke soort schaakstuk met een waarde, op deze manier kunnen we de stukken onderscheiden t.o.v. elkaar. Zo krijgt de koningin een hogere waarde dan een pion, omdat deze meer van waarde is voor ons dan een pion. Hier zie je hoe de schaakstukken zich verhouden t.o.v. elkaar.
+Elk soort schaakstuk krijgt een cijfer dat zijn waarde bepaalt. Zo krijgt de koningin een hogere waarde dan een pion, omdat de koningin belangrijker is. Hier zie je hoe de schaakstukken zich verhouden t.o.v. elkaar.
 
 \begin{python}
 def getMaterialValue(piece_type):
@@ -193,17 +195,20 @@ Deze feature wordt ook weer voor zowel de eigen speler als de tegenspeler gecre�
 
 \section{Reward}
 
-Onze reward functieswordt als volgt gedefinieerd:
+De reward functie is als volgt gedefinieerd:
+
 
 $$
 R(S, a, NS) = 
 \begin{cases}
-    100 &\mbox{Willem vul aan}\\
-    -30 &\mbox{Willem vul aan}\\
-    -100 &\mbox{Willem vul aan}\\
+    100 &\mbox{Als je gewonnen hebt}\\
+    -30 &\mbox{Als er een stalemate gespeeld is}\\
+    -100 &\mbox{Als je verloren hebt}\\
      C_O(S, a) - C_S(NS) + c(S) + \Delta M &\mbox{Willem vul aan}
 \end{cases}
 $$
+
+
 
 \begin{conditions}
     C_O & of de opponent in schaak staat\\
