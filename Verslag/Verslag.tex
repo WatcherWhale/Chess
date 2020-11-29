@@ -3,6 +3,21 @@
 \usepackage[dutch]{babel}
 \usepackage{titlesec}
 \usepackage{tikz}
+\usepackage{pythonhighlight}
+\usepackage{amsmath}
+\usepackage{array}
+
+\newenvironment{conditions}
+  {\par\vspace{\abovedisplayskip}\noindent\begin{tabular}{>{$}l<{$} @{${}={}$} l}}
+  {\end{tabular}\par\vspace{\belowdisplayskip}}
+
+\definecolor{code}{HTML}{ecf0f1}
+\definecolor{codetext}{HTML}{d9534f}
+\newcommand{\codeword}[1]{
+    \colorbox{code}{\texttt{\textcolor{codetext}{#1}}}
+}
+
+\newcommand{\reference}[1]{\textit{\ref{#1}. \nameref{#1}}}
 
 \facultyacronym{TI}
 
@@ -54,13 +69,43 @@ Q-Learning leek ons het interessantst, maar Minimax was haalbaarder en zou sowie
 
 Uiteindelijk ging de keuze naar beide agents. We hadden namelijk een thesis\cite{rl} gevonden die een minimax agent gebruikte als feature voor een generalized Q-Learner.
 
+\chapter{Alpha-Beta Pruning}
+
+\section{Utility}
+\label{utility}
+
+Onze utility maakt gebruik van veel kenmerken van de features van onze Q-Learner dus gaan we dit later behandelen.
+Je kan op het moment onze utility als volgt begrijpen:
+
+$$
+u(S) = 
+\begin{cases}
+    100 &\mbox{Als je gewonnen hebt}\\
+    -30 &\mbox{Als er een stalemate gespeeld is}\\
+    -100 &\mbox{Als je verloren hebt}\\
+    c + C + \Delta M + \Delta m + s + f_q &\mbox{Bij overige situaties}
+\end{cases}
+$$
+
+\begin{conditions}
+    c & Of er gecastled is met de vorige move\\
+    C & Of het bord in schaak staat\\
+    \Delta M & Het materiaal verschil op het bord\\
+    \Delta m & Het verschil in mobility\\
+    s & De positie score voor alle eigen stukken\\
+    f_q & Een gewogen(geleerd of niet-geleerd) aantal features
+\end{conditions}
+
+Hoe deze kleine sub-functies bepaald worden wordt later nog besproken in het stuk \reference{features}.
+
 \chapter{Q-Learning Agent}
 
 \section{Generalization}
 
-De eerste agent die we moesten maken was de Q-Learner deze is generalized omdat zoals bij de minpunten stonden van general search algoritmes, is het bijna onmogelijk om elke staat te bezoeken. Daarom dat we niet gewoon Q-Learning gaan doen maar generalized Q-Learning.
+De eerste agent die we moesten maken was de Q-agent deze is generalized omdat zoals bij de minpunten stonden van general search algoritmes, is het bijna onmogelijk om elke staat te bezoeken. Daarom dat we niet gewoon Q-learning gaan doen maar generalized Q-learning.
 
 \section{Features}
+\label{features}
 
 We hebben een hoop features gedefinieerd deze zijn voornamelijk gebaseerd op de paper\cite{rl} die we gevonden hebben. De bedoeling van deze features is om een state zo goed mogelijk te definiëren. Je kan hieronder een beschrijving vinden van elks van onze 55 features.
 
@@ -108,13 +153,53 @@ Hier zie je de grafiek van de functie:
 
 \section{Reward}
 
-\chapter{Alpha-Beta Pruning}
-
-\section{Utility}
 
 Evaluation\cite{chessprogramming}
 
-\chapter{It's morphing time}
+\chapter{Optimalisaties}
+
+We hebben een hoop optimalisaties moeten toevoegen aan onze Q-Learner om hem zo rap mogelijk te laten denken.
+
+\section{Multi-Threading}
+
+We hebben multi-threading toegevoegd aan onze q-learner zo berekent hij de q-waarde van elke actie in een aparte thread. We hebben bewust niet gekozen om elke feature apart omdat dit onze timing issues verergerde in plaat van verbeterde.
+
+We hebben door multi-threading onze iteratie tijd met 20\% weten dalen.
+
+Hier zie je de resultaten van het processor gebruik:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=300pt]{images/singlethreaded.png}
+    \caption{Single Threaded Q-Learner CPU usage}
+    \label{fig:singlethreaded}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=350pt]{images/multithreaded.png}
+    \caption{Multi Threaded Q-Learner CPU usage}
+    \label{fig:multithreaded}
+\end{figure}
+
+\section{Caching}
+
+We gebruiken ook veel plaatsen caching zodat we niet 2 keer hetzelfde moeten uitrekenen. De meest bijzondere cache is deze voor onze alpha-beta feature, deze moet per bord state maar 1 keer uitvoeren waardoor we de alpha-beta langer kunnen laten zoeken en een hoop tijd besparen.
+Det tijd die we hierdoor besparen per iteratie kan soms tot een minuut of 2 oplopen.
+
+\chapter{Resultaten}
+\section{GrandQ vs. Stockfish (0-544)}
+
+Command:\\
+\codeword{python3 train -o stockfish --skill 0 --depth 10 -tt 5 -dt 0 -e 0.3 -d 0.6 -l 0.01 -q -i -1}
+
+\section{GrandQ vs. Alpha-Beta (544 - 5732)}
+
+Command:\\
+\codeword{python3 train -o ab --depth 10 -tt 5 -dt 0 -e 0.3 -d 0.6 -l 0.01 -q -i -1}
+
+Command na ongveer 1500 episodes:\\
+\codeword{python3 train -o ab --depth 10 -tt 5 -dt 0 -e 0.2 -d 0.4 -l 0.01 -q -i -1}
 
 \bibliography{sources}
 \bibliographystyle{ieeetr}
