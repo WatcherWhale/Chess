@@ -31,28 +31,24 @@
 
 \chapter{Keuze}
 
-Het type AI was een belangrijke keuze van dit project. Het moest haalbaar zijn om te implementeren binnen de beperkte tijdsperiode en we moesten onze eigen niet-supercomputers gebruiken om te treinen. Een lijst  met de voor- en nadelen van de verschillende opties werd opgesteld.
+Het type AI was een belangrijke keuze van dit project. Het moest haalbaar zijn om te implementeren binnen de beperkte tijdsperiode en we moesten onze eigen niet-supercomputers gebruiken om te treinen. Een lijst  met de voor- en nadelen van de verschillende opties werd opgesteld.\\[2 \baselineskip]
 
 
 \textbf{Search}:\\
-No time to study the whole tree (too much states)
+Er zijn te veel mogelijke states ($\approx10^{120}$) om de hele tree uit te werken. 
 
 \textbf{Multi-Agent search} (Minimax, Alpha-Beta pruning):\\
-Method used by multiple sources, but we have no experience with it. 
+Deze methode wordt gebruikt door meerdere bronnen, maar we hebben er nog geen ervaring mee. 
 
 \textbf{Reinforcement learning} (Generalised Q learning):\\
-We've already used this and therefore we already understand it and can implement it quickly.\\
-Once trained, it will act optimally. The training however, needs a lot of time to learn and the choice of features isn't that obvious.
+We hebben dit al gebruikt en daarom begrijpen we het al en kunnen we het snel implementeren.\\
+Eenmaal getraind, zal het optimaal functioneren. De training heeft echter veel tijd nodig en de keuze van de features is niet zo voor de hand liggend.
 
 \textbf{Neural network/ Deep learning:}
-- No data labels
-- Never Done
-- No clue of in/output
+Onze ervaring met Deep learning is nogal beperkt. We weten niet goed wat we als in- en output moeten nemen. \\[2 \baselineskip]
 
 
-Q-Learning leek ons het interessantst, maar Minimax was haalbaarder en zou sowieso een goed resultaat leveren. We besloten om beide methodes uit te werken. 
-
-Uiteindelijk ging de keuze naar beide agents. We hadden namelijk een thesis\cite{rl} gevonden die een minimax agent gebruikte als feature voor een generalized Q-Learner.
+Q-Learning leek ons het interessantst, maar Minimax is haalbaarder en zou sowieso een goed resultaat leveren. Uiteindelijk besloten we om beide methodes uit te werken. We hadden namelijk een thesis\cite{rl} gevonden die een minimax agent gebruikte als feature voor een generalized Q-Learner.
 
 \chapter{Q-Learning Agent}
 
