@@ -93,7 +93,7 @@ $$
 \end{conditions}
 
 Hoe deze kleine sub-functies bepaald worden wordt later nog besproken in het stuk \reference{features}.
-
+\pagebreak
 \chapter{Q-Learning Agent}
 
 \section{Generalization}
@@ -140,8 +140,16 @@ Hier zie je de grafiek van de functie:
 
 
 
-\subsection{Material}
-We definiëren elke soort schaakstuk met een waarde, op deze manier kunnen we de stukken onderscheiden t.o.v. elkaar. Zo krijgt de koningin een hogere waarde dan een pion, omdat deze meer van waarde is voor ons dan een pion. Hier zie je hoe de schaakstukken zich verhouden t.o.v. elkaar.
+\subsection{Amount of Pieces}
+Een andere feature die we gebruiken is het aantal soort stukken van elke speler. We doen dit 1 keer voor alle schaakstukken van het bord, zowel de onze als die van de tegenspeler. 
+
+We creëerden ook voor elke type schaakstuk 2 features. Eén die bijhoud hoeveel van dit type schaakstukken je zelf op het bord bevindt en één die bijhield hoeveel je opponent er heeft. Op deze manier zal onze Q-agent leren dat een slecht ding is als de opponent veel stukken van een type en dat het goed is als je zelf veel schaakstukken bezit.
+
+Het laatste wat we ook nakijken is de feature \codeword{AmountBalancePieces()} deze zal de material value van alle stukken van de speler berekenen en de material value van de tegenspeler er af trekken. Wanneer dit getal dus negatief is betekend dat dat de tegenspeler globaal bekeken er beter voor staat als jezelf.
+
+
+\subsubsection{Material value}
+Elk soort schaakstuk krijgt een cijfer dat zijn waarde bepaalt. Zo krijgt de koningin een hogere waarde dan een pion, omdat de koningin belangrijker is. Hier zie je hoe de schaakstukken zich verhouden t.o.v. elkaar. \\[2\baselineskip]
 
 \begin{python}
 def getMaterialValue(piece_type):
@@ -159,12 +167,6 @@ def getMaterialValue(piece_type):
     return 0
 \end{python}
 
-\subsection{Amount of Pieces}
-Een andere feature die we gebruiken is het aantal soort stukken van elke speler. We doen dit 1 keer voor alle schaakstukken van het bord, zowel de onze als die van de tegenspeler. 
-
-We creëerden ook voor elke type schaakstuk 2 features. Eén die bijhoud hoeveel van dit type schaakstukken je zelf op het bord bevindt en één die bijhield hoeveel je opponent er heeft. Op deze manier zal onze Q-agent leren dat een slecht ding is als de opponent veel stukken van een type en dat het goed is als je zelf veel schaakstukken bezit.
-
-Het laatste wat we ook nakijken is de feature \codeword{AmountBalancePieces()} deze zal de material value van alle stukken van de speler berekenen en de material value van de tegenspeler er af trekken. Wanneer dit getal dus negatief is betekend dat dat de tegenspeler globaal bekeken er beter voor staat als jezelf.
 
 \subsection{Mobility}
 De \codeword{Mobility.py} file berekent voor elke type schaakstuk hoeveel vakjes het stuk kan bereiken. 
@@ -174,6 +176,7 @@ Dit wordt gebruikt voor de mobility features. Hierbij gaan we voor elke type sch
 De feature \codeword{MobilityRookS()} zal voor elke Rook (toren) van de eigen speler (S in de functie staat voor self) berekenen op hoeveel vakjes die kan komen en bij elkaar optellen.
 
 Voor het berekenen van de vakjes gaan kijken of een een legal move zou zijn als we dat stuk naar een vakje zouden zetten, wanneer dit een false teruggeeft betekend het dat we niet naar dat vakje kunnen omdat er al een ander van je schaakstukken op staat. Hier hebben we wat problemen ondervonden voor de opponent omdat we enkel onze eigen stukken kunnen verplaatsen. Onze oplossing hiervoor was een copy van het bord maken gevolgd door een board turn, op deze manier speel je dan zogezegd even als de opponent op het gekopieerde bord. 
+\pagebreak
 
 \subsection{Attackers}
 Deze attacked features laten weten hoeveel van je schaakstukken van een bepaald type kunnen worden aangevallen door schaakstukken van de opponent met een inferieure waarde. 
