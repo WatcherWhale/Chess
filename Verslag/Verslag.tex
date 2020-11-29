@@ -92,9 +92,33 @@ Hier zie je de grafiek van de functie:
 
 Evaluation\cite{chessprogramming}
 
-\chapter{It's morphing time}
+\chapter{Optimalisaties}
+
+We hebben een hoop optimalisaties moeten toevoegen aan onze Q-Learner om hem zo rap mogelijk te laten denken.
+
+\section{Multi-Threading}
+
+We hebben multi-threading toegevoegd aan onze q-learner zo berekent hij de q-waarde van elke actie in een aparte thread. We hebben bewust niet gekozen om elke feature apart omdat dit onze timing issues verergerde in plaat van verbeterde.
+
+Hier zie je de resultaten van het processor gebruik:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=300pt]{images/singlethreaded.png}
+    \caption{Single Threaded Q-Learner CPU usage}
+    \label{fig:singlethreaded}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=350pt]{images/multithreaded.png}
+    \caption{Multi Threaded Q-Learner CPU usage}
+    \label{fig:multithreaded}
+\end{figure}
+
 
 % python3 train -o stockfish --skill 0 --depth 10 -tt 5 -dt 0 -e 0.3 -d 0.6 -l 0.01 -q -i -1
+% python3 train -o ab --skill 0 --depth 10 -tt 5 -dt 0 -e 0.2 -d 0.4 -l 0.01 -q -i -1
 
 \bibliography{sources}
 \bibliographystyle{ieeetr}
