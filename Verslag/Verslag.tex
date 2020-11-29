@@ -4,12 +4,20 @@
 \usepackage{titlesec}
 \usepackage{tikz}
 \usepackage{pythonhighlight}
+\usepackage{amsmath}
+\usepackage{array}
+
+\newenvironment{conditions}
+  {\par\vspace{\abovedisplayskip}\noindent\begin{tabular}{>{$}l<{$} @{${}={}$} l}}
+  {\end{tabular}\par\vspace{\belowdisplayskip}}
 
 \definecolor{code}{HTML}{ecf0f1}
 \definecolor{codetext}{HTML}{d9534f}
 \newcommand{\codeword}[1]{
     \colorbox{code}{\texttt{\textcolor{codetext}{#1}}}
 }
+
+\newcommand{\reference}[1]{\textit{\ref{#1}. \nameref{#1}}}
 
 \facultyacronym{TI}
 
@@ -46,13 +54,43 @@ Uit deze lijst hadden we 2 keuzes die voor ons er ver bovenuit staken Q-Learning
 
 Uiteindelijk ging de keuze naar beide agents. We hadden namelijk een thesis\cite{rl} gevonden die een minimax agent gebruikte als feature voor een generalized Q-Learner.
 
+\chapter{Alpha-Beta Pruning}
+
+\section{Utility}
+\label{utility}
+
+Onze utility maakt gebruik van veel kenmerken van de features van onze Q-Learner dus gaan we dit later behandelen.
+Je kan op het moment onze utility als volgt begrijpen:
+
+$$
+u(S) = 
+\begin{cases}
+    100 &\mbox{Als je gewonnen hebt}\\
+    -30 &\mbox{Als er een stalemate gespeeld is}\\
+    -100 &\mbox{Als je verloren hebt}\\
+    c + C + \Delta M + \Delta m + s + f_q &\mbox{Bij overige situaties}
+\end{cases}
+$$
+
+\begin{conditions}
+    c & Of er gecastled is met de vorige move\\
+    C & Of het bord in schaak staat\\
+    \Delta M & Het materiaal verschil op het bord\\
+    \Delta m & Het verschil in mobility\\
+    s & De positie score voor alle eigen stukken\\
+    f_q & Een gewogen(geleerd of niet-geleerd) aantal features
+\end{conditions}
+
+Hoe deze kleine sub-functies bepaald worden wordt later nog besproken in het stuk \reference{features}.
+
 \chapter{Q-Learning Agent}
 
 \section{Generalization}
 
-De eerste agent die we moesten maken was de Q-Learner deze is generalized omdat zoals bij de minpunten stonden van general search algoritmes, is het bijna onmogelijk om elke staat te bezoeken. Daarom dat we niet gewoon Q-Learning gaan doen maar generalized Q-Learning.
+De eerste agent die we moesten maken was de Q-agent deze is generalized omdat zoals bij de minpunten stonden van general search algoritmes, is het bijna onmogelijk om elke staat te bezoeken. Daarom dat we niet gewoon Q-learning gaan doen maar generalized Q-learning.
 
 \section{Features}
+\label{features}
 
 We hebben een hoop features gedefinieerd deze zijn voornamelijk gebaseerd op de paper\cite{rl} die we gevonden hebben. De bedoeling van deze features is om een state zo goed mogelijk te definiëren. Je kan hieronder een beschrijving vinden van elks van onze 55 features.
 
@@ -93,9 +131,6 @@ Hier zie je de grafiek van de functie:
 
 \section{Reward}
 
-\chapter{Alpha-Beta Pruning}
-
-\section{Utility}
 
 Evaluation\cite{chessprogramming}
 
