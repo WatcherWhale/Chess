@@ -660,7 +660,7 @@ L: \@qrlectureri
 \@qrlectureriv}
 \newsavebox{\myqrcode}
 \renewcommand\maketitle{%
-  \pagestyle{plain}
+\pagestyle{plain}
   \if@qr
   \savebox{\myqrcode}[2.7in][t]{
     \begin{pspicture}(2.7in,2.7in)
