@@ -7,6 +7,9 @@
 \usepackage{amsmath}
 \usepackage{array}
 \usepackage{subcaption}
+\usepackage{listings}\usepackage[nottoc,numbib]{tocbibind}
+
+\renewcommand{\lstlistingname}{Code}
 
 \newenvironment{conditions}
   {\par\vspace{\abovedisplayskip}\noindent\begin{tabular}{>{$}l<{$} @{${}={}$} l}}
@@ -20,6 +23,7 @@
 
 \newcommand{\reference}[1]{\textit{\ref{#1}. \nameref{#1}}}
 \newcommand{\figref}[1]{\textit{Figuur \ref{#1}}}
+\newcommand{\coderef}[1]{\textit{Code \ref{#1}}}
 
 \facultyacronym{TI}
 
@@ -80,9 +84,9 @@ Op dit moment volstaat het om een simpele versie van onze utility te aanschouwen
 $$
 u(S) = 
 \begin{cases}
- 100 &\mbox{Bij schaakmat en gewonnen}\\
-    -30 &\mbox{Als het eindigt bij een stalemate}\\
-    -100 &\mbox{Bij schaakmat en verloren}\\
+ 100 &\mbox{Schaakmat gewonnen}\\
+    -30 &\mbox{Gelijkspel of Stalemate}\\
+    -100 &\mbox{Schaakmat verloren}\\
     c + C + \Delta M + \Delta m + s + f_q &\mbox{Bij overige situaties}
 \end{cases}
 $$
@@ -153,9 +157,9 @@ Het laatste wat we ook nakijken is de feature \codeword{AmountBalancePieces()} d
 
 
 \subsubsection{Material value}
-Elk soort schaakstuk krijgt een cijfer dat zijn waarde bepaalt. Zo krijgt de koningin een hogere waarde dan een pion, omdat de koningin belangrijker is. Hier zie je hoe de schaakstukken zich verhouden t.o.v. elkaar. \\[2\baselineskip]
+Elk soort schaakstuk krijgt een cijfer dat zijn waarde bepaalt. Zo krijgt de koningin een hogere waarde dan een pion, omdat de koningin belangrijker is. In \coderef{code:material} staat de implementatie van hoe de schaakstukken zich verhouden t.o.v. elkaar.
 
-\begin{python}
+\begin{lstlisting}[style=mypython,caption={Material Function},captionpos=b,label={code:material}]
 def getMaterialValue(piece_type):
     if piece_type is chess.PAWN:
         return 1
@@ -169,8 +173,7 @@ def getMaterialValue(piece_type):
         return 10
 
     return 0
-\end{python}
-
+\end{lstlisting}
 
 \subsection{Mobility}
 De \codeword{Mobility.py} file berekent voor elke type schaakstuk hoeveel vakjes het stuk kan bereiken. 
@@ -204,18 +207,18 @@ In \figref{fig:knightFork} zal het paard op d5 worden meegeteld, maar het paard 
 
 
 \begin{figure}[h]
-\centering
-\begin{subfigure}{.4\textwidth}
-    \includegraphics[width=170pt]{images/pawnFork.png}
-    \caption{Example of pawn fork}
-    \label{fig:pawnFork}
-\end{subfigure}
-\begin{subfigure}{.4\textwidth}
-    \includegraphics[width=170pt]{images/knightFork.png}
-    \caption{Example of knight fork}
-    \label{fig:knightFork}
-\end{subfigure}
-\caption{Examples of forks}
+    \centering
+    \begin{subfigure}{.4\textwidth}
+        \includegraphics[width=170pt]{images/pawnFork.png}
+        \caption{Example of pawn fork}
+        \label{fig:pawnFork}
+    \end{subfigure}
+    \begin{subfigure}{.4\textwidth}
+        \includegraphics[width=170pt]{images/knightFork.png}
+        \caption{Example of knight fork}
+        \label{fig:knightFork}
+    \end{subfigure}
+    \caption{Examples of forks}
 \end{figure}
 
 \subsection{Control}
@@ -231,12 +234,38 @@ Deze feature wordt ook weer voor zowel de eigen speler als de tegenspeler gecreÃ
 \subsection{position score}
 \subsection{rookson7th}
 \subsection{king distance to center}
-\subsection{castling}
+\subsection{Castling}
+
+Dit is een vrij eenvoudige feature die kijkt of de agent gecastled heeft. In \figref{fig:castling2} en \figref{fig:castling3} staan 2 voorbeelden afgebeeld van castling.
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{.3\textwidth}
+        \includegraphics[width=130pt]{images/castling1.png}
+        \caption{Initial state}
+        \label{fig:castling1}
+    \end{subfigure}
+    \begin{subfigure}{.3\textwidth}
+        \includegraphics[width=130pt]{images/castling2.png}
+        \caption{Short castling}
+        \label{fig:castling2}
+    \end{subfigure}
+    \begin{subfigure}{.3\textwidth}
+        \includegraphics[width=130pt]{images/castling3.png}
+        \caption{Long castling}
+        \label{fig:castling3}
+    \end{subfigure}
+    \caption{Examples of castling}
+    \label{fig:castling}
+\end{figure}
+
 \subsection{double pawns}
 \subsection{light pieces on }
 
 
-\subsection{alpha beta}
+\subsection{Alpha-beta Agent prediction feature}
+
+Deze feature laat een onze alpha-beta agent een keuze maken in de huidige situatie. Als deze keuze overeenkomt met de keuze van de Q-agent dan returned deze feature $1$ zo niet dan krijgen we een return waarde van $0$. Deze feature kent ook optimalisaties maar hierover later meer in \reference{caching}.
 
 
 
@@ -249,10 +278,10 @@ De reward functie is als volgt gedefinieerd:
 $$
 R(S, a, NS) = 
 \begin{cases}
-    100 &\mbox{Willem vul aan}\\
-    -30 &\mbox{Willem vul aan}\\
-    -100 &\mbox{Willem vul aan}\\
-     C_O(S, a) - C_S(NS) + c(S) + \Delta M &\mbox{Willem vul aan}
+    100 &\mbox{Schaakmat gewonnen}\\
+    -30 &\mbox{Gelijkspel of Stalemate}\\
+    -100 &\mbox{Schaakmat verloren}\\
+     C_O(S, a) - C_S(NS) + c(S) + \Delta M &\mbox{Bij overige situaties}
 \end{cases}
 $$
 
@@ -270,11 +299,9 @@ We hebben een hoop optimalisaties moeten toevoegen aan onze Q-Learner om hem zo 
 
 \section{Multi-Threading}
 
-We hebben multi-threading toegevoegd aan onze q-learner zo berekent hij de q-waarde van elke actie in een aparte thread. We hebben bewust niet gekozen om elke feature apart omdat dit onze timing issues verergerde in plaat van verbeterde.
+We hebben multi-threading toegevoegd aan onze q-learner zo berekent hij de q-waarde van elke actie in een aparte thread. We hebben bewust niet gekozen om elke feature apart omdat dit onze timing issues verergerde in plaat van verbeterde. We hebben door multi-threading onze iteratie tijd met $20\%$ weten dalen.
 
-We hebben door multi-threading onze iteratie tijd met 20\% weten dalen.
-
-Hier zie je de resultaten van het processor gebruik:
+In \figref{fig:singlethreaded} en \figref{fig:multithreaded} is het verschil te zien tussen single-threaded \tiny(\ref{fig:singlethreaded})\small{ }en multi-threaded \tiny(\ref{fig:multithreaded})\small{ }CPU usage.
 
 \begin{figure}[h]
     \centering
@@ -291,9 +318,12 @@ Hier zie je de resultaten van het processor gebruik:
 \end{figure}
 
 \section{Caching}
+\label{caching}
 
 We gebruiken ook veel plaatsen caching zodat we niet 2 keer hetzelfde moeten uitrekenen. De meest bijzondere cache is deze voor onze alpha-beta feature, deze moet per bord state maar 1 keer uitvoeren waardoor we de alpha-beta langer kunnen laten zoeken en een hoop tijd besparen.
 Det tijd die we hierdoor besparen per iteratie kan soms tot een minuut of 2 oplopen.
+
+Dit was uiteraard wel een trade off met memory usage, echter werd de extra gebruikte memory overschaduwd door de tijdswinsten.
 
 \chapter{Resultaten}
 
@@ -341,8 +371,6 @@ Je kan onze code en ons getrained bestand ook terug vinden op gitlab:
     \item Repository: \href{https://gitlab.com/Artificiele_Intelligentie/chess}{\color{blue}\underline{https://gitlab.com/Artificiele\_Intelligentie/chess}}
     \item \href{https://gitlab.com/Artificiele_Intelligentie/chess/-/raw/master/grandQ.json}{\color{blue}\underline{Getraind bestand}}
 \end{itemize}
-
-
 
 \bibliography{sources}
 \bibliographystyle{ieeetr}
