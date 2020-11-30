@@ -20,6 +20,7 @@
 
 \newcommand{\reference}[1]{\textit{\ref{#1}. \nameref{#1}}}
 \newcommand{\figref}[1]{\textit{Figuur \ref{#1}}}
+\newcommand{\ts}{\textsuperscript}
 
 \facultyacronym{TI}
 
@@ -187,6 +188,9 @@ Zo zal bijvoorbeeld de \codeword{AttackedRooksS()} feature calculeren hoeveel va
 Voor de opponent te berekenen hebben we het probleem zoals bij moblility op dezelfde manier opgelost.
 
 \subsection{Forks}
+
+De volgende twee features hebben ook zowel voor de speler als de tegenspeler ge√Ømplementeerd.
+
 \subsubsection{Pawn Fork}
 Pawn fork gaat kijken hoeveel van jouw pionen 2 superieure stukken van de tegenstander kan pakken.
 
@@ -223,7 +227,17 @@ Deze feature wordt ook weer voor zowel de eigen speler als de tegenspeler gecre√
 \subsection{connectivity}
 \subsection{provokers}
 \subsection{position score}
-\subsection{rookson7th}
+\subsection{Rooks on 7th rank}
+Deze feature gaat kijken hoeveel torens er van de speler op de zevende rang staan. Hierbij wordt er geteld vanaf de kant van de speler zelf. Dus de tegenspeler zal dat dus rij 2 zijn. Wanneer er torens op de 7\ts{de} rang staat sta je heel sterk in het spel. Dit komt doordat je de bewegingsruimte van de opponent zijn koning sterk wordt beperkt en dat alle andere stukken op die rank niet veilig staan.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=170pt]{images/rooks7rank.png}
+    \caption{Example of rooks on 7\ts{th} rank}
+    \label{fig:rooks7rank}
+\end{figure}
+
+
 \subsection{king distance to center}
 \subsection{castling}
 \subsection{double pawns}
