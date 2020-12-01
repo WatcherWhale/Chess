@@ -227,7 +227,24 @@ In \figref{fig:knightFork} zal het paard op d5 worden meegeteld, maar het paard 
 \end{figure}
 
 \subsection{Connected Rooks}
-Er zijn 2 verschillende features, de \codeword{ConnectedRooksVertical()} en \codeword{ConnectedRooksHorizontal()}
+Er zijn 2 verschillende features, de \codeword{ConnectedRooksVertical()} en \codeword{ConnectedRooksHorizontal()} die op zo goed als hetzelfde werken. We gaan optellen hoeveel paren van torens er zijn die op ofwel dezelfde rang (horizontally connected) ofwel op dezelfde kolom staan (vertically concted) en waar geen tegenstanders tussen staan.
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{.4\textwidth}
+        \includegraphics[width=170pt]{images/ConnectedRooks.png}
+        \caption{Example of connected rooks}
+        \label{fig:ConnectedRooks}
+    \end{subfigure}
+    \begin{subfigure}{.4\textwidth}
+        \includegraphics[width=170pt]{images/NotConnectedRooks.png}
+        \caption{Example where rooks are not connected}
+        \label{fig:NotConnectedRooks}
+    \end{subfigure}
+    \caption{Connected Rookd}
+\end{figure}
+
+In \figref{fig:ConnectedRooks} zien we op kolom b een vertically connected rooks en op rang 6 een horizontally connected rooks. Op \figref{fig:NotConnectedRooks} zijn er geen connected rooks omdat ze ofwel niet tegenover elkaar staan of er staat een stuk van de tegenspeler tussen.
 
 \subsection{Control}
 \subsubsection{Center Control}
@@ -345,7 +362,7 @@ We starten met het definiëren van een aantal matrices waarbij de matrix het bor
     \caption{Score matrices}
 \end{figure}
 
-We gebruiken dit in de feature \codeword{PositionScoreBalance()} hierbij gaan we al onze schaakstukken af en sommeren we de punten van elk stuk met zijn overeenkomende plaats op de bijhorende matrix. Dit doen we ook voor de tegenspeler en trekken dit van onze score af. Op deze manier zien we of de schaakstukken van de opponent beter staan op het bord dan de onze.
+We gebruiken dit in de feature \codeword{PositionScoreBalance()} hierbij gaan we al onze schaakstukken af en sommeren we de punten van elk stuk met zijn overeenkomende plaats op de bijhorende matrix. Dit doen we voor zowel de speler als.
 
 \subsection{Rooks on 7th rank}
 Deze feature gaat kijken hoeveel torens er van de speler op de zevende rang staan. Hierbij wordt er geteld vanaf de kant van de speler zelf. Dus de tegenspeler zal dat dus rij 2 zijn. Wanneer er torens op de 7\ts{de} rang staat sta je heel sterk in het spel. Dit komt doordat je de bewegingsruimte van de opponent zijn koning sterk wordt beperkt en dat alle andere stukken op die rank niet veilig staan.
