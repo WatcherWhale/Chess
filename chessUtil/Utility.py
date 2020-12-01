@@ -1,10 +1,11 @@
 import chess
+import numpy as np
 
 from .State import State
 from .Material import calculateMaterialValue
 from .Mobility import totalMobility
 from .Features import Features
-from .PositionParser import scoreMatrix
+from .PositionParser import scoreMatrix, getRowColumn
 
 
 def utility(state: State, features: Features):
@@ -42,8 +43,14 @@ def utility(state: State, features: Features):
     # Position Score matrix
     for piece_type in range(1, 7):
         for p in state.getBoard().pieces(piece_type, state.getPlayer()):
-            value += scoreMatrix[piece_type - 1][63 - p]
+            m = np.asmatrix(scoreMatrix[piece_type - 1])
+            flip = np.flipud(m)
+            r, c = getRowColumn(p)
+            value += flip[r, c]
+
         for p in state.getBoard().pieces(piece_type, not state.getPlayer()):
-            value -= scoreMatrix[piece_type - 1][p]
+            m = np.asmatrix(scoreMatrix[piece_type - 1])
+            r, c = getRowColumn(p)
+            value -= m[r, c]
 
     return value + features.calculateFeatures(prevState, action)

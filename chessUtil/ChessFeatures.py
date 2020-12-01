@@ -803,7 +803,10 @@ class PositionScoreBalanceS(Feature):
 
         for piece_type in range(1, 7):
             for p in board.pieces(piece_type, state.getPlayer()):
-                score += scoreMatrix[piece_type - 1][63 - p]
+                m = np.asmatrix(scoreMatrix[piece_type - 1])
+                flip = np.flipud(m)
+                r, c = getRowColumn(p)
+                score += flip[r, c]
 
         return score / 10.0
 
@@ -818,6 +821,8 @@ class PositionScoreBalanceO(Feature):
 
         for piece_type in range(1, 7):
             for p in board.pieces(piece_type, not state.getPlayer()):
-                score += scoreMatrix[piece_type - 1][p]
+                m = np.asmatrix(scoreMatrix[piece_type - 1])
+                r, c = getRowColumn(p)
+                score += m[r, c]
 
         return score / 10.0
