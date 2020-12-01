@@ -792,10 +792,10 @@ class BoardControl(Feature):
         return (controlS - controlO)/64
 
 
-class PositionScoreBalance(Feature):
+class PositionScoreBalanceS(Feature):
     def __init__(self):
         Feature.__init__(self)
-        self.name = "positionScoreBalance"
+        self.name = "positionScoreBalanceS"
 
     def calculateValue(self, state: State, action, nextState: State):
         board = nextState.getBoard()
@@ -805,7 +805,19 @@ class PositionScoreBalance(Feature):
             for p in board.pieces(piece_type, state.getPlayer()):
                 score += scoreMatrix[piece_type - 1][63 - p]
 
-            for p in board.pieces(piece_type, not state.getPlayer()):
-                score -= scoreMatrix[piece_type - 1][p]
+        return score / 10.0
 
-        return score
+class PositionScoreBalanceO(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "positionScoreBalanceO"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        board = nextState.getBoard()
+        score = 0
+
+        for piece_type in range(1, 7):
+            for p in board.pieces(piece_type, not state.getPlayer()):
+                score += scoreMatrix[piece_type - 1][p]
+
+        return score / 10.0
