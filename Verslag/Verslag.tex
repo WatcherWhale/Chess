@@ -115,7 +115,7 @@ De eerste agent die we maakten, was de Q-agent. Deze is generalized omdat, zoals
 
 We hebben een hoop features gedefinieerd. Deze zijn voornamelijk gebaseerd op features uit de paper\cite{rl}. De bedoeling van deze features is om een state zo goed mogelijk te definiëren. Je kan hieronder een beschrijving vinden van elks van onze 55 features.
 
-We berekenen onze features als volt:
+We berekenen onze features met deze formule:
 
 $$
 Q(s,a) = \sum_{i} w_{i} \cdot \sigma \left( f_i(s, a)\right)
@@ -151,11 +151,11 @@ Hier zie je de grafiek van de functie:
 
 
 \subsection{Amount of Pieces}
-Een andere feature die we gebruiken is het aantal soort stukken van elke speler. We doen dit 1 keer voor alle schaakstukken van het bord, zowel de onze als die van de tegenspeler.
+De meest voor de hand liggende feature die we gebruiken, is het aantal stukken per type op een bord. We berekenen dit aantal voor zowel de onze als die van de tegenspeler. Elk type krijgt dus 2 features.
 
-We creëerden ook voor elke type schaakstuk 2 features. Eén die bijhoud hoeveel van dit type schaakstukken je zelf op het bord bevindt en één die bijhield hoeveel je opponent er heeft. Op deze manier zal onze Q-agent leren dat een slecht ding is als de opponent veel stukken van een type en dat het goed is als je zelf veel schaakstukken bezit.
+Op deze manier zal onze Q-agent leren dat het voordelig is om het aantal stukken van zichzelf hoog te houden en die van de opponent laag te houden.
 
-Het laatste wat we ook nakijken is de feature \codeword{AmountBalancePieces()} deze zal de material value van alle stukken van de speler berekenen en de material value van de tegenspeler er af trekken. Wanneer dit getal dus negatief is betekend dat dat de tegenspeler globaal bekeken er beter voor staat als jezelf.
+Het laatste wat we ook nakijken is de feature \codeword{AmountBalancePieces()} deze zal de material value van alle stukken van de speler berekenen en de material value van de tegenspeler er af trekken. Wanneer dit getal negatief is, betekent dat dus dat de opponent er op dit vlak beter voor staat.
 
 
 \subsubsection{Material value}
@@ -184,29 +184,29 @@ Dit wordt gebruikt voor de mobility features. Hierbij gaan we voor elke type sch
 
 De feature \codeword{MobilityRookS()} zal voor elke Rook (toren) van de eigen speler (S in de functie staat voor self) berekenen op hoeveel vakjes die kan komen en bij elkaar optellen.
 
-Voor het berekenen van de vakjes gaan kijken of een een legal move zou zijn als we dat stuk naar een vakje zouden zetten, wanneer dit een false teruggeeft betekend het dat we niet naar dat vakje kunnen omdat er al een ander van je schaakstukken op staat. Hier hebben we wat problemen ondervonden voor de opponent omdat we enkel onze eigen stukken kunnen verplaatsen. Onze oplossing hiervoor was een copy van het bord maken gevolgd door een board turn, op deze manier speel je dan zogezegd even als de opponent op het gekopieerde bord. 
+Voor het berekenen van de legal moves gebruikte we de functie \codeword{islegal(Move)} op het huidige bord.  Hier hebben we wat problemen mee ondervonden voor de opponent omdat we enkel stukken kunnen verplaatsten van diegene die aan beurt is. Alle moves van de opponent zijn dus illegal. Onze oplossing hiervoor is om een copy van het bord maken gevolgd door een board turn, op deze manier speel je dan zogezegd even als de opponent op het gekopieerde bord. 
 \pagebreak
 
 \pagebreak
 
 \subsection{Attackers}
-Deze attacked features laten weten hoeveel van je schaakstukken van een bepaald type kunnen worden aangevallen door schaakstukken van de opponent met een inferieure waarde. 
+Deze attacked features laten weten hoeveel van de schaakstukken van een bepaald type aangevallen kunnen worden door de opponent met inferieure schaakstukken. 
 
-Zo zal bijvoorbeeld de \codeword{AttackedRooksS()} feature calculeren hoeveel van zijn torens kunnen worden aangevallen door een schaakstuk van de tegenspeler met een inferieure waarden, in dit geval de pion, paard of loper.
+Zo zal bijvoorbeeld de \codeword{AttackedRooksS()} feature calculeren hoeveel van zijn torens kunnen worden aangevallen door een pion, een paard of een loper van het andere team.
 
-Voor de opponent te berekenen hebben we het probleem zoals bij moblility op dezelfde manier opgelost.
+Voor de opponent versie van deze features te berekenen hebben we het probleem op dezelfde manier opgelost als bij moblility .
 
 \subsection{Forks}
 
-De volgende twee features hebben ook zowel voor de speler als de tegenspeler geïmplementeerd.
+De volgende twee features zijn zowel voor de speler als de tegenspeler geïmplementeerd.
 
 \subsubsection{Pawn Fork}
-Pawn fork gaat kijken hoeveel van jouw pionen 2 superieure stukken van de tegenstander kan pakken.
+Pawn fork gaat kijken hoeveel pionnen 2 superieure stukken van de tegenstander aanvalt.
 
 In \figref{fig:pawnFork} zal pion op d4 meetellen bij de pawn fork som, omdat deze 2 schaakstukken met een hogere material value kan nemen. Terwijl pion op g4 niet zal worden meegeteld.
 
 \subsubsection{Knight Fork}
-Gelijkend aan de Pawn fork zal de Knight fork ook kijken welke van je paarden 2 superieure schaakstukken van de tegenspeler kan nemen.
+Gelijkend aan de Pawn fork zal de Knight fork ook kijken hoeveel paarden 2 superieure schaakstukken van de tegenspeler kan nemen.
 
 In \figref{fig:knightFork} zal het paard op d5 worden meegeteld, maar het paard op g2 niet. Het paard op g2 wordt niet meegeteld omdat het paard dat deze kan nemen niet superieur is t.o.v. zichzelf.
 
@@ -227,7 +227,8 @@ In \figref{fig:knightFork} zal het paard op d5 worden meegeteld, maar het paard 
 \end{figure}
 
 \subsection{Connected Rooks}
-Er zijn 2 verschillende features, de \codeword{ConnectedRooksVertical()} en \codeword{ConnectedRooksHorizontal()} die op zo goed als hetzelfde werken. We gaan optellen hoeveel paren van torens er zijn die op ofwel dezelfde rang (horizontally connected) ofwel op dezelfde kolom staan (vertically concted) en waar geen tegenstanders tussen staan.
+\label{connectedRooks}
+Er zijn 2 verschillende features, de \codeword{ConnectedRooksVertical()} en \codeword{ConnectedRooksHorizontal()} die op zo goed als hetzelfde werken. We gaan optellen hoeveel paren van torens er zijn die op ofwel dezelfde rang (horizontally connected) ofwel op dezelfde kolom staan (vertically connected) en waar geen andere stukken tussen staan.
 
 \begin{figure}[h]
     \centering
@@ -254,8 +255,16 @@ Deze feature wordt ook weer voor zowel de eigen speler als de tegenspeler gecre�
 
 \subsubsection{Board Control}
 
-\subsection{connectivity}
-\subsection{provokers}
+\subsection{Connectivity}
+\label{connectivity}
+
+De connectivity beschrijft de mate waarin een speler zijn stukken kan beschermen. Met andere woorden: hoeveel ze geconnecteerd zijn met elkaar. Het kijkt dus niet enkel naar \reference{connectedRooks}, maar naar alle stukken die stukken van zijn eigen team kunnen 'aanvallen'. 
+
+\subsection{Provokers}
+
+Deze feature lijkt sterk op \reference{connectivity}. Het verschil zit erin dat we hier gaan kijken naar welke stukken we van de tegenspeler kunnen aanvallen. Ze dagen de stukken dus uit. 
+
+
 \subsection{Position score}
 We starten met het definiëren van een aantal matrices waarbij de matrix het bord voorstelt en elk vakje een bepaald score krijgt. Voor elk type schaakstuk hebben we een ingevulde matrix.
 
