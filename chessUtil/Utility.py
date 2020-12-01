@@ -42,8 +42,8 @@ def utility(state: State, features: Features):
     # Position Score matrix
     for piece_type in range(1, 7):
         for p in state.getBoard().pieces(piece_type, state.getPlayer()):
-            value += scoreMatrix[piece_type - 1][p] / 10.0
+            value += scoreMatrix[piece_type - 1][63 - p] / 10.0
         for p in state.getBoard().pieces(piece_type, not state.getPlayer()):
-            value -= scoreMatrix[piece_type - 1][63 - p]
+            value -= scoreMatrix[piece_type - 1][p]
 
     return value + features.calculateFeatures(prevState, action)

@@ -803,7 +803,7 @@ class PositionScoreBalance(Feature):
 
         for piece_type in range(1, 7):
             for p in board.pieces(piece_type, state.getPlayer()):
-                score += scoreMatrix[piece_type - 1][p]
+                score += scoreMatrix[piece_type - 1][63 - p]
 
             for p in board.pieces(piece_type, not state.getPlayer()):
                 score -= scoreMatrix[piece_type - 1][p]
