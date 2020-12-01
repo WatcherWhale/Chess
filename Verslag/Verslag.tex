@@ -226,6 +226,9 @@ In \figref{fig:knightFork} zal het paard op d5 worden meegeteld, maar het paard 
     \caption{Examples of forks}
 \end{figure}
 
+\subsection{Connected Rooks}
+Er zijn 2 verschillende features, de \codeword{ConnectedRooksVertical()} en \codeword{ConnectedRooksHorizontal()}
+
 \subsection{Control}
 \subsubsection{Center Control}
 Center control is een feature die ons verteld hoeveel pawn je hebt staan op de vakjes D4, E4, D5, E5. Deze 4 vakjes zijn het belangrijkste van het bord, omdat deze vakjes het grootste trafiek hebben van het bord.
@@ -355,7 +358,9 @@ Deze feature gaat kijken hoeveel torens er van de speler op de zevende rang staa
 \end{figure}
 
 
-\subsection{king distance to center}
+\subsection{King distance to center}
+Zoals de naam het verteld zal deze feature de afstand van de koning tot één van de middelste vakjes berekenen. De middelste vakjes zijnde e4, d4, e5 en d5, we drukken de afstand uit in het aantal stappen dat de koning zou moeten nemen om in et midden terecht te komen.
+
 \subsection{Castling}
 
 Dit is een vrij eenvoudige feature die kijkt of de agent gecastled heeft. In \figref{fig:castling2} en \figref{fig:castling3} staan 2 voorbeelden afgebeeld van castling.
