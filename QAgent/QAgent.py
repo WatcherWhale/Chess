@@ -139,7 +139,6 @@ class QAgent(Agent):
         f.write(jsonData)
         f.close()
 
-        if self.it % 100:
-            wh = open("WeightHistory.csv", 'a')
-            wh.write(self.features.nextWeightsForCSV() + "\n")
+        wh = open("WeightHistory.csv", 'a')
+        wh.write(self.features.nextWeightsForCSV() + "\n")
 
