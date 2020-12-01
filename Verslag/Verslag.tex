@@ -25,6 +25,7 @@
 \newcommand{\figref}[1]{\textit{Figuur \ref{#1}}}
 \newcommand{\coderef}[1]{\textit{Code \ref{#1}}}
 \newcommand{\ts}{\textsuperscript}
+\newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
 
 \facultyacronym{TI}
 
@@ -235,7 +236,114 @@ Deze feature wordt ook weer voor zowel de eigen speler als de tegenspeler gecreÃ
 
 \subsection{connectivity}
 \subsection{provokers}
-\subsection{position score}
+\subsection{Position score}
+We starten met het definiÃ«ren van een aantal matrices waarbij de matrix het bord voorstelt en elk vakje een bepaald score krijgt. Voor elk type schaakstuk hebben we een ingevulde matrix.
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{.3\textwidth}
+        $$
+		\scalemath{0.6}{
+		\begin{bmatrix}
+		0& 0& 0& 0& 0& 0& 0& 0\\
+		50& 50& 50& 50& 50& 50& 50& 50\\
+		10& 10& 20& 30& 30& 20& 10& 10\\
+		5& 5& 10& 25& 25& 10& 5& 5\\
+		0& 0& 0& 20& 20& 0& 0& 0\\
+		5& -5& -10& 0& 0& -10& -5& 5\\
+		5& 10& 10& -20& -20& 10& 10& 5\\
+		0& 0& 0& 0& 0& 0& 0& 0
+		\end{bmatrix}}
+		$$
+        \caption{Pawn score matrix}
+
+    \end{subfigure}
+    \begin{subfigure}{.3\textwidth}
+        $$
+        \scalemath{0.6}{
+		\begin{bmatrix}
+		-50& -40& -30& -30& -30& -30& -40& -50\\
+		-40& -20& 0& 0& 0& 0& -20& -40\\
+		-30& 0& 10& 15& 15& 10& 0& -30\\
+		-30& 5& 15& 20& 20& 15& 5& -30\\
+		-30& 0& 15& 20& 20& 15& 0& -30\\
+		-30& 5& 10& 15& 15& 10& 5& -30\\
+		-40& -20& 0& 5& 5& 0& -20& -40\\
+		-50& -40& -30& -30& -30& -30& -40& -50
+		\end{bmatrix}}
+		$$
+        \caption{Knight score Matrix}
+    \end{subfigure}
+    \begin{subfigure}{.3\textwidth}
+    	$$
+    	\scalemath{0.6}{
+    	\begin{bmatrix}
+   		-20& -10& -10& -10& -10& -10& -10& -20\\
+		-10& 0& 0& 0& 0& 0& 0& -10\\
+		-10& 0& 5& 10& 10& 5& 0& -10\\
+		-10& 5& 5& 10& 10& 5& 5& -10\\
+		-10& 0& 10& 10& 10& 10& 0& -10\\
+		-10& 10& 10& 10& 10& 10& 10& -10\\
+		-10& 5& 0& 0& 0& 0& 5& -10\\
+		-20& -10& -10& -10& -10& -10& -10& -20
+		\end{bmatrix}}
+		$$
+		\caption{Bischop score matrix}
+    \end{subfigure}
+    \\
+    \begin{subfigure}{.3\textwidth}
+    	$$
+    	\scalemath{0.6}{
+    	\begin{bmatrix}
+   		0& 0& 0& 0& 0& 0& 0& 0\\
+		5& 10& 10& 10& 10& 10& 10& 5\\
+		-5& 0& 0& 0& 0& 0& 0& -5\\
+		-5& 0& 0& 0& 0& 0& 0& -5\\
+		-5& 0& 0& 0& 0& 0& 0& -5\\
+		-5& 0& 0& 0& 0& 0& 0& -5\\
+		-5& 0& 0& 0& 0& 0& 0& -5\\
+		0& 0& 0& 5& 5& 0& 0& 0
+		\end{bmatrix}}
+		$$
+		\caption{Rook score matrix}
+    \end{subfigure}
+    \begin{subfigure}{.3\textwidth}
+    	$$
+    	\scalemath{0.6}{
+    	\begin{bmatrix}
+		-20& -10& -10& -5& -5& -10& -10& -20\\
+		-10& 0& 0& 0& 0& 0& 0& -10\\
+		-10& 0& 5& 5& 5& 5& 0& -10\\
+		-5& 0& 5& 5& 5& 5& 0& -5\\
+		0& 0& 5& 5& 5& 5& 0& -5\\
+		-10& 5& 5& 5& 5& 5& 0& -10\\
+		-10& 0& 5& 0& 0& 0& 0& -10\\
+		-20& -10& -10& -5& -5& -10& -10& -20
+		\end{bmatrix}}
+		$$
+		\caption{Queen score matrix}
+    \end{subfigure}
+    \begin{subfigure}{.3\textwidth}
+    	$$
+    	\scalemath{0.6}{
+    	\begin{bmatrix}
+		-30& -40& -40& -50& -50& -40& -40& -30\\
+		-30& -40& -40& -50& -50& -40& -40& -30\\
+		-30& -40& -40& -50& -50& -40& -40& -30\\
+		-30& -40& -40& -50& -50& -40& -40& -30\\
+		-20& -30& -30& -40& -40& -30& -30& -20\\
+		-10& -20& -20& -20& -20& -20& -20& -10\\
+		20& 20& 0& 0& 0& 0& 20& 20\\
+		20& 30& 10& 0& 0& 10& 30& 20
+		\end{bmatrix}}
+		$$
+		\caption{King score matrix}
+    \end{subfigure}
+    \caption{Score matrices}
+\end{figure}
+
+We gebruiken dit in de feature \codeword{PositionScoreBalance()} hierbij gaan we al onze schaakstukken af en sommeren we de punten van elk stuk met zijn overeenkomende plaats op de bijhorende matrix. Dit doen we ook voor de tegenspeler en trekken dit van onze score af. Op deze manier zien we of de schaakstukken van de opponent beter staan op het bord dan de onze.
+
 \subsection{Rooks on 7th rank}
 Deze feature gaat kijken hoeveel torens er van de speler op de zevende rang staan. Hierbij wordt er geteld vanaf de kant van de speler zelf. Dus de tegenspeler zal dat dus rij 2 zijn. Wanneer er torens op de 7\ts{de} rang staat sta je heel sterk in het spel. Dit komt doordat je de bewegingsruimte van de opponent zijn koning sterk wordt beperkt en dat alle andere stukken op die rank niet veilig staan.
 
