@@ -25,6 +25,7 @@
 \newcommand{\figref}[1]{\textit{Figuur \ref{#1}}}
 \newcommand{\coderef}[1]{\textit{Code \ref{#1}}}
 \newcommand{\ts}{\textsuperscript}
+\newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
 
 \facultyacronym{TI}
 
@@ -225,6 +226,26 @@ In \figref{fig:knightFork} zal het paard op d5 worden meegeteld, maar het paard 
     \caption{Examples of forks}
 \end{figure}
 
+\subsection{Connected Rooks}
+Er zijn 2 verschillende features, de \codeword{ConnectedRooksVertical()} en \codeword{ConnectedRooksHorizontal()} die op zo goed als hetzelfde werken. We gaan optellen hoeveel paren van torens er zijn die op ofwel dezelfde rang (horizontally connected) ofwel op dezelfde kolom staan (vertically concted) en waar geen tegenstanders tussen staan.
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{.4\textwidth}
+        \includegraphics[width=170pt]{images/ConnectedRooks.png}
+        \caption{Example of connected rooks}
+        \label{fig:ConnectedRooks}
+    \end{subfigure}
+    \begin{subfigure}{.4\textwidth}
+        \includegraphics[width=170pt]{images/NotConnectedRooks.png}
+        \caption{Example where rooks are not connected}
+        \label{fig:NotConnectedRooks}
+    \end{subfigure}
+    \caption{Connected Rookd}
+\end{figure}
+
+In \figref{fig:ConnectedRooks} zien we op kolom b een vertically connected rooks en op rang 6 een horizontally connected rooks. Op \figref{fig:NotConnectedRooks} zijn er geen connected rooks omdat ze ofwel niet tegenover elkaar staan of er staat een stuk van de tegenspeler tussen.
+
 \subsection{Control}
 \subsubsection{Center Control}
 Center control is een feature die ons verteld hoeveel pawn je hebt staan op de vakjes D4, E4, D5, E5. Deze 4 vakjes zijn het belangrijkste van het bord, omdat deze vakjes het grootste trafiek hebben van het bord.
@@ -235,7 +256,114 @@ Deze feature wordt ook weer voor zowel de eigen speler als de tegenspeler gecre�
 
 \subsection{connectivity}
 \subsection{provokers}
-\subsection{position score}
+\subsection{Position score}
+We starten met het definiëren van een aantal matrices waarbij de matrix het bord voorstelt en elk vakje een bepaald score krijgt. Voor elk type schaakstuk hebben we een ingevulde matrix.
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{.3\textwidth}
+        $$
+		\scalemath{0.6}{
+		\begin{bmatrix}
+		0& 0& 0& 0& 0& 0& 0& 0\\
+		50& 50& 50& 50& 50& 50& 50& 50\\
+		10& 10& 20& 30& 30& 20& 10& 10\\
+		5& 5& 10& 25& 25& 10& 5& 5\\
+		0& 0& 0& 20& 20& 0& 0& 0\\
+		5& -5& -10& 0& 0& -10& -5& 5\\
+		5& 10& 10& -20& -20& 10& 10& 5\\
+		0& 0& 0& 0& 0& 0& 0& 0
+		\end{bmatrix}}
+		$$
+        \caption{Pawn score matrix}
+
+    \end{subfigure}
+    \begin{subfigure}{.3\textwidth}
+        $$
+        \scalemath{0.6}{
+		\begin{bmatrix}
+		-50& -40& -30& -30& -30& -30& -40& -50\\
+		-40& -20& 0& 0& 0& 0& -20& -40\\
+		-30& 0& 10& 15& 15& 10& 0& -30\\
+		-30& 5& 15& 20& 20& 15& 5& -30\\
+		-30& 0& 15& 20& 20& 15& 0& -30\\
+		-30& 5& 10& 15& 15& 10& 5& -30\\
+		-40& -20& 0& 5& 5& 0& -20& -40\\
+		-50& -40& -30& -30& -30& -30& -40& -50
+		\end{bmatrix}}
+		$$
+        \caption{Knight score Matrix}
+    \end{subfigure}
+    \begin{subfigure}{.3\textwidth}
+    	$$
+    	\scalemath{0.6}{
+    	\begin{bmatrix}
+   		-20& -10& -10& -10& -10& -10& -10& -20\\
+		-10& 0& 0& 0& 0& 0& 0& -10\\
+		-10& 0& 5& 10& 10& 5& 0& -10\\
+		-10& 5& 5& 10& 10& 5& 5& -10\\
+		-10& 0& 10& 10& 10& 10& 0& -10\\
+		-10& 10& 10& 10& 10& 10& 10& -10\\
+		-10& 5& 0& 0& 0& 0& 5& -10\\
+		-20& -10& -10& -10& -10& -10& -10& -20
+		\end{bmatrix}}
+		$$
+		\caption{Bischop score matrix}
+    \end{subfigure}
+    \\
+    \begin{subfigure}{.3\textwidth}
+    	$$
+    	\scalemath{0.6}{
+    	\begin{bmatrix}
+   		0& 0& 0& 0& 0& 0& 0& 0\\
+		5& 10& 10& 10& 10& 10& 10& 5\\
+		-5& 0& 0& 0& 0& 0& 0& -5\\
+		-5& 0& 0& 0& 0& 0& 0& -5\\
+		-5& 0& 0& 0& 0& 0& 0& -5\\
+		-5& 0& 0& 0& 0& 0& 0& -5\\
+		-5& 0& 0& 0& 0& 0& 0& -5\\
+		0& 0& 0& 5& 5& 0& 0& 0
+		\end{bmatrix}}
+		$$
+		\caption{Rook score matrix}
+    \end{subfigure}
+    \begin{subfigure}{.3\textwidth}
+    	$$
+    	\scalemath{0.6}{
+    	\begin{bmatrix}
+		-20& -10& -10& -5& -5& -10& -10& -20\\
+		-10& 0& 0& 0& 0& 0& 0& -10\\
+		-10& 0& 5& 5& 5& 5& 0& -10\\
+		-5& 0& 5& 5& 5& 5& 0& -5\\
+		0& 0& 5& 5& 5& 5& 0& -5\\
+		-10& 5& 5& 5& 5& 5& 0& -10\\
+		-10& 0& 5& 0& 0& 0& 0& -10\\
+		-20& -10& -10& -5& -5& -10& -10& -20
+		\end{bmatrix}}
+		$$
+		\caption{Queen score matrix}
+    \end{subfigure}
+    \begin{subfigure}{.3\textwidth}
+    	$$
+    	\scalemath{0.6}{
+    	\begin{bmatrix}
+		-30& -40& -40& -50& -50& -40& -40& -30\\
+		-30& -40& -40& -50& -50& -40& -40& -30\\
+		-30& -40& -40& -50& -50& -40& -40& -30\\
+		-30& -40& -40& -50& -50& -40& -40& -30\\
+		-20& -30& -30& -40& -40& -30& -30& -20\\
+		-10& -20& -20& -20& -20& -20& -20& -10\\
+		20& 20& 0& 0& 0& 0& 20& 20\\
+		20& 30& 10& 0& 0& 10& 30& 20
+		\end{bmatrix}}
+		$$
+		\caption{King score matrix}
+    \end{subfigure}
+    \caption{Score matrices}
+\end{figure}
+
+We gebruiken dit in de feature \codeword{PositionScoreBalance()} hierbij gaan we al onze schaakstukken af en sommeren we de punten van elk stuk met zijn overeenkomende plaats op de bijhorende matrix. Dit doen we voor zowel de speler als.
+
 \subsection{Rooks on 7th rank}
 Deze feature gaat kijken hoeveel torens er van de speler op de zevende rang staan. Hierbij wordt er geteld vanaf de kant van de speler zelf. Dus de tegenspeler zal dat dus rij 2 zijn. Wanneer er torens op de 7\ts{de} rang staat sta je heel sterk in het spel. Dit komt doordat je de bewegingsruimte van de opponent zijn koning sterk wordt beperkt en dat alle andere stukken op die rank niet veilig staan.
 
@@ -247,7 +375,9 @@ Deze feature gaat kijken hoeveel torens er van de speler op de zevende rang staa
 \end{figure}
 
 
-\subsection{king distance to center}
+\subsection{King distance to center}
+Zoals de naam het verteld zal deze feature de afstand van de koning tot één van de middelste vakjes berekenen. De middelste vakjes zijnde e4, d4, e5 en d5, we drukken de afstand uit in het aantal stappen dat de koning zou moeten nemen om in et midden terecht te komen.
+
 \subsection{Castling}
 
 Dit is een vrij eenvoudige feature die kijkt of de agent gecastled heeft. In \figref{fig:castling2} en \figref{fig:castling3} staan 2 voorbeelden afgebeeld van castling.
