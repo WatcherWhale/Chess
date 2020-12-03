@@ -85,7 +85,6 @@ def runEpisode(player: Agent):
         moves += 1
 
         if moves >= MAX_MOVES * 2:
-            bar.update(MAX_MOVES * 2)
             print('\nForcefully stopped')
             FORCEFULLY_STOPPED += 1
             running = False

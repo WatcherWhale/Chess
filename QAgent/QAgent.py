@@ -22,7 +22,7 @@ def loadAgentFromFile(file, features: Features = AlphaBetaFeatures()):
 
     features.fromDict(saveData['weights'])
 
-    return QAgent(file, saveData['epsilon'], saveData['discount'], saveData['learningRate'], features, maxDepth=saveData['maxDepth'], episodes=saveData['episodes'])
+    return QAgent(file, saveData['epsilon'], saveData['discount'], saveData['learningRate'], features, maxDepth=saveData['maxDepth'], episodes=saveData['episode'])
 
 
 class QAgent(Agent):
