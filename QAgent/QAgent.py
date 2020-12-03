@@ -22,18 +22,18 @@ def loadAgentFromFile(file, features: Features = AlphaBetaFeatures()):
 
     features.fromDict(saveData['weights'])
 
-    return QAgent(file, saveData['epsilon'], saveData['discount'], saveData['learningRate'], features, maxDepth=saveData['maxDepth'])
+    return QAgent(file, saveData['epsilon'], saveData['discount'], saveData['learningRate'], features, maxDepth=saveData['maxDepth'], episodes=saveData['episodes'])
 
 
 class QAgent(Agent):
-    def __init__(self, file, epsilon, discount, learningRate, features: Features = AlphaBetaFeatures(), goTime = 5000, deltaTime = 1000, maxDepth = 2):
+    def __init__(self, file, epsilon, discount, learningRate, features: Features = AlphaBetaFeatures(), goTime = 5000, deltaTime = 1000, maxDepth = 2, episodes = 0):
         Agent.__init__(self, goTime, deltaTime, maxDepth)
         self.file = file
         self.epsilon = epsilon
         self.discount = discount
         self.learningRate = learningRate
         self.features = features
-        self.it = 0
+        self.episodes = episodes
 
     def setEpsilon(self, epsilon):
         self.epsilon = epsilon
@@ -78,8 +78,6 @@ class QAgent(Agent):
             print('None action detected')
             exit(1)
 
-
-
         return choice
 
 
@@ -121,11 +119,14 @@ class QAgent(Agent):
         return QAgent(self.file, 0, 0, 0, self.features, self.goTime, self.deltaTime, self.maxDepth)
 
     def save(self):
+        self.episodes += 1
+
         saveData = {
             'epsilon': self.epsilon,
             'discount': self.discount,
             'learningRate': self.learningRate,
             'maxDepth': self.maxDepth,
+            'episode': self.episodes,
             'weights': self.features.toDict()
         }
 
