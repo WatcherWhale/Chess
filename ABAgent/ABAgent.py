@@ -27,28 +27,27 @@ class ABAgent(Agent):
         self.features = features
 
     def makeMove(self, state: State, startTime = time.time()):
-        actions = []
         alpha = -math.inf
-        beta = math.inf
         value = -math.inf
-        best_value = -math.inf
-        best_action = state.getLegalActions()[0]
 
-        for action in state.getLegalActions():
-            nextState = state.newStateFromAction(action)
-            value = max(best_value,self.abIteration(nextState, False, alpha, beta, startTime, 1))
+        action = None
 
-            if value > best_value:
-                best_value = value
-                best_action = action
+        for a in state.getLegalActions():
+            nextState = state.newStateFromAction(a)
+            new_value = self.abIteration(nextState, False, alpha, math.inf, startTime, 1)
+            value = max(value, new_value)
 
-        return best_action
-                
+            if value == new_value:
+                action = a
+
+            alpha = max(alpha, value)
+
+        return action
 
     def abIteration(self, state: State, maxTurn, alpha, beta, startTime, depth):
 
         if state.isTerminalState() or self.isTerminalTime(startTime) or depth >= self.maxDepth:
-            return -utility(state, self.features)
+            return utility(state, self.features)
 
 
         if maxTurn:
