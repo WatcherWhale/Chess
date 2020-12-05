@@ -21,7 +21,7 @@ def getFeatures():
     return fs
 
 class ABAgent(Agent):
-    def __init__(self, goTime = 5000, deltaTime = 1000, maxDepth = 10, features = getFeatures()):
+    def __init__(self, goTime = 5, deltaTime = 1, maxDepth = 10, features = getFeatures()):
         Agent.__init__(self, goTime, deltaTime)
         self.maxDepth = maxDepth
         self.features = features
@@ -29,6 +29,8 @@ class ABAgent(Agent):
     def makeMove(self, state: State, startTime = time.time()):
         alpha = -math.inf
         value = -math.inf
+
+        startTime = time.time()
 
         action = None
 

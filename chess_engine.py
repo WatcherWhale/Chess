@@ -18,7 +18,7 @@ def main():
     board = chess.Board()
     player=loadAgentFromFile("grandQ.json")
     player =player.getGreedyAgent()
-    player.setDeltaTime(1)
+    player.setDeltaTime(0.1)
 
     running = True
 
