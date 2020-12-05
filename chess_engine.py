@@ -35,7 +35,7 @@ def main():
 
             elif input_val[0] == "go":
 
-                goTime = 5000
+                goTime = 1000000
 
                 if input_val[1] == "movetime":
                     goTime = float(input_val[2])

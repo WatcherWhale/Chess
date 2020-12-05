@@ -827,10 +827,21 @@ class PositionScoreBalanceO(Feature):
 
         return score / 10.0
 
-class CheckMate(Feature):
+class Checkmate(Feature):
     def __init__(self):
         Feature.__init__(self)
         self.name = "checkMate"
 
     def calculateValue(self, state: State, action, nextState: State):
         return nextState.getBoard().is_checkmate()
+
+class NextCheckmate(Feature):
+    def __init__(self):
+        Feature.__init__(self)
+        self.name = "nextCheckMate"
+
+    def calculateValue(self, state: State, action, nextState: State):
+        for a in nextState.getLegalActions():
+            if nextState.newStateFromAction(a).getBoard().is_checkmate():
+                return 1.0
+        return 0.0

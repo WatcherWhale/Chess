@@ -6,6 +6,7 @@ from .Features import Feature, Features
 from .State import State
 from ABAgent.ABAgent import ABAgent
 
+
 class AlphaBetaFeatures(ChessFeatures):
     def __init__(self):
         ChessFeatures.__init__(self)
