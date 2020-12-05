@@ -55,7 +55,9 @@ def runEpisode(player: Agent):
             print(board)
             print("###################")
 
+        debug = False
         if board.is_checkmate():
+            debug = True
             running = False
 
 
@@ -73,11 +75,11 @@ def runEpisode(player: Agent):
 
         action = move.uci()
 
-        if not turn_white_player:
+        if turn_white_player:
             if prevState[0] is not None:
                 player.update(prevState[0], prevState[1], state.newStateFromAction(action))
         elif not running:
-            player.update(state, action, state.newStateFromAction(action))
+            player.update(prevState[0], prevState[1], state.newStateFromAction(action))
             bar.__del__()
         else:
             prevState = (state, action)
