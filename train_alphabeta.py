@@ -24,7 +24,7 @@ def runEpisode(player: Agent):
     global FORCEFULLY_STOPPED
 
     board = chess.Board()
-    black_player = ABAgent(0.1, 0, 5)
+    black_player = ABAgent(player.getGoTime(), player.getDeltaTime(), player.getMaxDepth())
 
     running = True
     turn_white_player = True
