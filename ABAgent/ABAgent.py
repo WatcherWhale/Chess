@@ -3,6 +3,9 @@ import math
 import time
 import random
 
+import queue
+from threading import Thread
+
 import numpy as np
 
 from chessUtil.Agent import Agent
@@ -20,34 +23,45 @@ def getFeatures():
             fs.weights[i] = -1
     return fs
 
+
+
 class ABAgent(Agent):
     def __init__(self, goTime = 5, deltaTime = 1, maxDepth = 10, features = getFeatures()):
         Agent.__init__(self, goTime, deltaTime)
         self.maxDepth = maxDepth
         self.features = features
+        self.nodes = 0
 
     def makeMove(self, state: State, startTime = time.time()):
-        alpha = -math.inf
-        value = -math.inf
-
         startTime = time.time()
 
-        action = None
+        pool = []
+        que = queue.Queue()
+
+        self.nodes = 0
 
         for a in state.getLegalActions():
-            nextState = state.newStateFromAction(a)
-            new_value = self.abIteration(nextState, False, alpha, math.inf, startTime, 1)
-            value = max(value, new_value)
+            t = Thread(target=doThread, args=(self, state, a, startTime, que))
+            t.start()
+            pool.append(t)
+            self.nodes += 1
 
-            if value == new_value:
-                action = a
+        for t in pool:
+            t.join()
 
-            alpha = max(alpha, value)
+        maxAction = None
+        maxUtil = -math.inf
 
-        return action
+        while not que.empty():
+            action, uVal = que.get()
+            if uVal >= maxUtil:
+                maxUtil = uVal
+                maxAction = action
+
+        return maxAction
 
     def abIteration(self, state: State, maxTurn, alpha, beta, startTime, depth):
-
+        self.nodes += 1
         if state.isTerminalState() or self.isTerminalTime(startTime) or depth >= self.maxDepth:
             return utility(state, self.features)
 
@@ -82,3 +96,8 @@ class ABAgent(Agent):
         elapsed = now - startTime
 
         return elapsed >= self.goTime - self.deltaTime
+
+
+def doThread(self: ABAgent, state: State, action, startTime, que : queue.Queue):
+    uVal = self.abIteration(state.newStateFromAction(action), False, math.inf, math.inf, startTime, 1)
+    que.put((action, uVal))
