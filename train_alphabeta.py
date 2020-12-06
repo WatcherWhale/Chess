@@ -75,7 +75,7 @@ def runEpisode(player: Agent):
 
         action = move.uci()
 
-        if turn_white_player:
+        if not turn_white_player:
             if prevState[0] is not None:
                 player.update(prevState[0], prevState[1], state.newStateFromAction(action))
         elif not running:
