@@ -103,7 +103,7 @@ class QAgent(Agent):
         return self.features.calculateFeatures(state, action)
 
     def maxQValue(self, state: State):
-        if len(state.getLegalActions()) == 0:
+        if state.isTerminalState():
             return 0.0
 
         results = self.thread(state)

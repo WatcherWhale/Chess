@@ -92,6 +92,7 @@ def runEpisode(player: Agent):
             print('\nForcefully stopped')
             running = False
 
+    bar.__del__()
     black_player.quit()
 
     if not QUIET:

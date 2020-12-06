@@ -9,6 +9,7 @@ import train_self
 import train_stockfish
 import train_pgn
 import train_alphabeta
+import train_clean
 import os.path
 import time
 import sys
@@ -45,7 +46,7 @@ def getOpponentAgent(agent):
     elif agent == 'pgn':
         return train_pgn.runEpisode
     elif agent == 'alphaBeta' or agent == 'alphabeta' or agent == 'ab':
-        return train_alphabeta.runEpisode
+        return train_clean.runEpisode
 
 
 def getAgent(agent, args):

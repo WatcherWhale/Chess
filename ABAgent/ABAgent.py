@@ -24,7 +24,6 @@ def getFeatures():
     return fs
 
 
-
 class ABAgent(Agent):
     def __init__(self, goTime = 5, deltaTime = 1, maxDepth = 10, features = getFeatures()):
         Agent.__init__(self, goTime, deltaTime)
@@ -35,30 +34,22 @@ class ABAgent(Agent):
     def makeMove(self, state: State, startTime = time.time()):
         startTime = time.time()
 
-        pool = []
-        que = queue.Queue()
-
-        self.nodes = 0
+        alpha = -math.inf
+        value = -math.inf
 
         for a in state.getLegalActions():
-            t = Thread(target=doThread, args=(self, state, a, startTime, que))
-            t.start()
-            pool.append(t)
-            self.nodes += 1
+            nextState = state.newStateFromAction(a)
+            new_value = self.abIteration(nextState, False, alpha, math.inf, startTime, 1)
+            value = max(value, new_value)
 
-        for t in pool:
-            t.join()
+            if value == new_value:
+                action = a
 
-        maxAction = None
-        maxUtil = -math.inf
+            alpha = max(alpha, value)
 
-        while not que.empty():
-            action, uVal = que.get()
-            if uVal >= maxUtil:
-                maxUtil = uVal
-                maxAction = action
+        return action
 
-        return maxAction
+
 
     def abIteration(self, state: State, maxTurn, alpha, beta, startTime, depth):
         self.nodes += 1
