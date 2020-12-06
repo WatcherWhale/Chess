@@ -52,7 +52,6 @@ class ABAgent(Agent):
 
 
     def abIteration(self, state: State, maxTurn, alpha, beta, startTime, depth):
-        self.nodes += 1
         if state.isTerminalState() or self.isTerminalTime(startTime) or depth >= self.maxDepth:
             return utility(state, self.features)
 
