@@ -26,7 +26,7 @@ def loadAgentFromFile(file, features: Features = AlphaBetaFeatures()):
 
 
 class QAgent(Agent):
-    def __init__(self, file, epsilon, discount, learningRate, features: Features = AlphaBetaFeatures(), goTime = 5000, deltaTime = 1000, maxDepth = 2, episodes = 0):
+    def __init__(self, file, epsilon, discount, learningRate, features: Features = AlphaBetaFeatures(), goTime = 5, deltaTime = 0, maxDepth = 2, episodes = 0):
         Agent.__init__(self, goTime, deltaTime, maxDepth)
         self.file = file
         self.epsilon = epsilon
@@ -103,7 +103,7 @@ class QAgent(Agent):
         return self.features.calculateFeatures(state, action)
 
     def maxQValue(self, state: State):
-        if len(state.getLegalActions()) == 0:
+        if state.isTerminalState():
             return 0.0
 
         results = self.thread(state)

@@ -1,12 +1,9 @@
-#!/usr/bin/python3
 import chess
 import progressbar
-import chess.engine
-
-import os.path
 
 from chessUtil.State import State
 from chessUtil.Agent import Agent
+from ABAgent.ABAgent import ABAgent
 
 STOCKFISH_BIN = '/usr/bin/stockfish'
 QUIET = False
@@ -18,82 +15,68 @@ SKILL = 4
 STALEMATES = 0
 STOCKFISH_WINS = 0
 GRANDQ_WINS = 0
+FORCEFULLY_STOPPED = 0
 
+def runEpisode(white_player: Agent):
 
-def runEpisode(player: Agent):
-
-    global STALEMATES
-    global STOCKFISH_WINS
+    global FORCEFULLY_STOPPED
     global GRANDQ_WINS
+    global STOCKFISH_WINS
+    global STALEMATES
 
-
-    board = chess.Board()
+    black_player = chess.engine.SimpleEngine.popen_uci(STOCKFISH_BIN)
     black_player = chess.engine.SimpleEngine.popen_uci(STOCKFISH_BIN)
     black_player.configure({"Skill Level": SKILL})
     black_player.configure({"Slow Mover": 10})
     limit = chess.engine.Limit(time=LIMIT)
 
-    running = True
-    turn_white_player = True
+    state = State(chess.Board(), True, white_player)
 
+    running = True
+    action = None
     prevState = (None, None)
     moves = 0
 
-    bar = progressbar.ProgressBar(max_value=MAX_MOVES * 2)
+    bar = progressbar.ProgressBar(max_value=2*MAX_MOVES)
 
     while running:
-        bar.update(moves)
-        move = None
-        moves += 1
 
-        state = State(board.copy(), turn_white_player, player)
-
-        if turn_white_player:
-            move = chess.Move.from_uci(player.makeMove(state))
-            turn_white_player = False
-
+        if state.getPlayer():
+            action = white_player.makeMove(state)
         else:
-            move = black_player.play(board, limit).move
-            turn_white_player = True
+            action = black_player.play(state.getBoard(), limit).move.uci()
 
-        board.push(move)
+        halfState = state.newStateFromAction(action)
 
-        if LOUD:
-            print(board)
-            print("###################")
-
-        if board.is_checkmate():
-            running = False
-
-            if turn_white_player:
-                print("\nStockfish wins!")
-                STOCKFISH_WINS += 1
+        if halfState.isTerminalState():
+            if halfState.getBoard().is_checkmate():
+                if state.getPlayer():
+                    print("\nGrandQ has won!")
+                    GRANDQ_WINS += 1
+                else:
+                    print("\nStockfish has won")
+                    STOCKFISH_WINS += 1
             else:
-                print("\nGrandQ wins!")
-                GRANDQ_WINS += 1
+                print("\nStalemate")
+                STALEMATES += 1
 
-        if board.is_stalemate():
             running = False
-            print("\nStalemate")
-            STALEMATES += 1
 
-        action = move.uci()
-        if not turn_white_player:
-            if prevState[0] is not None:
-                player.update(prevState[0], prevState[1], state.newStateFromAction(action))
+        if not state.getPlayer():
+            white_player.update(prevState[0], prevState[1], halfState)
         elif not running:
-            player.update(prevState[0], prevState[1], state.newStateFromAction(action))
-            bar.__del__()
+            white_player.update(state, action, halfState)
         else:
             prevState = (state, action)
 
-        if moves >= MAX_MOVES * 2:
-            bar.update(MAX_MOVES * 2)
-            print('\nForcefully stopped')
+        if LOUD:
+            print(state.getBoard())
+
+        state = halfState
+        moves += 1
+        bar.update(moves)
+
+        if moves >= MAX_MOVES*2:
+            print("\nForcefully stopped")
+            FORCEFULLY_STOPPED += 1
             running = False
-
-    black_player.quit()
-
-    if not QUIET:
-        print(board)
-        print("###########################")

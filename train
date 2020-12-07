@@ -124,7 +124,7 @@ def main():
             runEpisode(agent)
             agent.save()
             ep_duration = time.time() - start
-            print("Episode " + str(episodes + 1) + " took {}s".format(ep_duration))
+            print("\nEpisode " + str(episodes + 1) + " took {}s".format(ep_duration))
             totalDuration += ep_duration
             episodes += 1
     else:
@@ -133,7 +133,7 @@ def main():
             runEpisode(agent)
             agent.save()
             ep_duration = time.time() - start
-            print("Episode " + str(episodes + 1) + " took {}s".format(ep_duration))
+            print("\nEpisode " + str(episodes + 1) + " took {}s".format(ep_duration))
             totalDuration += ep_duration
 
     if int(args.i) > 1:

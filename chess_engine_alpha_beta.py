@@ -16,7 +16,7 @@ def uci(name, author):
 
 def main():
     board = chess.Board()
-    player = ABAgent(maxDepth=2)
+    player = ABAgent(maxDepth=3, deltaTime=0)
 
     running = True
 
