@@ -80,3 +80,5 @@ def runEpisode(white_player: Agent):
             print("\nForcefully stopped")
             FORCEFULLY_STOPPED += 1
             running = False
+
+    black_player.quit()
