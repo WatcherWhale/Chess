@@ -716,25 +716,21 @@ class IsCastling(Feature):
         return state.getBoard().is_castling(chess.Move.from_uci(action))
 
 
-def calculateDoubledPawns(nextState: State):
-    board = nextState.getBoard()
-
-    columns = np.zeros(8)
-
-    for p in itertools.chain(board.pieces(chess.PAWN, True), board.pieces(chess.PAWN, False)):
-        r, c = getRowColumn(p)
-        columns[c] += 1
-
-    return sum(columns > 1)
-
-
 class DoubledPawns(Feature):
     def __init__(self):
         Feature.__init__(self)
         self.name = "doubledPawns"
 
     def calculateValue(self, state: State, action, nextState: State):
-        return calculateDoubledPawns(nextState)
+        board = nextState.getBoard()
+
+        columns = np.zeros(8)
+
+        for p in itertools.chain(board.pieces(chess.PAWN, True), board.pieces(chess.PAWN, False)):
+            r, c = getRowColumn(p)
+            columns[c] += 1
+
+        return sum(columns > 1)
 
 
 
