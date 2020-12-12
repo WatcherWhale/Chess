@@ -16,7 +16,6 @@ class Features(list):
     def append(self, feature):
         super(Features, self).append(feature)
         self.weights = np.append(self.weights, 0)
-        feature.setWeight(0)
 
     def calculateFeatures(self, state: State, action):
         nextState = state.newStateFromAction(action)
@@ -34,7 +33,6 @@ class Features(list):
             fs = np.array([f.calculateValue(state, action, nextState) for f in self])
 
         fs = 2/(1 + np.exp(-fs)) - 1
-
         return np.sum(np.multiply(self.weights, fs))
 
     def updateWeights(self, state: State, action, learningDifference):
@@ -55,7 +53,6 @@ class Features(list):
 
     def fromDict(self, dict):
         for f in self:
-            f.setWeight(dict[f.getName()])
             self.weights[self.index(f)] = dict[f.getName()]
 
     def nextWeightsForCSV(self):
@@ -74,16 +71,9 @@ class Features(list):
 class Feature:
     def __init__(self):
         self.name = "feature"
-        self.weight = 0
 
     def calculateValue(self, state: chess.Board, action, nextState: State):
         pass
-
-    def getWeight(self):
-        return self.weight
-
-    def setWeight(self, weight):
-        self.weight = weight
 
     def getName(self):
         return self.name
