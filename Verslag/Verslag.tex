@@ -65,7 +65,7 @@ Er zijn te veel mogelijke states ($\approx10^{120}$) om de hele tree uit te werk
 Deze methode wordt gebruikt door meerdere bronnen, maar we hebben er nog geen ervaring mee. 
 
 \textbf{Reinforcement learning} (Generalised Q learning):\\
-We hebben dit al gebruikt en daarom begrijpen we het al en kunnen we het snel implementeren.\\
+We hebben dit al gebruikt en begrijpen de methode. Een snelle implementatie is dus mogelijk.\\
 Eenmaal getraind, zal het optimaal functioneren. De training heeft echter veel tijd nodig en de keuze van de features is niet zo voor de hand liggend.
 
 \textbf{Neural network/ Deep learning:}
@@ -183,7 +183,7 @@ De feature \codeword{Checkmate()} gaat kijken of we bij de volgende actie de opp
 
 \subsection{Next Checkmate}
 
-In deze feature gaan we kijken of de volgende zet van de tegenspeler kan zorgen dat wij schaakmat worden gezet.
+In deze feature gaan we kijken of er een volgende zet van de tegenspeler bestaat die ons schaakmat zet.
 \pagebreak
 
 \subsection{Mobility}
@@ -201,7 +201,7 @@ Deze attacked features laten weten hoeveel van de schaakstukken van een bepaald 
 
 Zo zal bijvoorbeeld de \codeword{AttackedRooksS()} feature calculeren hoeveel van zijn torens kunnen worden aangevallen door een pion, een paard of een loper van het andere team.
 
-Voor de opponent versie van deze features te berekenen hebben we het probleem op dezelfde manier opgelost als bij moblility .
+Voor de opponent versie van deze features te berekenen hebben we het probleem op dezelfde manier opgelost als bij mobility.
 
 \subsection{Forks}
 
@@ -255,11 +255,11 @@ Er zijn 2 verschillende features, de \codeword{ConnectedRooksVertical()} en \cod
     \caption{Connected Rookd}
 \end{figure}
 
-In \figref{fig:ConnectedRooks} zien we op kolom b een vertically connected rooks en op rang 6 een horizontally connected rooks. Op \figref{fig:NotConnectedRooks} zijn er geen connected rooks omdat ze ofwel niet tegenover elkaar staan of er staat een stuk van de tegenspeler tussen.
+In \figref{fig:ConnectedRooks} zien we op kolom b een vertically connected rooks en op rang 6 een horizontally connected rooks. Op \figref{fig:NotConnectedRooks} zijn er geen connected rooks omdat ze ofwel niet tegenover elkaar staan of er staat een stuk in de weg.
 
 \subsection{Control}
 \subsubsection{Center Control}
-Center control is een feature die ons verteld hoeveel pawn je hebt staan op de vakjes D4, E4, D5, E5. Deze 4 vakjes zijn het belangrijkste van het bord, omdat deze vakjes het grootste trafiek hebben van het bord.
+Center control is een feature die ons verteld hoeveel pawns je hebt staan op de vakjes D4, E4, D5, E5. Deze 4 vakjes zijn het belangrijkste van het bord, omdat het grootste trafiek hierover gaat.
 Deze feature wordt ook weer voor zowel de eigen speler als de tegenspeler gecreëerd.
 
 \subsubsection{Board Control}
@@ -272,7 +272,7 @@ Het aantal lege vakjes dat een speler met zijn stukken aanvalt, bepaald zijn con
     \label{fig:boardcontrol}
 \end{figure}
 
-In het voorbeeld op \figref{fig:boardcontrol} zien we dat de zwarte pion controle heeft over c3 en c4. het paard zou hier naartoe kunnen, maar zou dan gepakt worden door een inferieur schaakstuk. Anderzijds heeft eht paard wel controle over e2.
+In het voorbeeld op \figref{fig:boardcontrol} zien we dat de zwarte pion controle heeft over C3 en C4. Het paard kan deze vakjes ook aanvallen, maar zou dan gepakt worden door een inferieur schaakstuk. Anderzijds heeft het paard wel controle over A2 en E2. 
 
 \subsection{Connectivity}
 \label{connectivity}
@@ -391,12 +391,12 @@ We starten met het definiëren van een aantal matrices waarbij de matrix het bor
     \caption{Score matrices}
 \end{figure}
 
-We gebruiken dit in de feature \codeword{PositionScoreBalance()} hierbij gaan we al onze schaakstukken af en sommeren we de punten van elk stuk met zijn overeenkomende plaats op de bijhorende matrix. Dit doen we voor zowel de speler als.
+We gebruiken dit in de feature \codeword{PositionScoreBalance()}. Hierin gaan we al onze schaakstukken af en sommeren we de punten van elk stuk met zijn overeenkomende plaats op de bijhorende matrix. Dit doen we voor zowel de speler als de tegenspeler.
 
 
 
 \subsection{Rooks on 7th rank}
-Deze feature gaat kijken hoeveel torens er van de speler op de zevende rang staan. Hierbij wordt er geteld vanaf de kant van de speler zelf. Dus de tegenspeler zal dat dus rij 2 zijn. Wanneer er torens op de 7\ts{de} rang staat sta je heel sterk in het spel. Dit komt doordat je de bewegingsruimte van de opponent zijn koning sterk wordt beperkt en dat alle andere stukken op die rank niet veilig staan.
+Deze feature gaat kijken hoeveel torens er van de speler op de zevende rang staan. Hierbij wordt er geteld vanaf de kant van de speler zelf. De tegenspeler zal dus naar rang 2 kijken. Wanneer er torens op de 7\ts{de} rang staan, sta je sterk in het spel. Dit komt doordat de bewegingsruimte van de opponent zijn koning wordt beperkt en omdat de andere stukken op die rang bedreigd worden.
 
 \begin{figure}[h]
     \centering
@@ -407,11 +407,11 @@ Deze feature gaat kijken hoeveel torens er van de speler op de zevende rang staa
 
 
 \subsection{King distance to center}
-Zoals de naam het verteld zal deze feature de afstand van de koning tot één van de middelste vakjes berekenen. De middelste vakjes zijnde e4, d4, e5 en d5, we drukken de afstand uit in het aantal stappen dat de koning zou moeten nemen om in et midden terecht te komen.
+Zoals de naam het verteld zal deze feature de afstand van de koning tot één van de middelste vakjes (E4, D4, E5 en D5) berekenen. We drukken de afstand uit in het aantal stappen dat de koning zou moeten nemen om in het midden terecht te komen.
 
 \subsection{Castling}
 
-Dit is een vrij eenvoudige feature die kijkt of de agent gecastled heeft. In \figref{fig:castling2} en \figref{fig:castling3} staan 2 voorbeelden afgebeeld van castling.
+Dit is een vrij eenvoudige feature die kijkt of de agent gecastled heeft. Castling is voordelig aangezien de koning dan in een veiligere positie terecht komt. Bovendien krijg je er een geactiveerde toren bij. In \figref{fig:castling2} en \figref{fig:castling3} staan 2 voorbeelden van castling.
 
 \begin{figure}[h]
     \centering
