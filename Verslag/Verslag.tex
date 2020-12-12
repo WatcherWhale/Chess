@@ -412,8 +412,24 @@ Dit is een vrij eenvoudige feature die kijkt of de agent gecastled heeft. In \fi
     \label{fig:castling}
 \end{figure}
 
-\subsection{double pawns}
-\subsection{light pieces on }
+\subsection{Light pieces on first rank}
+
+Hier gaan we kijken of hoeveel van een speler zijn light pieces nog op de eerste rang staan. De eerste rang zal dus voor de speler rij 1 zijn en voor de tegenspeler rij 8. Met de light pieces verstaan we de paarden en lopers.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=170pt]{images/LightFirstRank.png}
+    \caption{Example of Light pieces on 1\ts{th} rank}
+    \label{fig:light1rank}
+\end{figure}
+
+In \figref{fig:light1rank} zal de witte speler een score van 3 krijgen voor zijn 2 paarden en loper. De zwarte speler heeft enkel een paard op zijn eerste rank staan en zal dus bij \codeword{LightFirstRankO()} een berekening van 1 krijgen.
+
+
+
+\subsection{Doubled pawns}
+
+Deze feature zal kijken hoeveel pionnen (meer als 1) er op één en dezelfde lijn staan (mag zowel horizontaal als verticaal).
 
 
 \subsection{Alpha-beta Agent prediction feature}
@@ -474,7 +490,7 @@ In \figref{fig:singlethreaded} en \figref{fig:multithreaded} is het verschil te 
 \label{caching}
 
 We gebruiken ook veel plaatsen caching zodat we niet 2 keer hetzelfde moeten uitrekenen. De meest bijzondere cache is deze voor onze alpha-beta feature, deze moet per bord state maar 1 keer uitvoeren waardoor we de alpha-beta langer kunnen laten zoeken en een hoop tijd besparen.
-Det tijd die we hierdoor besparen per iteratie kan soms tot een minuut of 2 oplopen.
+De tijd die we hierdoor besparen per iteratie kan soms tot een minuut of 2 oplopen.
 
 Dit was uiteraard wel een trade off met memory usage, echter werd de extra gebruikte memory overschaduwd door de tijdswinsten.
 
