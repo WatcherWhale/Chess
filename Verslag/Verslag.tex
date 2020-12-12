@@ -177,6 +177,14 @@ def getMaterialValue(piece_type):
     return 0
 \end{lstlisting}
 
+\subsection{Checkmate}
+
+De feature \codeword{Checkmate()} gaat kijken of we bij de volgende actie de opponent schaakmat kunnen zetten.
+
+\subsection{Next Checkmate}
+
+In deze feature gaan we kijken of de volgende zet van de tegenspeler kan zorgen dat wij schaakmat worden gezet.
+
 \subsection{Mobility}
 De \codeword{Mobility.py} file berekent voor elke type schaakstuk hoeveel vakjes het stuk kan bereiken. 
 
@@ -185,9 +193,7 @@ Dit wordt gebruikt voor de mobility features. Hierbij gaan we voor elke type sch
 De feature \codeword{MobilityRookS()} zal voor elke Rook (toren) van de eigen speler (S in de functie staat voor self) berekenen op hoeveel vakjes die kan komen en bij elkaar optellen.
 
 Voor het berekenen van de legal moves gebruikte we de functie \codeword{islegal(Move)} op het huidige bord.  Hier hebben we wat problemen mee ondervonden voor de opponent omdat we enkel stukken kunnen verplaatsten van diegene die aan beurt is. Alle moves van de opponent zijn dus illegal. Onze oplossing hiervoor is om een copy van het bord maken gevolgd door een board turn, op deze manier speel je dan zogezegd even als de opponent op het gekopieerde bord. 
-\pagebreak
 
-\pagebreak
 
 \subsection{Attackers}
 Deze attacked features laten weten hoeveel van de schaakstukken van een bepaald type aangevallen kunnen worden door de opponent met inferieure schaakstukken. 
