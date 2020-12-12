@@ -721,7 +721,7 @@ def calculateDoubledPawns(nextState: State):
 
     columns = np.zeros(8)
 
-    for p in board.pieces(chess.PAWN, True): #itertools.chain(board.pieces(chess.PAWN, True), board.pieces(chess.PAWN, False)):
+    for p in itertools.chain(board.pieces(chess.PAWN, True), board.pieces(chess.PAWN, False)):
         r, c = getRowColumn(p)
         columns[c] += 1
 
