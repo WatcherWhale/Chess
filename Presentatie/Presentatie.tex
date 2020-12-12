@@ -1,6 +1,6 @@
 \documentclass[compress]{beamer}
 
-\usetheme[light,lighttitle,framenumber,totalframenumber]{UniversiteitAntwerpen}
+\usetheme[light,lighttitle,framenumber]{UniversiteitAntwerpen}
 
 \usepackage{lipsum}
 \usepackage{outlines}
@@ -24,7 +24,9 @@
         \1 Special Q-learner
             \2 Alpha-Beta pruning agent inside
         \1 Our project has 2 agents
-        \1 Based on paper: [Voeg paper toe]
+        \1 Based on:
+            \2 Mannen, H. (2003). \textit{Learning to play chess using reinforcement learning with database games}. Utrecht: Utrecht University. Retrieved 12 12, 2020, from \href{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.109.810&rep=rep1&type=pdf}{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.109.810\\\&rep=rep1\&type=pdf}
+            \1 Git: \href{https://gitlab.com/Artificiele_Intelligentie/chess}{https://gitlab.com/Artificiele\_Intelligentie/chess}
     \end{outline}
 
 \end{frame}
@@ -81,6 +83,33 @@
 
 \begin{frame}
     \slidetitle{Results and conclusion}
+
+    \begin{minipage}{0.4\textwidth}
+        \begin{flushleft}
+            Stockfish
+        \end{flushleft}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.4\textwidth}
+        \begin{flushright}
+            Alpha-Beta
+        \end{flushright}
+    \end{minipage}
+
+    \begin{figure}[h]
+        \begin{subfigure}
+            \includegraphics[height=75pt]{../Verslag/images/EXCEL_2020-12-12_18-01-10.png}
+        \end{subfigure}
+        \begin{subfigure}
+            \includegraphics[height=75pt]{../Verslag/images/EXCEL_2020-12-12_17-58-38.png}
+        \end{subfigure}
+        \begin{subfigure}
+            \includegraphics[height=75pt]{../Verslag/images/EXCEL_2020-12-12_18-01-58.png}
+        \end{subfigure}
+        \begin{subfigure}
+            \includegraphics[height=75pt]{../Verslag/images/EXCEL_2020-12-12_18-02-40.png}
+        \end{subfigure}
+    \end{figure}
 \end{frame}
 
 \begin{frame}
