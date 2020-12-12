@@ -184,6 +184,7 @@ De feature \codeword{Checkmate()} gaat kijken of we bij de volgende actie de opp
 \subsection{Next Checkmate}
 
 In deze feature gaan we kijken of de volgende zet van de tegenspeler kan zorgen dat wij schaakmat worden gezet.
+\pagebreak
 
 \subsection{Mobility}
 De \codeword{Mobility.py} file berekent voor elke type schaakstuk hoeveel vakjes het stuk kan bereiken. 
@@ -210,6 +211,7 @@ De volgende twee features zijn zowel voor de speler als de tegenspeler geïmplem
 Pawn fork gaat kijken hoeveel pionnen 2 superieure stukken van de tegenstander aanvalt.
 
 In \figref{fig:pawnFork} zal pion op d4 meetellen bij de pawn fork som, omdat deze 2 schaakstukken met een hogere material value kan nemen. Terwijl pion op g4 niet zal worden meegeteld.
+\pagebreak
 
 \subsubsection{Knight Fork}
 Gelijkend aan de Pawn fork zal de Knight fork ook kijken hoeveel paarden 2 superieure schaakstukken van de tegenspeler kan nemen.
@@ -231,6 +233,8 @@ In \figref{fig:knightFork} zal het paard op d5 worden meegeteld, maar het paard 
     \end{subfigure}
     \caption{Examples of forks}
 \end{figure}
+
+
 
 \subsection{Connected Rooks}
 \label{connectedRooks}
@@ -256,11 +260,19 @@ In \figref{fig:ConnectedRooks} zien we op kolom b een vertically connected rooks
 \subsection{Control}
 \subsubsection{Center Control}
 Center control is een feature die ons verteld hoeveel pawn je hebt staan op de vakjes D4, E4, D5, E5. Deze 4 vakjes zijn het belangrijkste van het bord, omdat deze vakjes het grootste trafiek hebben van het bord.
-
 Deze feature wordt ook weer voor zowel de eigen speler als de tegenspeler gecreëerd.
 
 \subsubsection{Board Control}
 Het aantal lege vakjes dat een speler met zijn stukken aanvalt, bepaald zijn controle over het bord. Deze feature bepaald dit aantal voor beide teams en trekt ze dan van elkaar af. Als meerdere stukken hetzelfde lege vakje kunnen aanvallen, wordt er rekening gehouden met de waarde van de stukken. Het kleinste stuk heeft dan het voordeel. Zo kan een toren kan dus nooit controle hebben over een vakje dat een pion van het andere ook kan aanvallen. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=170pt]{images/boardControl.png}
+    \caption{Example of board control}
+    \label{fig:boardcontrol}
+\end{figure}
+
+In het voorbeeld op \figref{fig:boardcontrol} zien we dat de zwarte pion controle heeft over c3 en c4. het paard zou hier naartoe kunnen, maar zou dan gepakt worden door een inferieur schaakstuk. Anderzijds heeft eht paard wel controle over e2.
 
 \subsection{Connectivity}
 \label{connectivity}
@@ -271,6 +283,7 @@ De connectivity beschrijft de mate waarin een speler zijn stukken kan beschermen
 
 Deze feature lijkt sterk op \reference{connectivity}. Het verschil zit erin dat we hier gaan kijken naar welke stukken we van de tegenspeler kunnen aanvallen. Ze dagen de stukken dus uit. 
 
+\pagebreak
 
 \subsection{Position score}
 We starten met het definiëren van een aantal matrices waarbij de matrix het bord voorstelt en elk vakje een bepaald score krijgt. Voor elk type schaakstuk hebben we een ingevulde matrix.
@@ -379,6 +392,8 @@ We starten met het definiëren van een aantal matrices waarbij de matrix het bor
 \end{figure}
 
 We gebruiken dit in de feature \codeword{PositionScoreBalance()} hierbij gaan we al onze schaakstukken af en sommeren we de punten van elk stuk met zijn overeenkomende plaats op de bijhorende matrix. Dit doen we voor zowel de speler als.
+
+
 
 \subsection{Rooks on 7th rank}
 Deze feature gaat kijken hoeveel torens er van de speler op de zevende rang staan. Hierbij wordt er geteld vanaf de kant van de speler zelf. Dus de tegenspeler zal dat dus rij 2 zijn. Wanneer er torens op de 7\ts{de} rang staat sta je heel sterk in het spel. Dit komt doordat je de bewegingsruimte van de opponent zijn koning sterk wordt beperkt en dat alle andere stukken op die rank niet veilig staan.
