@@ -124,7 +124,7 @@ $$
 De $\sigma(x)$ die we in de berekening zien wordt als volgt gedefinieerd:
 
 $$
-\sigma(x) = \frac{2}{1 + e^{-x}} - 1
+\sigma^*(x) = \frac{2}{1 + e^{-x}} - 1
 $$
 
 Dit is een aangepaste versie van de bekende sigmoid\cite{WSF} functie. Onze versie zorgt in tegenstelling tot de originele er voor dat waardes in het interval $\left]-1,1\right[$ vallen.\\
@@ -143,9 +143,9 @@ Hier zie je de grafiek van de functie:
         \node (B) at (-2, -0.6) {\tiny $-1$};
 
         \draw[scale=0.5, domain=-3.9:3.9, smooth, variable=\x, blue] plot ({\x}, { 2/(1 + exp(-\x)) - 1 });
-        \node[blue] (C) at (0.4, 0.32) {$\sigma$};
+        \node[blue] (C) at (0.4, 0.32) {$\sigma^*$};
     \end{tikzpicture}
-    \caption{$\sigma(x)$} \label{fig:sigmoid}
+    \caption{$\sigma^*(x)$} \label{fig:sigmoid}
 \end{figure}
 
 
@@ -485,39 +485,53 @@ Hier vind je al onze resultaten van het uitbundig trainen. We hebben deze in de 
 
 Je kan ook altijd onderaan de commando's vinden die we gebruikt hebben bij het trainen van onze agent.
 
-\section{GrandQ vs. Stockfish (0-544)}
+\section{GrandQ vs. Stockfish}
 
 In de eerste leer sessie hebben we onze Q-agent tegen stockfish laten trainen zoals verwacht heeft onze agent nooit kunnen winnen, maar heeft wel hieruit nuttige info kunnen leren.
 
+Command:\\
+\codeword{python3 train -o stockfish --skill 0 --depth 3 -tt 15 -dt 0 -e 0.3 -d 0.3 -l 0.01 -q -i -1}
+
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{images/stockfish.png}
+    \begin{subfigure}{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/EXCEL_2020-12-12_18-01-58.png}
+        \caption{All features except checkmates}
+    \end{subfigure}
+    \begin{subfigure}{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/EXCEL_2020-12-12_18-01-10.png}
+        \caption{Check mate \& Next Checkmate}
+    \end{subfigure}
     \caption{Weight history vs. Stockfish}
-    \label{fig:stockfish}
-\end {figure}
+\end{figure}
 
-Command:\\
-\codeword{python3 train -o stockfish --skill 0 --depth 10 -tt 5 -dt 0 -e 0.3 -d 0.6 -l 0.01 -q -i -1}
 \pagebreak
 
-\section{GrandQ vs. Alpha-Beta (544 - 5732)}
+\section{GrandQ vs. Alpha-Beta}
 
-Daarna hebben we nog 2 leersessies tegen onze alpha-beta agent laten spelen. De eerste leersessie was met dezelfde alpha en discount als tegen stockfish. Bij de 2 de leersessie hadden we deze verlaagd om de agent zich meer greedy te doen gedragen.
+Later hebben we nog een paar spelletjes gespeeld tegen onze alpha-beta agent. Deze waren bijna allemaal gewonnen.
 
-Onze agent wint $34\%$ van de spelletjes na volledig getrained te zijn, speelt gelijk voor $21\%$ van de spelletjes en $45\%$ van de tijd spelen onze agents een onbepaald spel. Deze staat is als de trainer het spel vroegtijdig stopt dit gebeurt na 130 zetten voor elke speler. Dit is om te voorkomen dat de agents zichzelf in een loop spelen en zo het trainen verschikkelijk doen vertragen.
+Command:\\
+\codeword{python3 train -o ab --depth 3 -tt 15 -dt 0 -e 0.3 -d 0.3 -l 0.01 -q -i -1}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{images/ab.png}
-    \caption{Weight history vs. Alpha-Beta}
-    \label{fig:ab}
-\end {figure}
-
-Command:\\
-\codeword{python3 train -o ab --depth 10 -tt 5 -dt 0 -e 0.3 -d 0.6 -l 0.01 -q -i -1}
-
-Command na ongveer 1500 episodes:\\
-\codeword{python3 train -o ab --depth 10 -tt 5 -dt 0 -e 0.2 -d 0.4 -l 0.01 -q -i -1}
+    \begin{subfigure}{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/EXCEL_2020-12-12_18-02-40.png}
+        \caption{Weight history vs. Stockfish}
+        \label{fig:ab}
+    \end{subfigure}
+    \begin{subfigure}{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/EXCEL_2020-12-12_17-58-38.png}
+        \caption{Check mate \& Next Checkmate}
+        \label{fig:abc}
+    \end{subfigure}
+    \caption{Weight History vs. Alpha-Beta}
+\end{figure}
 
 \section{Git Repository:}
 Onze code en ons getrained bestand is ook terug te vinden op gitlab: 
