@@ -124,7 +124,7 @@ $$
 De $\sigma(x)$ die we in de berekening zien wordt als volgt gedefinieerd:
 
 $$
-\sigma(x) = \frac{2}{1 + e^{-x}} - 1
+\sigma^*(x) = \frac{2}{1 + e^{-x}} - 1
 $$
 
 Dit is een aangepaste versie van de bekende sigmoid\cite{WSF} functie. Onze versie zorgt in tegenstelling tot de originele er voor dat waardes in het interval $\left]-1,1\right[$ vallen.\\
@@ -143,9 +143,9 @@ Hier zie je de grafiek van de functie:
         \node (B) at (-2, -0.6) {\tiny $-1$};
 
         \draw[scale=0.5, domain=-3.9:3.9, smooth, variable=\x, blue] plot ({\x}, { 2/(1 + exp(-\x)) - 1 });
-        \node[blue] (C) at (0.4, 0.32) {$\sigma$};
+        \node[blue] (C) at (0.4, 0.32) {$\sigma^*$};
     \end{tikzpicture}
-    \caption{$\sigma(x)$} \label{fig:sigmoid}
+    \caption{$\sigma^*(x)$} \label{fig:sigmoid}
 \end{figure}
 
 
@@ -177,6 +177,14 @@ def getMaterialValue(piece_type):
     return 0
 \end{lstlisting}
 
+\subsection{Checkmate}
+
+De feature \codeword{Checkmate()} gaat kijken of we bij de volgende actie de opponent schaakmat kunnen zetten.
+
+\subsection{Next Checkmate}
+
+In deze feature gaan we kijken of de volgende zet van de tegenspeler kan zorgen dat wij schaakmat worden gezet.
+
 \subsection{Mobility}
 De \codeword{Mobility.py} file berekent voor elke type schaakstuk hoeveel vakjes het stuk kan bereiken. 
 
@@ -185,9 +193,7 @@ Dit wordt gebruikt voor de mobility features. Hierbij gaan we voor elke type sch
 De feature \codeword{MobilityRookS()} zal voor elke Rook (toren) van de eigen speler (S in de functie staat voor self) berekenen op hoeveel vakjes die kan komen en bij elkaar optellen.
 
 Voor het berekenen van de legal moves gebruikte we de functie \codeword{islegal(Move)} op het huidige bord.  Hier hebben we wat problemen mee ondervonden voor de opponent omdat we enkel stukken kunnen verplaatsten van diegene die aan beurt is. Alle moves van de opponent zijn dus illegal. Onze oplossing hiervoor is om een copy van het bord maken gevolgd door een board turn, op deze manier speel je dan zogezegd even als de opponent op het gekopieerde bord. 
-\pagebreak
 
-\pagebreak
 
 \subsection{Attackers}
 Deze attacked features laten weten hoeveel van de schaakstukken van een bepaald type aangevallen kunnen worden door de opponent met inferieure schaakstukken. 
@@ -413,8 +419,24 @@ Dit is een vrij eenvoudige feature die kijkt of de agent gecastled heeft. In \fi
     \label{fig:castling}
 \end{figure}
 
-\subsection{double pawns}
-\subsection{light pieces on }
+\subsection{Light pieces on first rank}
+
+Hier gaan we kijken of hoeveel van een speler zijn light pieces nog op de eerste rang staan. De eerste rang zal dus voor de speler rij 1 zijn en voor de tegenspeler rij 8. Met de light pieces verstaan we de paarden en lopers.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=170pt]{images/LightFirstRank.png}
+    \caption{Example of Light pieces on 1\ts{th} rank}
+    \label{fig:light1rank}
+\end{figure}
+
+In \figref{fig:light1rank} zal de witte speler een score van 3 krijgen voor zijn 2 paarden en loper. De zwarte speler heeft enkel een paard op zijn eerste rank staan en zal dus bij \codeword{LightFirstRankO()} een berekening van 1 krijgen.
+
+
+
+\subsection{Doubled pawns}
+
+Deze feature zal kijken hoeveel pionnen (meer als 1) er op één en dezelfde lijn staan (mag zowel horizontaal als verticaal).
 
 
 \subsection{Alpha-beta Agent prediction feature}
@@ -475,7 +497,7 @@ In \figref{fig:singlethreaded} en \figref{fig:multithreaded} is het verschil te 
 \label{caching}
 
 We gebruiken ook veel plaatsen caching zodat we niet 2 keer hetzelfde moeten uitrekenen. De meest bijzondere cache is deze voor onze alpha-beta feature, deze moet per bord state maar 1 keer uitvoeren waardoor we de alpha-beta langer kunnen laten zoeken en een hoop tijd besparen.
-Det tijd die we hierdoor besparen per iteratie kan soms tot een minuut of 2 oplopen.
+De tijd die we hierdoor besparen per iteratie kan soms tot een minuut of 2 oplopen.
 
 Dit was uiteraard wel een trade off met memory usage, echter werd de extra gebruikte memory overschaduwd door de tijdswinsten.
 
@@ -485,39 +507,53 @@ Hier vind je al onze resultaten van het uitbundig trainen. We hebben deze in de 
 
 Je kan ook altijd onderaan de commando's vinden die we gebruikt hebben bij het trainen van onze agent.
 
-\section{GrandQ vs. Stockfish (0-544)}
+\section{GrandQ vs. Stockfish}
 
 In de eerste leer sessie hebben we onze Q-agent tegen stockfish laten trainen zoals verwacht heeft onze agent nooit kunnen winnen, maar heeft wel hieruit nuttige info kunnen leren.
 
+Command:\\
+\codeword{python3 train -o stockfish --skill 0 --depth 3 -tt 15 -dt 0 -e 0.3 -d 0.3 -l 0.01 -q -i -1}
+
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{images/stockfish.png}
+    \begin{subfigure}{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/EXCEL_2020-12-12_18-01-58.png}
+        \caption{All features except checkmates}
+    \end{subfigure}
+    \begin{subfigure}{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/EXCEL_2020-12-12_18-01-10.png}
+        \caption{Check mate \& Next Checkmate}
+    \end{subfigure}
     \caption{Weight history vs. Stockfish}
-    \label{fig:stockfish}
-\end {figure}
+\end{figure}
 
-Command:\\
-\codeword{python3 train -o stockfish --skill 0 --depth 10 -tt 5 -dt 0 -e 0.3 -d 0.6 -l 0.01 -q -i -1}
 \pagebreak
 
-\section{GrandQ vs. Alpha-Beta (544 - 5732)}
+\section{GrandQ vs. Alpha-Beta}
 
-Daarna hebben we nog 2 leersessies tegen onze alpha-beta agent laten spelen. De eerste leersessie was met dezelfde alpha en discount als tegen stockfish. Bij de 2 de leersessie hadden we deze verlaagd om de agent zich meer greedy te doen gedragen.
+Later hebben we nog een paar spelletjes gespeeld tegen onze alpha-beta agent. Deze waren bijna allemaal gewonnen.
 
-Onze agent wint $34\%$ van de spelletjes na volledig getrained te zijn, speelt gelijk voor $21\%$ van de spelletjes en $45\%$ van de tijd spelen onze agents een onbepaald spel. Deze staat is als de trainer het spel vroegtijdig stopt dit gebeurt na 130 zetten voor elke speler. Dit is om te voorkomen dat de agents zichzelf in een loop spelen en zo het trainen verschikkelijk doen vertragen.
+Command:\\
+\codeword{python3 train -o ab --depth 3 -tt 15 -dt 0 -e 0.3 -d 0.3 -l 0.01 -q -i -1}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{images/ab.png}
-    \caption{Weight history vs. Alpha-Beta}
-    \label{fig:ab}
-\end {figure}
-
-Command:\\
-\codeword{python3 train -o ab --depth 10 -tt 5 -dt 0 -e 0.3 -d 0.6 -l 0.01 -q -i -1}
-
-Command na ongveer 1500 episodes:\\
-\codeword{python3 train -o ab --depth 10 -tt 5 -dt 0 -e 0.2 -d 0.4 -l 0.01 -q -i -1}
+    \begin{subfigure}{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/EXCEL_2020-12-12_18-02-40.png}
+        \caption{Weight history vs. Stockfish}
+        \label{fig:ab}
+    \end{subfigure}
+    \begin{subfigure}{.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/EXCEL_2020-12-12_17-58-38.png}
+        \caption{Check mate \& Next Checkmate}
+        \label{fig:abc}
+    \end{subfigure}
+    \caption{Weight History vs. Alpha-Beta}
+\end{figure}
 
 \section{Git Repository:}
 Onze code en ons getrained bestand is ook terug te vinden op gitlab: 
