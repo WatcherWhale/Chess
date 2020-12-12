@@ -436,7 +436,7 @@ Dit is een vrij eenvoudige feature die kijkt of de agent gecastled heeft. Castli
 
 \subsection{Light pieces on first rank}
 
-Hier gaan we kijken of hoeveel van een speler zijn light pieces nog op de eerste rang staan. De eerste rang zal dus voor de speler rij 1 zijn en voor de tegenspeler rij 8. Met de light pieces verstaan we de paarden en lopers.
+Hier gaan we kijken of hoeveel light pieces van een speler nog op de eerste rang staan. De eerste rang zal dus voor de speler rij 1 zijn en voor de tegenspeler rij 8. Met de light pieces verstaan we de paarden en lopers.
 
 \begin{figure}[h]
     \centering
@@ -451,12 +451,12 @@ In \figref{fig:light1rank} zal de witte speler een score van 3 krijgen voor zijn
 
 \subsection{Doubled pawns}
 
-Deze feature zal kijken hoeveel pionnen (meer als 1) er op één en dezelfde lijn staan (mag zowel horizontaal als verticaal).
+Deze feature zal kijken op hoeveel kolommen er meer dan 1 pion staat. De kleur maakt hierbij niet uit. 
 
 
 \subsection{Alpha-beta Agent prediction feature}
 
-Deze feature laat een onze alpha-beta agent een keuze maken in de huidige situatie. Als deze keuze overeenkomt met de keuze van de Q-agent dan returned deze feature $1$ zo niet dan krijgen we een return waarde van $0$. Deze feature kent ook optimalisaties maar hierover later meer in \reference{caching}.
+Onze alpha-beta agent is verwerkt als feature in de Q-agent. Als deze keuze van Alpha-beta overeenkomt met de keuze van de Q-agent dan returned deze feature $1$. Zo niet, dan krijgen we een return waarde van $0$. Deze feature kent verschillende optimalisaties maar hierover komt meer in \reference{caching}.
 
 
 
@@ -486,11 +486,11 @@ $$
 
 \chapter{Optimalisaties}
 
-We hebben een hoop optimalisaties moeten toevoegen aan onze Q-Learner om hem zo rap mogelijk te laten denken.
+We hebben een hoop optimalisaties moeten toevoegen aan onze Q-Learner om hem zo rap mogelijk te laten denken. Dit is nodig voor de training sneller te laten verlopen, maar ook voor wedstrijden. De tijd is dan meestal gelimiteerd. 
 
 \section{Multi-Threading}
 
-We hebben multi-threading toegevoegd aan onze q-learner zo berekent hij de q-waarde van elke actie in een aparte thread. We hebben bewust niet gekozen om elke feature apart omdat dit onze timing issues verergerde in plaat van verbeterde. We hebben door multi-threading onze iteratie tijd met $20\%$ weten dalen.
+Multi-threading werd toegevoegd aan onze Q-learner. Zo berekent hij de Q-waarde van elke actie in een aparte thread. We hebben bewust niet gekozen om elke feature in een aparte thread te steken omdat dit onze timing issues verergerde in de plaats van verbeterde. We hebben door multi-threading onze iteratie tijd met $20\%$ weten dalen.
 
 In \figref{fig:singlethreaded} en \figref{fig:multithreaded} is het verschil te zien tussen single-threaded \tiny(\ref{fig:singlethreaded})\small{ }en multi-threaded \tiny(\ref{fig:multithreaded})\small{ }CPU usage.
 
@@ -511,23 +511,25 @@ In \figref{fig:singlethreaded} en \figref{fig:multithreaded} is het verschil te 
 \section{Caching}
 \label{caching}
 
-We gebruiken ook veel plaatsen caching zodat we niet 2 keer hetzelfde moeten uitrekenen. De meest bijzondere cache is deze voor onze alpha-beta feature, deze moet per bord state maar 1 keer uitvoeren waardoor we de alpha-beta langer kunnen laten zoeken en een hoop tijd besparen.
+We gebruiken ook op veel plaatsen caching zodat we niet 2 keer hetzelfde moeten uitrekenen. De meest bijzondere cache is die voor onze alpha-beta feature. Deze moet per bord state maar 1 keer uitgevoerd worden waardoor we een hoop tijd besparen.
 De tijd die we hierdoor besparen per iteratie kan soms tot een minuut of 2 oplopen.
 
 Dit was uiteraard wel een trade off met memory usage, echter werd de extra gebruikte memory overschaduwd door de tijdswinsten.
 
 \chapter{Resultaten}
 
-Hier vind je al onze resultaten van het uitbundig trainen. We hebben deze in de loop van 5 dagen op een cloud server laten trainen. 1 dag tegen stockfish en de overige 4 dagen tegen onze alpha-beta agent.
+Hier vindt u al onze resultaten van het uitbundig trainen. We hebben in de loop van 5 dagen op een cloud server gespeeld tegen stockfish (4 dagen) en onze alpha-beta agent (1 dag).
 
-Je kan ook altijd onderaan de commando's vinden die we gebruikt hebben bij het trainen van onze agent.
+De gebruikte train commando's staan hieronder.
 
 \section{GrandQ vs. Stockfish}
 
-In de eerste leer sessie hebben we onze Q-agent tegen stockfish laten trainen zoals verwacht heeft onze agent nooit kunnen winnen, maar heeft wel hieruit nuttige info kunnen leren.
+In de eerste leer sessie hebben we onze Q-agent tegen stockfish laten trainen. Zoals verwacht heeft onze agent nooit kunnen winnen, maar hij heeft wel nuttige info kunnen leren.
 
 Command:\\
 \codeword{python3 train -o stockfish --skill 0 --depth 3 -tt 15 -dt 0 -e 0.3 -d 0.3 -l 0.01 -q -i -1}
+
+De grafieken tonen de geleerde weights van elke feature voor elke iteratie. De groene Checkmate lijn maakt een grote sprong omdat we hem manueel geforceerd hebben naar 100. Van stockfish zou hij nooit winnen, dus hebben we hem een beetje geholpen. De andere features kregen wel mooie resultaten die kloppen met onze intuïtie. 
 
 \begin{figure}[h]
     \centering
@@ -539,7 +541,7 @@ Command:\\
     \begin{subfigure}{.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/EXCEL_2020-12-12_18-01-10.png}
-        \caption{Check mate \& Next Checkmate}
+        \caption{Checkmate \& Next Checkmate}
     \end{subfigure}
     \caption{Weight history vs. Stockfish}
 \end{figure}
@@ -548,7 +550,7 @@ Command:\\
 
 \section{GrandQ vs. Alpha-Beta}
 
-Later hebben we nog een paar spelletjes gespeeld tegen onze alpha-beta agent. Deze waren bijna allemaal gewonnen.
+Later hebben we nog een paar spelletjes gespeeld tegen onze alpha-beta agent. Deze hebben we bijna allemaal gewonnen.
 
 Command:\\
 \codeword{python3 train -o ab --depth 3 -tt 15 -dt 0 -e 0.3 -d 0.3 -l 0.01 -q -i -1}
