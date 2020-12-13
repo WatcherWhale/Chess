@@ -28,20 +28,40 @@ class AlphaBeta(Feature):
         self.agent = ABAgent()
         self.agent.features = features
         self.mutex = Lock()
+        self.stateMap = {}
+        self.currentIndex = 0
         self.lastAction = None
         self.lastState = None
 
     def calculateValue(self, state: State, action, nextState: State):
         if self.mutex.acquire(blocking=False) is not False:
-            if self.lastState is not state:
+            if self.getAction(state) is None:
                 self.agent.setGoTime(state.getAgent().getGoTime())
                 self.agent.setDeltaTime(state.getAgent().getDeltaTime())
                 self.agent.setMaxDepth(state.getAgent().maxDepth)
-                self.lastState = state
-                self.lastAction = self.agent.makeMove(state)
+                self.addToMap(state, self.agent.makeMove(state))
             self.mutex.release()
 
         while self.mutex.locked():
-            time.sleep(0.01)
+            time.sleep(0.001)
 
-        return self.lastAction == action
+        return self.getAction(state) == action
+
+    def getAction(self, state: State):
+        if str(state.getBoard()) in self.stateMap:
+            return self.stateMap[str(state.getBoard())]
+        else:
+            return None
+
+    def addToMap(self, state: State, action):
+
+        self.currentIndex = (self.currentIndex + 1) % 10000
+        self.remove()
+
+        self.stateMap[str(state.getBoard())] = (self.currentIndex, action)
+
+    def remove(self):
+        for k in self.stateMap:
+            if self.stateMap[k][0] == self.currentIndex:
+                self.stateMap.pop(k)
+                return
