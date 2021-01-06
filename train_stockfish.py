@@ -82,3 +82,5 @@ def runEpisode(white_player: Agent):
             running = False
 
     black_player.quit()
+    black_player = None
+    del black_player
